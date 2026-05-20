@@ -470,11 +470,18 @@ footer {
         right: 0;
     }
     .lang-switcher {
-        display: none !important;
+        display: flex !important;
+        margin-right: 0.75rem;
+        padding: 2px;
+        gap: 1px;
+    }
+    .lang-switcher .lang-btn {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.65rem;
+        border-radius: 16px;
     }
     .mobile-lang-container {
-        display: flex !important;
-        justify-content: center;
+        display: none !important;
     }
     .hero-btns {
         flex-direction: column;

@@ -13,7 +13,7 @@ const navLinks = document.querySelector('.nav-links');
 const navToggle = document.createElement('div');
 navToggle.className = 'nav-toggle';
 navToggle.innerHTML = '<span></span><span></span><span></span>';
-document.querySelector('.nav-content').insertBefore(navToggle, document.querySelector('.lang-switcher'));
+document.querySelector('.nav-content').appendChild(navToggle);
 
 navToggle.addEventListener('click', () => {
     navLinks.classList.toggle('active');
