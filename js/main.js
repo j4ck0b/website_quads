@@ -23,13 +23,18 @@ navToggle.addEventListener('click', () => {
 // Smooth Scrolling
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        navLinks.classList.remove('active');
-        navToggle.classList.remove('open');
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
         
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+            e.preventDefault();
+            navLinks.classList.remove('active');
+            navToggle.classList.remove('open');
+            targetEl.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
     });
 });
 
@@ -66,17 +71,53 @@ function setLanguage(lang) {
     // Save preference
     localStorage.setItem('preferredLang', lang);
     
-    // Update active button state
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        const btnLang = btn.innerText.toLowerCase();
+    // Update active dropdown items state
+    document.querySelectorAll('.lang-dropdown-item').forEach(btn => {
+        const btnLang = btn.getAttribute('data-lang');
         btn.classList.toggle('active', btnLang === lang);
     });
+    
+    // Update trigger active text
+    const activeText = document.getElementById('activeLangText');
+    if (activeText) {
+        activeText.innerText = lang.toUpperCase();
+    }
 }
 
-// GSAP Animations
+// Language Dropdown Click Handlers
+function selectLanguage(lang) {
+    setLanguage(lang);
+    const menu = document.getElementById('langMenu');
+    if (menu) menu.classList.remove('active');
+    const arrow = document.querySelector('.lang-dropdown-trigger .arrow');
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+}
+
+// GSAP & Dropdown Listeners Init
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('preferredLang') || 'en';
     setLanguage(savedLang);
+
+    // Dropdown Trigger Listener
+    const trigger = document.getElementById('langTrigger');
+    const menu = document.getElementById('langMenu');
+    const arrow = document.querySelector('.lang-dropdown-trigger .arrow');
+    
+    if (trigger && menu) {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.toggle('active');
+            if (arrow) {
+                arrow.style.transform = menu.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            menu.classList.remove('active');
+            if (arrow) arrow.style.transform = 'rotate(0deg)';
+        });
+    }
 
     // Register ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
