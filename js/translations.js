@@ -1,5 +1,7 @@
 const translations = {
     en: {
+        "seo.title": "Premium Teide Quad Tours Tenerife | Extreme Prime Tours SL",
+        "seo.description": "Experience the ultimate off-road adventure in Tenerife. Guided Mount Teide quad tours departing from Las Américas. Secure booking, premium 550cc XL quads, full insurance included.",
         "nav.tour": "The Tour",
         "nav.booking": "Book Now",
         "nav.about": "About Us",
@@ -46,10 +48,37 @@ const translations = {
         
         "booking.title": "Book Your Teide Tour",
         "booking.subtitle": "Select a date, check real-time availability, and secure your quad adventure instantly using our secure booking system.",
-        "contact.title": "Find Us & Contact",
-        "contact.subtitle": "We are located at Extreme Prime Tours SL in Las Américas. Fill out the form below or open our location on the map."
+        
+        "location.badge": "Location",
+        "location.title": "Extreme Prime Tours SL",
+        "location.desc": "Our shop is perfectly located in the heart of Las Américas. Start your ultimate Mount Teide adventure with ease from our office.",
+        "location.address.label": "Address",
+        "location.hours.label": "Working Hours",
+        "location.hours.val": "Monday - Sunday: 09:00 - 20:00",
+        "location.maps.btn": "Open in Google Maps",
+
+        "contact.title": "Got Questions?",
+        "contact.subtitle": "Got questions or want to customize a private tour? Send us a message and our team will get back to you shortly.",
+        "contact.form.name": "Full Name",
+        "contact.form.name.placeholder": "Name",
+        "contact.form.email": "Email Address",
+        "contact.form.email.placeholder": "Email",
+        "contact.form.message": "Message",
+        "contact.form.message.placeholder": "Your message here...",
+        "contact.form.submit": "Send Message",
+        "contact.form.sending": "Sending...",
+        "contact.form.success": "Thank you for your message! We will contact you soon.",
+
+        "footer.desc": "The best way to explore Tenerife. Adventure, safety, and unforgettable memories with Extreme Prime Tours SL.",
+        "footer.quicklinks": "Quick Links",
+        "footer.legal": "Legal",
+        "footer.privacy": "Privacy Policy",
+        "footer.terms": "Terms of Service",
+        "footer.rights": "© 2026 Extreme Prime Tours SL. All rights reserved."
     },
     pl: {
+        "seo.title": "Wycieczki na Quadach Teneryfa Teide | Extreme Prime Tours SL",
+        "seo.description": "Przeżyj niesamowitą przygodę na quadach na Teneryfie. Wyprawy z przewodnikiem do Parku Narodowego Teide z Las Américas. Bezpieczna rezerwacja, quady premium 550cc XL, pełne ubezpieczenie.",
         "nav.tour": "Wycieczka",
         "nav.booking": "Zarezerwuj",
         "nav.about": "O nas",
@@ -96,10 +125,37 @@ const translations = {
         
         "booking.title": "Zarezerwuj Wyprawę Teide",
         "booking.subtitle": "Wybierz termin, sprawdź dostępność w czasie rzeczywistym i zarezerwuj swoją przygodę na quadach przez nasz bezpieczny system Bokun.",
-        "contact.title": "Znajdź nas i skontaktuj się",
-        "contact.subtitle": "Nasze biuro znajduje się w Extreme Prime Tours SL w Las Américas. Wypełnij formularz lub otwórz lokalizację na mapie."
+        
+        "location.badge": "Lokalizacja",
+        "location.title": "Extreme Prime Tours SL",
+        "location.desc": "Nasz salon znajduje się w samym sercu Las Américas. Z łatwością rozpocznij swoją niezapomnianą przygodę na wulkan Teide bezpośrednio z naszego biura.",
+        "location.address.label": "Adres",
+        "location.hours.label": "Godziny pracy",
+        "location.hours.val": "Poniedziałek - Niedziela: 09:00 - 20:00",
+        "location.maps.btn": "Otwórz w Mapach Google",
+
+        "contact.title": "Masz pytania?",
+        "contact.subtitle": "Masz pytania lub chcesz spersonalizować prywatną wycieczkę? Wyślij nam wiadomość, a nasz zespół skontaktuje się z Tobą wkrótce.",
+        "contact.form.name": "Imię i nazwisko",
+        "contact.form.name.placeholder": "Wpisz swoje imię",
+        "contact.form.email": "Adres e-mail",
+        "contact.form.email.placeholder": "Wpisz swój e-mail",
+        "contact.form.message": "Wiadomość",
+        "contact.form.message.placeholder": "Wpisz swoją wiadomość tutaj...",
+        "contact.form.submit": "Wyślij wiadomość",
+        "contact.form.sending": "Wysyłanie...",
+        "contact.form.success": "Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.",
+
+        "footer.desc": "Najlepszy sposób na odkrywanie Teneryfy. Przygoda, bezpieczeństwo i niezapomniane wspomnienia z Extreme Prime Tours SL.",
+        "footer.quicklinks": "Szybkie linki",
+        "footer.legal": "Kwestie prawne",
+        "footer.privacy": "Polityka Prywatności",
+        "footer.terms": "Regulamin świadczenia usług",
+        "footer.rights": "© 2026 Extreme Prime Tours SL. Wszelkie prawa zastrzeżone."
     },
     es: {
+        "seo.title": "Excursiones en Quad al Teide Tenerife | Extreme Prime Tours SL",
+        "seo.description": "Vive la aventura definitiva en quad en Tenerife. Excursiones guiadas al Parque Nacional del Teide desde Las Américas. Reserva segura, quads premium de 550cc XL y seguro completo incluido.",
         "nav.tour": "El Tour",
         "nav.booking": "Reservar",
         "nav.about": "Nosotros",
@@ -146,7 +202,32 @@ const translations = {
         
         "booking.title": "Reserva tu Tour al Teide",
         "booking.subtitle": "Selecciona la fecha, comprueba la disponibilidad en tiempo real y asegura tu aventura en quad a través de nuestro sistema de reservas seguro de Bokun.",
-        "contact.title": "Encuéntranos y Contacta",
-        "contact.subtitle": "Nuestra oficina se encuentra en Extreme Prime Tours SL en Las Américas. Rellena el formulario o abre la ubicación en el mapa."
+        
+        "location.badge": "Ubicación",
+        "location.title": "Extreme Prime Tours SL",
+        "location.desc": "Nuestra oficina está perfectamente ubicada en el corazón de Las Américas. Comienza tu aventura definitiva al Teide con total facilidad.",
+        "location.address.label": "Dirección",
+        "location.hours.label": "Horario de trabajo",
+        "location.hours.val": "Lunes - Domingo: 09:00 - 20:00",
+        "location.maps.btn": "Abrir en Google Maps",
+
+        "contact.title": "¿Tienes preguntas?",
+        "contact.subtitle": "¿Tienes preguntas o deseas personalizar un tour privado? Envíanos un mensaje y nuestro equipo te responderá muy pronto.",
+        "contact.form.name": "Nombre completo",
+        "contact.form.name.placeholder": "Nombre completo",
+        "contact.form.email": "Correo electrónico",
+        "contact.form.email.placeholder": "Email",
+        "contact.form.message": "Mensaje",
+        "contact.form.message.placeholder": "Tu mensaje aquí...",
+        "contact.form.submit": "Enviar mensaje",
+        "contact.form.sending": "Enviando...",
+        "contact.form.success": "¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.",
+
+        "footer.desc": "La mejor manera de explorar Tenerife. Aventura, seguridad y recuerdos inolvidables con Extreme Prime Tours SL.",
+        "footer.quicklinks": "Enlaces rápidos",
+        "footer.legal": "Aspectos legales",
+        "footer.privacy": "Política de Privacidad",
+        "footer.terms": "Términos del Servicio",
+        "footer.rights": "© 2026 Extreme Prime Tours SL. Todos los derechos reservados."
     }
 };

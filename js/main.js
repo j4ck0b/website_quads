@@ -38,19 +38,78 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Premium Glassmorphic Toast Notification System
+function showPremiumToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.innerHTML = `
+        <div class="toast-content" style="
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.75rem;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid ${type === 'success' ? 'rgba(255, 102, 0, 0.4)' : 'rgba(255, 0, 0, 0.4)'};
+            border-radius: 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px ${type === 'success' ? 'rgba(255, 102, 0, 0.15)' : 'rgba(255, 0, 0, 0.15)'};
+            pointer-events: auto;
+        ">
+            <span style="font-size: 1.25rem;">${type === 'success' ? '✨' : '⚠️'}</span>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 10px;';
+        document.body.appendChild(container);
+    }
+    
+    container.appendChild(toast);
+    
+    // Dynamic GSAP entrance animation
+    gsap.fromTo(toast, 
+        { opacity: 0, y: 30, scale: 0.9 }, 
+        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.7)' }
+    );
+    
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        gsap.to(toast, { 
+            opacity: 0, 
+            y: -20, 
+            scale: 0.9, 
+            duration: 0.4, 
+            ease: 'power2.in',
+            onComplete: () => {
+                toast.remove();
+            }
+        });
+    }, 4000);
+}
+
 // Form Handling
 const bookingForm = document.getElementById('booking-form');
 if (bookingForm) {
     bookingForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = bookingForm.querySelector('button');
-        btn.innerText = 'Sending...';
+        const originalText = btn.innerText;
+        btn.innerText = translations[currentLang]["contact.form.sending"] || 'Sending...';
         btn.disabled = true;
         
         setTimeout(() => {
-            alert('Thank you for your request! We will contact you soon.');
+            showPremiumToast(translations[currentLang]["contact.form.success"] || 'Thank you!', 'success');
             bookingForm.reset();
-            btn.innerText = 'Send Booking Request';
+            btn.innerText = translations[currentLang]["contact.form.submit"] || 'Send Message';
             btn.disabled = false;
         }, 1500);
     });
@@ -61,12 +120,32 @@ let currentLang = 'en';
 
 function setLanguage(lang) {
     currentLang = lang;
+    
+    // Translate text contents
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (translations[lang][key]) {
             element.innerText = translations[lang][key];
         }
     });
+
+    // Translate placeholder attributes
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (translations[lang][key]) {
+            element.setAttribute('placeholder', translations[lang][key]);
+        }
+    });
+
+    // Dynamically update document title & meta tags for premium SEO
+    if (translations[lang]["seo.title"]) {
+        document.title = translations[lang]["seo.title"];
+    }
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc && translations[lang]["seo.description"]) {
+        metaDesc.setAttribute('content', translations[lang]["seo.description"]);
+    }
+    document.documentElement.lang = lang;
     
     // Save preference
     localStorage.setItem('preferredLang', lang);
