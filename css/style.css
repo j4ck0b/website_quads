@@ -467,4 +467,8 @@ footer {
         text-align: center;
         gap: 1.5rem !important;
     }
+    .contact-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2.5rem !important;
+    }
 }
