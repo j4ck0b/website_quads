@@ -294,9 +294,9 @@ function switchMainImage(imgSrc, thumbEl) {
     thumbEl.classList.add('active');
 }
 
-// Lightbox & Mobile Scroll Indicators functionality
+// Lightbox & 3D Mobile Card Stack Gallery
 document.addEventListener('DOMContentLoaded', () => {
-    const galleryItems = document.querySelectorAll('.gallery-item img');
+    const desktopImages = document.querySelectorAll('.gallery-grid .gallery-item img');
     const lightbox = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxClose = document.querySelector('.lightbox-close');
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lightbox) return;
 
     let currentIndex = 0;
-    const imagesArray = Array.from(galleryItems).map(img => img.src);
+    const imagesArray = Array.from(desktopImages).map(img => img.src);
 
     function showImage(index) {
         if (index < 0) index = imagesArray.length - 1;
@@ -325,11 +325,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 150);
     }
 
-    galleryItems.forEach((img, index) => {
+    // Expose showImage globally to call it from Card Stack clicks
+    window.showLightboxImage = showImage;
+
+    // Desktop gallery clicks
+    desktopImages.forEach((img, index) => {
         img.addEventListener('click', () => {
             lightbox.classList.add('active');
             showImage(index);
-            document.body.style.overflow = 'hidden'; // Prevents scrolling behind the modal
+            document.body.style.overflow = 'hidden';
         });
     });
 
@@ -375,36 +379,170 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Mobile swipe/scroll indicators logic
-    const galleryGrid = document.querySelector('.gallery-grid');
-    const dotsContainer = document.querySelector('.gallery-indicators');
+    // Innovative 3D Card Stack Gallery logic (Mobile-Only)
+    const deck = document.querySelector('.gallery-card-deck');
+    const cards = document.querySelectorAll('.gallery-card');
+    const prevBtn = document.getElementById('stackPrev');
+    const nextBtn = document.getElementById('stackNext');
+    const stackInfo = document.getElementById('stackInfo');
     
-    if (galleryGrid && dotsContainer) {
-        const items = galleryGrid.querySelectorAll('.gallery-item');
-        dotsContainer.innerHTML = ''; // Clear fallback dots
+    if (deck && cards.length > 0) {
+        let activeIndex = 0;
+        const totalCards = cards.length;
         
-        // Dynamically create dots based on actual items
-        items.forEach((_, idx) => {
-            const dot = document.createElement('span');
-            dot.className = `dot ${idx === 0 ? 'active' : ''}`;
-            dot.addEventListener('click', () => {
-                const itemWidth = items[0].offsetWidth + parseInt(window.getComputedStyle(galleryGrid).gap || 16);
-                galleryGrid.scrollTo({
-                    left: idx * itemWidth,
-                    behavior: 'smooth'
+        function arrangeCards() {
+            cards.forEach((card, index) => {
+                let order = (index - activeIndex + totalCards) % totalCards;
+                
+                if (order < 3) {
+                    card.style.display = 'block';
+                    card.style.zIndex = totalCards - order;
+                    
+                    gsap.to(card, {
+                        y: order * 18,
+                        scale: 1 - order * 0.05,
+                        z: -order * 30,
+                        rotateX: -order * 2,
+                        opacity: 1 - order * 0.25,
+                        duration: 0.45,
+                        ease: 'power2.out',
+                        overwrite: 'auto'
+                    });
+                } else {
+                    card.style.display = 'none';
+                    card.style.opacity = '0';
+                }
+            });
+            
+            if (stackInfo) {
+                stackInfo.innerText = `${activeIndex + 1} / ${totalCards}`;
+            }
+        }
+        
+        arrangeCards();
+        
+        cards.forEach((card, index) => {
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let currentX = 0;
+            let currentY = 0;
+            
+            card.addEventListener('pointerdown', (e) => {
+                let order = (index - activeIndex + totalCards) % totalCards;
+                if (order !== 0) return;
+                
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                card.setPointerCapture(e.pointerId);
+                
+                gsap.killTweensOf(card);
+            });
+            
+            card.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+                
+                gsap.set(card, {
+                    x: currentX,
+                    y: currentY,
+                    rotate: currentX * 0.05,
+                    rotateY: currentX * 0.02
                 });
             });
-            dotsContainer.appendChild(dot);
-        });
-        
-        // Listen to scroll to update active dot indicator
-        galleryGrid.addEventListener('scroll', () => {
-            const itemWidth = items[0].offsetWidth + parseInt(window.getComputedStyle(galleryGrid).gap || 16);
-            const scrollIndex = Math.round(galleryGrid.scrollLeft / itemWidth);
             
-            dotsContainer.querySelectorAll('.dot').forEach((dot, idx) => {
-                dot.classList.toggle('active', idx === scrollIndex);
+            card.addEventListener('pointerup', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                card.releasePointerCapture(e.pointerId);
+                
+                const dragThreshold = 100;
+                
+                if (Math.abs(currentX) > dragThreshold) {
+                    const swipeDirection = currentX > 0 ? 1 : -1;
+                    
+                    gsap.to(card, {
+                        x: swipeDirection * 500,
+                        y: currentY + (currentY > 0 ? 100 : -100),
+                        rotate: swipeDirection * 45,
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: 'power2.in',
+                        onComplete: () => {
+                            activeIndex = (activeIndex + 1) % totalCards;
+                            arrangeCards();
+                        }
+                    });
+                } else {
+                    // Tap detection (minimal drag)
+                    if (Math.abs(currentX) < 5 && Math.abs(currentY) < 5) {
+                        if (lightbox) {
+                            lightbox.classList.add('active');
+                            showImage(index);
+                            document.body.style.overflow = 'hidden';
+                        }
+                    } else {
+                        // Snap back
+                        gsap.to(card, {
+                            x: 0,
+                            y: 0,
+                            rotate: 0,
+                            rotateY: 0,
+                            duration: 0.4,
+                            ease: 'back.out(1.5)'
+                        });
+                    }
+                }
+                
+                currentX = 0;
+                currentY = 0;
+            });
+            
+            card.addEventListener('pointercancel', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                gsap.to(card, {
+                    x: 0,
+                    y: 0,
+                    rotate: 0,
+                    rotateY: 0,
+                    duration: 0.4,
+                    ease: 'back.out(1.5)'
+                });
             });
         });
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                let frontCard = cards[activeIndex];
+                gsap.to(frontCard, {
+                    x: 500,
+                    rotate: 45,
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        activeIndex = (activeIndex + 1) % totalCards;
+                        arrangeCards();
+                    }
+                });
+            });
+        }
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                activeIndex = (activeIndex - 1 + totalCards) % totalCards;
+                let newFrontCard = cards[activeIndex];
+                arrangeCards();
+                
+                gsap.fromTo(newFrontCard, 
+                    { x: -500, rotate: -45, opacity: 0 },
+                    { x: 0, rotate: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
+                );
+            });
+        }
     }
 });

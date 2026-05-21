@@ -372,6 +372,91 @@ nav.scrolled {
     border-radius: 4px;
 }
 
+/* Innovative 3D Stacked Card Gallery */
+.gallery-stack-container {
+    position: relative;
+    max-width: 420px;
+    height: 440px;
+    margin: 0 auto;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+    padding-top: 2rem;
+}
+
+.gallery-card-deck {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    transform-style: preserve-3d;
+}
+
+.gallery-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 102, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--bg-card);
+    transform-origin: center bottom;
+    user-select: none;
+    touch-action: none;
+    cursor: grab;
+}
+
+.gallery-card:active {
+    cursor: grabbing;
+}
+
+.gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+/* Stack Controls & Indicators */
+.gallery-stack-controls {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.stack-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 1.2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stack-btn:hover {
+    background: rgba(255, 102, 0, 0.2);
+    border-color: var(--primary);
+    transform: scale(1.05);
+}
+
+.stack-info {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
 /* Premium Lightbox Modal */
 .lightbox-modal {
     position: fixed;
@@ -681,32 +766,16 @@ footer {
         text-align: center;
     }
     .gallery-grid {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        gap: 1rem;
-        padding: 0.5rem 0.5rem 1.5rem 0.5rem;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        grid-template-columns: none;
+        display: none !important;
     }
-    .gallery-grid::-webkit-scrollbar {
-        display: none;
+    .gallery-stack-container {
+        display: flex !important;
     }
-    .gallery-item {
-        flex: 0 0 82%;
-        scroll-snap-align: center;
-        aspect-ratio: 4/3;
-        height: auto !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    }
-    .gallery-item.wide, .gallery-item.tall {
-        grid-column: auto !important;
-        grid-row: auto !important;
+    .gallery-stack-controls {
+        display: flex !important;
     }
     .gallery-indicators {
-        display: flex;
+        display: none !important;
     }
     .lightbox-prev, .lightbox-next {
         bottom: 5rem;

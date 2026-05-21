@@ -303,6 +303,8 @@
         <section id="gallery" class="section" style="background: #000;">
             <div class="container">
                 <h2 style="text-align: center; margin-bottom: 4rem;" data-i18n="nav.gallery">Gallery</h2>
+                
+                <!-- Desktop Masonry Grid -->
                 <div class="gallery-grid">
                     <div class="gallery-item wide"><img src="multimedia/IMG_3258.jpg" alt="Gallery 1"></div>
                     <div class="gallery-item"><img src="multimedia/IMG_3303.jpg" alt="Gallery 2"></div>
@@ -311,6 +313,26 @@
                     <div class="gallery-item wide"><img src="multimedia/IMG_5698.jpg" alt="Gallery 5"></div>
                     <div class="gallery-item"><img src="multimedia/IMG_5714.jpg" alt="Gallery 6"></div>
                 </div>
+
+                <!-- Innovative Interactive 3D Card Stack Gallery (Mobile-Only) -->
+                <div class="gallery-stack-container">
+                    <div class="gallery-card-deck">
+                        <div class="gallery-card"><img src="multimedia/IMG_3258.jpg" alt="Gallery 1"></div>
+                        <div class="gallery-card"><img src="multimedia/IMG_3303.jpg" alt="Gallery 2"></div>
+                        <div class="gallery-card"><img src="multimedia/IMG_5694.jpg" alt="Gallery 3"></div>
+                        <div class="gallery-card"><img src="multimedia/IMG_5695.jpg" alt="Gallery 4"></div>
+                        <div class="gallery-card"><img src="multimedia/IMG_5698.jpg" alt="Gallery 5"></div>
+                        <div class="gallery-card"><img src="multimedia/IMG_5714.jpg" alt="Gallery 6"></div>
+                    </div>
+                </div>
+
+                <!-- 3D Stack Controls -->
+                <div class="gallery-stack-controls">
+                    <button id="stackPrev" class="stack-btn" aria-label="Previous card">&#10094;</button>
+                    <span id="stackInfo" class="stack-info">1 / 6</span>
+                    <button id="stackNext" class="stack-btn" aria-label="Next card">&#10095;</button>
+                </div>
+
                 <!-- Premium Indicators for mobile slider -->
                 <div class="gallery-indicators"></div>
             </div>
