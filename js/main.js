@@ -293,3 +293,118 @@ function switchMainImage(imgSrc, thumbEl) {
     });
     thumbEl.classList.add('active');
 }
+
+// Lightbox & Mobile Scroll Indicators functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const galleryItems = document.querySelectorAll('.gallery-item img');
+    const lightbox = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.querySelector('.lightbox-close');
+    const lightboxPrev = document.querySelector('.lightbox-prev');
+    const lightboxNext = document.querySelector('.lightbox-next');
+    const lightboxCounter = document.querySelector('.lightbox-counter');
+    
+    if (!lightbox) return;
+
+    let currentIndex = 0;
+    const imagesArray = Array.from(galleryItems).map(img => img.src);
+
+    function showImage(index) {
+        if (index < 0) index = imagesArray.length - 1;
+        if (index >= imagesArray.length) index = 0;
+        currentIndex = index;
+        
+        lightboxImg.style.opacity = '0';
+        lightboxImg.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+            lightboxImg.src = imagesArray[currentIndex];
+            lightboxImg.style.opacity = '1';
+            lightboxImg.style.transform = 'scale(1)';
+            lightboxCounter.innerText = `${currentIndex + 1} / ${imagesArray.length}`;
+        }, 150);
+    }
+
+    galleryItems.forEach((img, index) => {
+        img.addEventListener('click', () => {
+            lightbox.classList.add('active');
+            showImage(index);
+            document.body.style.overflow = 'hidden'; // Prevents scrolling behind the modal
+        });
+    });
+
+    if (lightboxClose) {
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+
+    if (lightboxPrev) {
+        lightboxPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showImage(currentIndex - 1);
+        });
+    }
+
+    if (lightboxNext) {
+        lightboxNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showImage(currentIndex + 1);
+        });
+    }
+
+    // Close on overlay click
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'Escape') {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        } else if (e.key === 'ArrowLeft') {
+            showImage(currentIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+            showImage(currentIndex + 1);
+        }
+    });
+
+    // Mobile swipe/scroll indicators logic
+    const galleryGrid = document.querySelector('.gallery-grid');
+    const dotsContainer = document.querySelector('.gallery-indicators');
+    
+    if (galleryGrid && dotsContainer) {
+        const items = galleryGrid.querySelectorAll('.gallery-item');
+        dotsContainer.innerHTML = ''; // Clear fallback dots
+        
+        // Dynamically create dots based on actual items
+        items.forEach((_, idx) => {
+            const dot = document.createElement('span');
+            dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => {
+                const itemWidth = items[0].offsetWidth + parseInt(window.getComputedStyle(galleryGrid).gap || 16);
+                galleryGrid.scrollTo({
+                    left: idx * itemWidth,
+                    behavior: 'smooth'
+                });
+            });
+            dotsContainer.appendChild(dot);
+        });
+        
+        // Listen to scroll to update active dot indicator
+        galleryGrid.addEventListener('scroll', () => {
+            const itemWidth = items[0].offsetWidth + parseInt(window.getComputedStyle(galleryGrid).gap || 16);
+            const scrollIndex = Math.round(galleryGrid.scrollLeft / itemWidth);
+            
+            dotsContainer.querySelectorAll('.dot').forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === scrollIndex);
+            });
+        });
+    }
+});

@@ -311,6 +311,8 @@
                     <div class="gallery-item wide"><img src="multimedia/IMG_5698.jpg" alt="Gallery 5"></div>
                     <div class="gallery-item"><img src="multimedia/IMG_5714.jpg" alt="Gallery 6"></div>
                 </div>
+                <!-- Premium Indicators for mobile slider -->
+                <div class="gallery-indicators"></div>
             </div>
         </section>
 
@@ -404,6 +406,17 @@
             <p data-i18n="footer.rights">&copy; 2026 Extreme Prime Tours SL. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Premium Fullscreen Lightbox Modal -->
+    <div id="lightboxModal" class="lightbox-modal">
+        <span class="lightbox-close">&times;</span>
+        <button class="lightbox-prev" aria-label="Previous image">&#10094;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Zoomed Gallery Image">
+        </div>
+        <button class="lightbox-next" aria-label="Next image">&#10095;</button>
+        <div class="lightbox-counter">1 / 6</div>
+    </div>
 
     <!-- JS -->
     <script src="js/translations.js"></script>
