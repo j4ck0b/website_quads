@@ -69,7 +69,7 @@ const translations = {
         "contact.form.sending": "Sending...",
         "contact.form.success": "Thank you for your message! We will contact you soon.",
 
-        "footer.desc": "The best way to explore Tenerife. Adventure, safety, and unforgettable memories with Extreme Prime Tours SL.",
+        "footer.desc": "The best way to explore Tenerife. Adventure, safety, and unforgettable memories with Prime Quads.",
         "footer.quicklinks": "Quick Links",
         "footer.legal": "Legal",
         "footer.privacy": "Privacy Policy",
@@ -146,7 +146,7 @@ const translations = {
         "contact.form.sending": "Wysyłanie...",
         "contact.form.success": "Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.",
 
-        "footer.desc": "Najlepszy sposób na odkrywanie Teneryfy. Przygoda, bezpieczeństwo i niezapomniane wspomnienia z Extreme Prime Tours SL.",
+        "footer.desc": "Najlepszy sposób na odkrywanie Teneryfy. Przygoda, bezpieczeństwo i niezapomniane wspomnienia z Prime Quads.",
         "footer.quicklinks": "Szybkie linki",
         "footer.legal": "Kwestie prawne",
         "footer.privacy": "Polityka Prywatności",
@@ -223,7 +223,7 @@ const translations = {
         "contact.form.sending": "Enviando...",
         "contact.form.success": "¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.",
 
-        "footer.desc": "La mejor manera de explorar Tenerife. Aventura, seguridad y recuerdos inolvidables con Extreme Prime Tours SL.",
+        "footer.desc": "La mejor manera de explorar Tenerife. Aventura, seguridad y recuerdos inolvidables con Prime Quads.",
         "footer.quicklinks": "Enlaces rápidos",
         "footer.legal": "Aspectos legales",
         "footer.privacy": "Política de Privacidad",
