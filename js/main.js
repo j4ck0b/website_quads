@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateBookingPrice() {
-        const totalPrice = (singleQuadsCount * 120) + (doubleQuadsCount * 150);
+        const totalPrice = (singleQuadsCount * 120) + (doubleQuadsCount * 140);
         const priceEl = document.getElementById('booking-total-price');
         if (priceEl) {
             priceEl.innerText = `€${totalPrice}`;
@@ -649,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = document.getElementById('booking-name').value;
             const phone = document.getElementById('booking-phone').value;
             const email = document.getElementById('booking-email').value;
-            const total = (singleQuadsCount * 120) + (doubleQuadsCount * 150);
+            const total = (singleQuadsCount * 120) + (doubleQuadsCount * 140);
 
             let message = "";
             if (currentLang === 'pl') {
