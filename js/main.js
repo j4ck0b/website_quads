@@ -163,6 +163,15 @@ function setLanguage(lang) {
     
     // Save preference
     localStorage.setItem('preferredLang', lang);
+
+    // Update URL parameter without page reload
+    const url = new URL(window.location.href);
+    if (lang === 'en') {
+        url.searchParams.delete('lang');
+    } else {
+        url.searchParams.set('lang', lang);
+    }
+    window.history.replaceState({}, '', url.toString() + window.location.hash);
     
     // Update active dropdown items state
     document.querySelectorAll('.lang-dropdown-item').forEach(btn => {
@@ -186,9 +195,11 @@ function selectLanguage(lang) {
     if (arrow) arrow.style.transform = 'rotate(0deg)';
 }
 
-// GSAP & Dropdown Listeners Init
 document.addEventListener('DOMContentLoaded', () => {
-    const savedLang = localStorage.getItem('preferredLang') || 'en';
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
+    const validLangs = ['en', 'pl', 'es'];
+    const savedLang = (urlLang && validLangs.includes(urlLang)) ? urlLang : (localStorage.getItem('preferredLang') || 'en');
     setLanguage(savedLang);
 
     // Dropdown Trigger Listener
