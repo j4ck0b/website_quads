@@ -116,6 +116,7 @@ if (bookingForm) {
 }
 
 // Translation Engine
+let activeRotatorIndex = 0;
 let currentLang = 'en';
 
 function setLanguage(lang) {
@@ -128,6 +129,19 @@ function setLanguage(lang) {
             element.innerText = translations[lang][key];
         }
     });
+
+    // Update currently active rotating text instantly
+    const rotatingTextEl = document.getElementById('hero-rotating-text');
+    if (rotatingTextEl) {
+        const rotatingKeys = [
+            "hero.rotate.1",
+            "hero.rotate.2",
+            "hero.rotate.3",
+            "hero.rotate.4",
+            "hero.rotate.5"
+        ];
+        rotatingTextEl.innerText = translations[lang][rotatingKeys[activeRotatorIndex]] || "Feel the Adrenaline";
+    }
 
     // Translate placeholder attributes
     document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
@@ -200,6 +214,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Register ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
+
+    // Dynamic Hero Text Rotator using GSAP
+    function initHeroTextRotator() {
+        const textEl = document.getElementById('hero-rotating-text');
+        if (!textEl) return;
+
+        const rotatingKeys = [
+            "hero.rotate.1",
+            "hero.rotate.2",
+            "hero.rotate.3",
+            "hero.rotate.4",
+            "hero.rotate.5"
+        ];
+
+        setInterval(() => {
+            gsap.to(textEl, {
+                opacity: 0,
+                y: -15,
+                scale: 0.97,
+                duration: 0.35,
+                ease: "power2.in",
+                onComplete: () => {
+                    activeRotatorIndex = (activeRotatorIndex + 1) % rotatingKeys.length;
+                    const nextKey = rotatingKeys[activeRotatorIndex];
+                    textEl.innerText = translations[currentLang][nextKey] || "Feel the Adrenaline";
+
+                    gsap.fromTo(textEl, 
+                        { opacity: 0, y: 15, scale: 0.97 },
+                        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.2)" }
+                    );
+                }
+            });
+        }, 4000);
+    }
+
+    initHeroTextRotator();
 
     // Hero Animation
     gsap.from('.hero-content h1', { opacity: 0, y: 50, duration: 1, delay: 0.2 });
