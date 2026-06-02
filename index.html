@@ -35,7 +35,7 @@
           "@id": "https://tenerifequadtours.com/#localbusiness",
           "name": "Extreme Prime Tours SL",
           "image": "https://tenerifequadtours.com/multimedia/prime_quads_logo.png",
-          "telephone": "+34000000000",
+          "telephone": "+34711075369",
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "Extreme Prime Tours SL, Las Américas",
@@ -375,21 +375,114 @@
                         </div>
                     </div>
                 </div>
-        <!-- Booking Section with Bokun Widget -->
+        <!-- Booking Section with WhatsApp Form -->
         <section id="booking" class="section" style="background: linear-gradient(180deg, var(--bg-dark) 0%, #111 100%); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
             <div class="container">
                 <h2 style="text-align: center; margin-bottom: 1.5rem;" data-i18n="booking.title">Book Your Teide Tour</h2>
                 <p style="text-align: center; color: var(--text-muted); max-width: 700px; margin: 0 auto 4rem auto; font-size: 1.1rem; line-height: 1.6;" data-i18n="booking.subtitle">
-                    Select a date, check real-time availability, and secure your quad adventure instantly using our secure booking system.
+                    Select a date, specify quad quantities, and book your adventure instantly via WhatsApp.
                 </p>
 
-                <div class="booking-widget-wrapper">
-                    <!-- Bokun Booking Widget Start -->
-                    <script type="text/javascript" src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=d4c16231-f1b3-4a13-adcb-472027b5b9c2" async></script>
-                    
-                    <div class="bokunWidget" data-src="https://widgets.bokun.io/online-sales/d4c16231-f1b3-4a13-adcb-472027b5b9c2/experience-calendar/1181026"></div>
-                    <noscript>Please enable javascript in your browser to book</noscript>
-                    <!-- Bokun Booking Widget End -->
+                <div class="booking-widget-wrapper" style="max-width: 800px;">
+                    <form id="whatsapp-booking-form" class="premium-booking-form">
+                        <!-- Date & Time Row -->
+                        <div class="form-row date-time-row">
+                            <div class="form-group">
+                                <label for="booking-date" data-i18n="booking.form.date">Select Date</label>
+                                <div class="input-icon-wrapper">
+                                    <span class="input-icon">📅</span>
+                                    <input type="date" id="booking-date" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="booking-time" data-i18n="booking.form.time">Preferred Time</label>
+                                <div class="input-icon-wrapper">
+                                    <span class="input-icon">🕒</span>
+                                    <select id="booking-time" required>
+                                        <option value="09:30" data-i18n="booking.form.time.morning">Morning Tour (09:30)</option>
+                                        <option value="14:30" data-i18n="booking.form.time.afternoon">Afternoon Tour (14:30)</option>
+                                        <option value="17:30" data-i18n="booking.form.time.sunset">Sunset Tour (17:30)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quads Selection Row -->
+                        <div class="form-group quads-selection-group">
+                            <label data-i18n="booking.form.quads">Select Quad Bikes</label>
+                            <div class="quads-counters-container">
+                                <!-- Single Quad Counter -->
+                                <div class="quad-counter-card">
+                                    <div class="quad-counter-info">
+                                        <span class="quad-type-title" data-i18n="booking.form.quads.single">Single Quad</span>
+                                        <span class="quad-type-desc" data-i18n="booking.form.quads.single.desc">1 driver (no passenger)</span>
+                                        <span class="quad-type-price" data-i18n="booking.form.quads.price">€120 / quad</span>
+                                    </div>
+                                    <div class="counter-control">
+                                        <button type="button" class="counter-btn minus" onclick="adjustQuad('single', -1)">−</button>
+                                        <span id="single-quad-count" class="counter-value">0</span>
+                                        <button type="button" class="counter-btn plus" onclick="adjustQuad('single', 1)">+</button>
+                                    </div>
+                                </div>
+
+                                <!-- Double Quad Counter -->
+                                <div class="quad-counter-card">
+                                    <div class="quad-counter-info">
+                                        <span class="quad-type-title" data-i18n="booking.form.quads.double">Double Quad</span>
+                                        <span class="quad-type-desc" data-i18n="booking.form.quads.double.desc">1 driver + 1 passenger</span>
+                                        <span class="quad-type-price" data-i18n="booking.form.quads.price_double">€150 / quad</span>
+                                    </div>
+                                    <div class="counter-control">
+                                        <button type="button" class="counter-btn minus" onclick="adjustQuad('double', -1)">−</button>
+                                        <span id="double-quad-count" class="counter-value">0</span>
+                                        <button type="button" class="counter-btn plus" onclick="adjustQuad('double', 1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Total Price Row -->
+                        <div class="total-price-display">
+                            <span class="total-label" data-i18n="booking.form.total">Total Price:</span>
+                            <span id="booking-total-price" class="total-value">€0</span>
+                        </div>
+
+                        <!-- Customer Details Row -->
+                        <div class="form-row customer-details-row">
+                            <div class="form-group">
+                                <label for="booking-name" data-i18n="booking.form.name">Full Name</label>
+                                <div class="input-icon-wrapper">
+                                    <span class="input-icon">👤</span>
+                                    <input type="text" id="booking-name" required placeholder="Your full name" data-i18n-placeholder="booking.form.name.placeholder">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="booking-phone" data-i18n="booking.form.phone">Phone Number</label>
+                                <div class="input-icon-wrapper">
+                                    <span class="input-icon">📞</span>
+                                    <input type="tel" id="booking-phone" required placeholder="e.g. +48 123 456 789" data-i18n-placeholder="booking.form.phone.placeholder">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label for="booking-email" data-i18n="booking.form.email">Email Address</label>
+                            <div class="input-icon-wrapper">
+                                <span class="input-icon">✉️</span>
+                                <input type="email" id="booking-email" required placeholder="Your email address" data-i18n-placeholder="booking.form.email.placeholder">
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-whatsapp-booking">
+                            <span class="whatsapp-btn-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.46h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                </svg>
+                            </span>
+                            <span data-i18n="booking.form.submit">Book via WhatsApp</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>

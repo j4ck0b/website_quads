@@ -595,4 +595,109 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // --- WhatsApp Booking Form Logic ---
+    let singleQuadsCount = 0;
+    let doubleQuadsCount = 0;
+
+    function adjustQuad(type, amount) {
+        if (type === 'single') {
+            singleQuadsCount = Math.max(0, singleQuadsCount + amount);
+            const countEl = document.getElementById('single-quad-count');
+            if (countEl) countEl.innerText = singleQuadsCount;
+        } else if (type === 'double') {
+            doubleQuadsCount = Math.max(0, doubleQuadsCount + amount);
+            const countEl = document.getElementById('double-quad-count');
+            if (countEl) countEl.innerText = doubleQuadsCount;
+        }
+        updateBookingPrice();
+    }
+
+    function updateBookingPrice() {
+        const totalPrice = (singleQuadsCount * 120) + (doubleQuadsCount * 150);
+        const priceEl = document.getElementById('booking-total-price');
+        if (priceEl) {
+            priceEl.innerText = `€${totalPrice}`;
+        }
+    }
+
+    // Expose functions globally for HTML onclick attributes
+    window.adjustQuad = adjustQuad;
+    window.updateBookingPrice = updateBookingPrice;
+
+    // Set minimum date to today
+    const bookingDateInput = document.getElementById('booking-date');
+    if (bookingDateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        bookingDateInput.setAttribute('min', today);
+    }
+
+    // Handle Form Submit
+    const whatsappBookingForm = document.getElementById('whatsapp-booking-form');
+    if (whatsappBookingForm) {
+        whatsappBookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (singleQuadsCount === 0 && doubleQuadsCount === 0) {
+                const errorMsg = translations[currentLang]["booking.form.validation.quads"] || "Please select at least 1 quad bike.";
+                showPremiumToast(errorMsg, "error");
+                return;
+            }
+
+            const date = document.getElementById('booking-date').value;
+            const time = document.getElementById('booking-time').value;
+            const name = document.getElementById('booking-name').value;
+            const phone = document.getElementById('booking-phone').value;
+            const email = document.getElementById('booking-email').value;
+            const total = (singleQuadsCount * 120) + (doubleQuadsCount * 150);
+
+            let message = "";
+            if (currentLang === 'pl') {
+                message = `Cześć Prime Quads! Chcę zarezerwować wycieczkę:\n\n` +
+                          `🏔️ Wycieczka: Teide National Park Quad Expedition\n` +
+                          `📅 Data: ${date}\n` +
+                          `🕒 Godzina: ${time}\n` +
+                          `🏍️ Quady pojedyncze: ${singleQuadsCount} (1-osobowe)\n` +
+                          `🏍️ Quady podwójne: ${doubleQuadsCount} (2-osobowe)\n` +
+                          `💰 Łączna kwota: €${total}\n\n` +
+                          `Dane kontaktowe:\n` +
+                          `👤 Imię i nazwisko: ${name}\n` +
+                          `📞 Telefon: ${phone}\n` +
+                          `✉️ E-mail: ${email}`;
+            } else if (currentLang === 'es') {
+                message = `¡Hola Prime Quads! Quiero reservar una excursión:\n\n` +
+                          `🏔️ Excursión: Teide National Park Quad Expedition\n` +
+                          `📅 Fecha: ${date}\n` +
+                          `🕒 Horario: ${time}\n` +
+                          `🏍️ Quads individuales: ${singleQuadsCount} (1 persona)\n` +
+                          `🏍️ Quads dobles: ${doubleQuadsCount} (2 personas)\n` +
+                          `💰 Precio total: €${total}\n\n` +
+                          `Datos de contacto:\n` +
+                          `👤 Nombre completo: ${name}\n` +
+                          `📞 Teléfono: ${phone}\n` +
+                          `✉️ Email: ${email}`;
+            } else {
+                message = `Hello Prime Quads! I would like to book a tour:\n\n` +
+                          `🏔️ Tour: Teide National Park Quad Expedition\n` +
+                          `📅 Date: ${date}\n` +
+                          `🕒 Time: ${time}\n` +
+                          `🏍️ Single Quads: ${singleQuadsCount} (1 person)\n` +
+                          `🏍️ Double Quads: ${doubleQuadsCount} (2 people)\n` +
+                          `💰 Total Price: €${total}\n\n` +
+                          `Contact info:\n` +
+                          `👤 Full Name: ${name}\n` +
+                          `📞 Phone: ${phone}\n` +
+                          `✉️ Email: ${email}`;
+            }
+
+            const encodedText = encodeURIComponent(message);
+            const whatsappNumber = "34711075369"; // Business WhatsApp Number
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+
+            window.open(whatsappUrl, '_blank');
+
+            const redirectingMsg = currentLang === 'pl' ? 'Przekierowanie do WhatsApp...' : (currentLang === 'es' ? 'Redirigiendo a WhatsApp...' : 'Redirecting to WhatsApp...');
+            showPremiumToast(redirectingMsg, 'success');
+        });
+    }
 });
