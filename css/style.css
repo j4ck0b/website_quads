@@ -823,12 +823,401 @@ footer {
     }
 }
 
-/* Reviews Styling */
-.review-card {
+/* Reviews & Features Modern Grid Refactoring */
+.features {
+    background: var(--bg-card);
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid transparent;
     transition: var(--transition);
 }
+
+.feature-item:hover {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 102, 0, 0.15);
+    transform: translateY(-4px);
+}
+
+.feature-icon-wrapper {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.feature-item:hover .feature-icon-wrapper {
+    transform: scale(1.1);
+}
+
+.feature-item p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.feature-item span.feature-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    opacity: 0.75;
+    font-style: italic;
+    margin-top: -0.25rem;
+}
+
+/* Premium Google Reviews Showcase */
+.booking-reviews-section {
+    border-top: 1px solid var(--glass-border);
+    padding-top: 5rem;
+}
+
+.reviews-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.reviews-badge {
+    background: rgba(255, 102, 0, 0.1);
+    color: var(--primary);
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: inline-block;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 102, 0, 0.15);
+}
+
+.reviews-title {
+    font-size: 2.5rem;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.reviews-subheader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.reviews-rating-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1.15rem;
+    color: #ffcc00;
+    font-weight: 600;
+}
+
+.reviews-count {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.review-card {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    padding: 2.25rem 2rem;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
 .review-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(255, 102, 0, 0.3) !important;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 102, 0, 0.08);
+    border-color: rgba(255, 102, 0, 0.35) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 102, 0, 0.1);
 }
+
+.review-author-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.review-author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.review-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, #ff8c00 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(255, 102, 0, 0.2);
+}
+
+.review-author-name {
+    color: #fff;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.review-verified {
+    color: #4cd137;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.review-quote-icon {
+    font-size: 1.5rem;
+    opacity: 0.15;
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+    user-select: none;
+}
+
+.review-stars {
+    color: #ffcc00;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.review-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* Tour Section Grid Extracts */
+.tour-gallery-showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.thumbnail-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.75rem;
+}
+
+.tour-details-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.tour-pricing-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Contact Section Grid Extracts */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.contact-info-card {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    padding: 2.5rem;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: left;
+}
+
+.contact-form-container {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--glass-border);
+    padding: 2.5rem;
+    border-radius: 16px;
+    text-align: left;
+}
+
+/* Premium Glassmorphic Review CTA Button */
+.btn-review-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    background: rgba(255, 102, 0, 0.08);
+    border: 1px solid rgba(255, 102, 0, 0.35);
+    color: #fff;
+    padding: 0.85rem 2.2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-review-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.btn-review-cta:hover::before {
+    left: 100%;
+}
+
+.btn-review-cta:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 102, 0, 0.35), 0 0 15px rgba(255, 102, 0, 0.15);
+}
+
+.btn-review-cta svg {
+    stroke: var(--primary);
+    transition: var(--transition);
+}
+
+.btn-review-cta:hover svg {
+    stroke: #fff;
+    transform: scale(1.15) rotate(10deg);
+}
+
+/* Premium Mobile Media Query Enhancements */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1.25rem !important; /* Save horizontal space on narrow screens */
+    }
+    
+    .booking-widget-wrapper {
+        padding: 1.5rem 1rem !important;
+        border-radius: 12px;
+    }
+    
+    .features {
+        padding: 4rem 0 !important;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.75rem !important;
+        margin-bottom: 3.5rem !important;
+    }
+    
+    .feature-item {
+        padding: 1.25rem 1rem !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+        border-color: var(--glass-border) !important;
+        gap: 0.5rem !important;
+    }
+    
+    .booking-reviews-section {
+        padding-top: 3.5rem !important;
+    }
+    
+    .reviews-header {
+        margin-bottom: 2.25rem !important;
+    }
+    
+    .reviews-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .reviews-rating-bar {
+        font-size: 1rem !important;
+        flex-direction: column !important;
+        gap: 0.35rem !important;
+    }
+    
+    .reviews-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+    
+    .review-card {
+        padding: 1.5rem !important;
+    }
+    
+    .thumbnail-row {
+        gap: 0.5rem !important;
+    }
+    
+    .tour-pricing-action {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        text-align: center !important;
+        gap: 1.25rem !important;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+    
+    .contact-info-card, .contact-form-container {
+        padding: 1.75rem 1.25rem !important;
+        border-radius: 12px !important;
+    }
+}
+
