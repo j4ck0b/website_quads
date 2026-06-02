@@ -822,3 +822,13 @@ footer {
         gap: 2.5rem !important;
     }
 }
+
+/* Reviews Styling */
+.review-card {
+    transition: var(--transition);
+}
+.review-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 102, 0, 0.3) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 102, 0, 0.08);
+}
