@@ -1,7 +1,7 @@
 const translations = {
     en: {
-        "seo.title": "Premium Teide Quad Tours Tenerife | Extreme Prime Tours SL",
-        "seo.description": "Experience the ultimate off-road adventure in Tenerife. Guided Mount Teide quad tours departing from Las Américas. Secure booking, premium 550cc XL quads, 3rd party liability insurance included.",
+        "seo.title": "Prime Quads Tenerife | Premium Mount Teide Quad Tours",
+        "seo.description": "Experience the ultimate off-road adventure with Prime Quads Tenerife. Guided Mount Teide quad tours departing from Las Américas. Premium 550cc XL quads.",
         "nav.tour": "The Tour",
         "nav.booking": "Book Now",
         "nav.about": "About Us",
@@ -113,8 +113,8 @@ const translations = {
         "footer.rights": "© 2026 Extreme Prime Tours SL. All rights reserved."
     },
     pl: {
-        "seo.title": "Wycieczki na Quadach Teneryfa Teide | Extreme Prime Tours SL",
-        "seo.description": "Przeżyj niesamowitą przygodę na quadach na Teneryfie. Wyprawy z przewodnikiem do Parku Narodowego Teide z Las Américas. Bezpieczna rezerwacja, quady premium 550cc XL, ubezpieczenie OC.",
+        "seo.title": "Prime Quads Tenerife | Wycieczki na Quadach Teneryfa Teide",
+        "seo.description": "Odkryj Park Narodowy wulkanu Teide z Prime Quads Tenerife. Niezapomniane wycieczki na quadach z Las Américas. Sprawdź cennik i zarezerwuj wyprawę online.",
         "nav.tour": "Wycieczka",
         "nav.booking": "Zarezerwuj",
         "nav.about": "O nas",
@@ -226,8 +226,8 @@ const translations = {
         "footer.rights": "© 2026 Extreme Prime Tours SL. Wszelkie prawa zastrzeżone."
     },
     es: {
-        "seo.title": "Excursiones en Quad al Teide Tenerife | Extreme Prime Tours SL",
-        "seo.description": "Vive la aventura definitiva en quad en Tenerife. Excursiones guiadas al Parque Nacional del Teide desde Las Américas. Reserva segura, quads premium de 550cc XL y seguro a terceros incluido.",
+        "seo.title": "Prime Quads Tenerife | Excursiones en Quad al Teide Tenerife",
+        "seo.description": "Vive la aventura definitiva en quad en Tenerife con Prime Quads Tenerife. Excursiones guiadas al Parque Nacional del Teide desde Las Américas. ¡Reserva ya online!",
         "nav.tour": "El Tour",
         "nav.booking": "Reservar",
         "nav.about": "Nosotros",
