@@ -137,6 +137,9 @@
     }
     </script>
     
+    <!-- Dynamic FAQ Page JSON-LD Structured Data for Generic Search Snippets -->
+    <script id="faq-schema" type="application/ld+json"></script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -153,7 +156,7 @@
     <nav id="navbar">
         <div class="container nav-content">
             <a href="#" class="logo">
-                <img src="multimedia/prime_quads_logo.png" alt="Prime Quads Logo" style="height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(255, 102, 0, 0.25)); transition: var(--transition);">
+                <img src="multimedia/prime_quads_logo.png" alt="Prime Quads Tenerife - Mount Teide Quad Tours & Excursions" style="height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(255, 102, 0, 0.25)); transition: var(--transition);">
             </a>
             <ul class="nav-links">
                 <li><a href="#tour" data-i18n="nav.tour">The Tour</a></li>
@@ -178,7 +181,7 @@
 
     <header class="hero">
         <div class="hero-bg">
-            <img src="multimedia/hero_sunset_coast.jpg" alt="Quad Tour Tenerife Sunset">
+            <img src="multimedia/hero_sunset_coast.jpg" alt="Mount Teide Quad Excursions Tenerife - Sunset Off-Road Tour - Prime Quads">
         </div>
         <div class="container hero-content">
             <h1 style="min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
@@ -320,26 +323,26 @@
                     <!-- Left: Interactive Gallery Showcase -->
                     <div class="tour-gallery-showcase">
                         <div class="main-image-viewport">
-                            <img id="tour-main-img" src="multimedia/IMG_5690.jpg" alt="Teide Quad Tour">
+                            <img id="tour-main-img" src="multimedia/IMG_5690.jpg" alt="Mount Teide Quad Excursions - 550cc XL Quad Bike Tour Tenerife - Prime Quads">
                         </div>
                         <div class="thumbnail-row">
                             <div class="thumb-item active" onclick="switchMainImage('multimedia/IMG_5690.jpg', this)">
-                                <img src="multimedia/IMG_5690.jpg" alt="Off-road Quad">
+                                <img src="multimedia/IMG_5690.jpg" alt="Quady na Teneryfie - Premium Off-road Quad Tour">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_3179.jpg', this)">
-                                <img src="multimedia/IMG_3179.jpg" alt="Sunset Forest">
+                                <img src="multimedia/IMG_3179.jpg" alt="Teide Quad Tour Sunset Forest Corona Forestal">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_5698.jpg', this)">
-                                <img src="multimedia/IMG_5698.jpg" alt="Teide Group">
+                                <img src="multimedia/IMG_5698.jpg" alt="Teide Quad Excursion Group Photo - Prime Quads Tenerife">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_5714.jpg', this)">
-                                <img src="multimedia/IMG_5714.jpg" alt="Teide Backdrop">
+                                <img src="multimedia/IMG_5714.jpg" alt="Mount Teide Quad Tour Stop at Sunset - Las Americas">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_3303.jpg', this)">
-                                <img src="multimedia/IMG_3303.jpg" alt="Volcanic Trail">
+                                <img src="multimedia/IMG_3303.jpg" alt="Volcanic Trail Quad Excursion Teide - Off-road riding">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_3258.jpg', this)">
-                                <img src="multimedia/IMG_3258.jpg" alt="Sunset Panorama">
+                                <img src="multimedia/IMG_3258.jpg" alt="Sunset Panorama Quad Biking Tenerife Above Chmury">
                             </div>
                         </div>
 
@@ -577,6 +580,71 @@
 
                 <!-- Premium Indicators for mobile slider -->
                 <div class="gallery-indicators"></div>
+            </div>
+        </section>
+
+        <!-- Rich SEO FAQ Section -->
+        <section id="faq" class="section" style="background: linear-gradient(180deg, #000 0%, var(--bg-dark) 100%); border-top: 1px solid var(--glass-border);">
+            <div class="container">
+                <div class="faq-header" style="text-align: center; margin-bottom: 4rem;">
+                    <span class="faq-badge" style="background: rgba(255, 102, 0, 0.1); color: var(--primary); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; display: inline-block; margin-bottom: 1rem;">FAQ</span>
+                    <h2 data-i18n="faq.title" style="margin-bottom: 0.5rem; font-size: 2.5rem; font-weight: 800; color: #fff;">Frequently Asked Questions</h2>
+                    <p data-i18n="faq.subtitle" style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;">Got questions about our quad tours and Teide excursions? Here is what you need to know.</p>
+                </div>
+                
+                <div class="faq-accordion-container" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- FAQ Item 1 -->
+                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                        <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
+                            <strong data-i18n="faq.q1" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">What is the best quad excursion in Tenerife?</strong>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                        </button>
+                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                            <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                                <p data-i18n="faq.a1" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 2 -->
+                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                        <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
+                            <strong data-i18n="faq.q2" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">Do I need a driver's license for a Teide quad tour?</strong>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                        </button>
+                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                            <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                                <p data-i18n="faq.a2" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 3 -->
+                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                        <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
+                            <strong data-i18n="faq.q3" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">What should I wear for a quad excursion to Mount Teide?</strong>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                        </button>
+                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                            <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                                <p data-i18n="faq.a3" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 4 -->
+                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                        <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
+                            <strong data-i18n="faq.q4" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">Are the quad excursions suitable for beginners?</strong>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                        </button>
+                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                            <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                                <p data-i18n="faq.a4" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 

@@ -119,6 +119,52 @@ if (bookingForm) {
 let activeRotatorIndex = 0;
 let currentLang = 'en';
 
+function updateFAQSchema(lang) {
+    const faqSchemaEl = document.getElementById('faq-schema');
+    if (!faqSchemaEl || !translations[lang]) return;
+    
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": translations[lang]["faq.q1"] || "",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": translations[lang]["faq.a1"] || ""
+                }
+            },
+            {
+                "@type": "Question",
+                "name": translations[lang]["faq.q2"] || "",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": translations[lang]["faq.a2"] || ""
+                }
+            },
+            {
+                "@type": "Question",
+                "name": translations[lang]["faq.q3"] || "",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": translations[lang]["faq.a3"] || ""
+                }
+            },
+            {
+                "@type": "Question",
+                "name": translations[lang]["faq.q4"] || "",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": translations[lang]["faq.a4"] || ""
+                }
+            }
+        ]
+    };
+    
+    faqSchemaEl.textContent = JSON.stringify(schema, null, 2);
+}
+
 function setLanguage(lang) {
     currentLang = lang;
     
@@ -160,6 +206,21 @@ function setLanguage(lang) {
         metaDesc.setAttribute('content', translations[lang]["seo.description"]);
     }
     document.documentElement.lang = lang;
+    
+    // Update dynamic JSON-LD FAQ Schema for SEO snippets
+    updateFAQSchema(lang);
+
+    // Reset open FAQ panels on language switch to prevent layout clipping
+    document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+        const panel = item.querySelector('.faq-panel');
+        if (panel) panel.style.maxHeight = null;
+        const icon = item.querySelector('.faq-icon');
+        if (icon) {
+            icon.textContent = '+';
+            icon.style.transform = 'rotate(0deg)';
+        }
+    });
     
     // Save preference
     localStorage.setItem('preferredLang', lang);
@@ -331,6 +392,41 @@ document.addEventListener('DOMContentLoaded', () => {
             scale: 0.8,
             duration: 0.6,
             delay: i % 4 * 0.1
+    // Initialize FAQ Accordion Trigger
+    const triggers = document.querySelectorAll('.faq-trigger');
+    triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            const item = trigger.parentElement;
+            const panel = trigger.nextElementSibling;
+            const icon = trigger.querySelector('.faq-icon');
+            const isOpen = item.classList.contains('active');
+            
+            // Close all other panels
+            document.querySelectorAll('.faq-item').forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                    const otherPanel = otherItem.querySelector('.faq-panel');
+                    if (otherPanel) otherPanel.style.maxHeight = null;
+                    const otherIcon = otherItem.querySelector('.faq-icon');
+                    if (otherIcon) {
+                        otherIcon.textContent = '+';
+                        otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+            
+            // Toggle current panel
+            if (isOpen) {
+                item.classList.remove('active');
+                panel.style.maxHeight = null;
+                icon.textContent = '+';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                item.classList.add('active');
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                icon.textContent = '−';
+                icon.style.transform = 'rotate(180deg)';
+            }
         });
     });
 });

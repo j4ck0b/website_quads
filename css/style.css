@@ -1487,4 +1487,35 @@ footer {
     }
 }
 
+/* --- Rich FAQ Accordion Section --- */
+#faq {
+    padding: 6rem 0;
+}
+
+.faq-item {
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq-item:hover {
+    border-color: rgba(255, 102, 0, 0.3) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 102, 0, 0.05);
+}
+
+.faq-item.active {
+    border-color: rgba(255, 102, 0, 0.5) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 102, 0, 0.1);
+}
+
+.faq-trigger {
+    transition: background 0.3s ease;
+}
+
+.faq-trigger:hover strong {
+    color: var(--primary) !important;
+}
+
+.faq-panel p {
+    margin: 0;
+}
+
 
