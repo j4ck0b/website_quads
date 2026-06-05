@@ -214,7 +214,7 @@ function setLanguage(lang) {
     document.querySelectorAll('.faq-item').forEach(item => {
         item.classList.remove('active');
         const panel = item.querySelector('.faq-panel');
-        if (panel) panel.style.maxHeight = null;
+        if (panel) panel.style.maxHeight = '0px';
         const icon = item.querySelector('.faq-icon');
         if (icon) {
             icon.textContent = '+';
@@ -262,6 +262,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const validLangs = ['en', 'pl', 'es'];
     const savedLang = (urlLang && validLangs.includes(urlLang)) ? urlLang : (localStorage.getItem('preferredLang') || 'en');
     setLanguage(savedLang);
+
+    // Robust Initialization of FAQ Accordion Trigger
+    try {
+        const triggers = document.querySelectorAll('.faq-trigger');
+        triggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const item = trigger.parentElement;
+                const panel = trigger.nextElementSibling;
+                const icon = trigger.querySelector('.faq-icon');
+                const isOpen = item.classList.contains('active');
+                
+                // Close all other panels
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        const otherPanel = otherItem.querySelector('.faq-panel');
+                        if (otherPanel) otherPanel.style.maxHeight = '0px';
+                        const otherIcon = otherItem.querySelector('.faq-icon');
+                        if (otherIcon) {
+                            otherIcon.textContent = '+';
+                            otherIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                });
+                
+                // Toggle current panel
+                if (isOpen) {
+                    item.classList.remove('active');
+                    panel.style.maxHeight = '0px';
+                    icon.textContent = '+';
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    item.classList.add('active');
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                    icon.textContent = '−';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+    } catch (e) {
+        console.error("Failed to initialize FAQ accordion triggers", e);
+    }
 
     // Dropdown Trigger Listener
     const trigger = document.getElementById('langTrigger');
@@ -395,42 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initialize FAQ Accordion Trigger
-    const triggers = document.querySelectorAll('.faq-trigger');
-    triggers.forEach(trigger => {
-        trigger.addEventListener('click', () => {
-            const item = trigger.parentElement;
-            const panel = trigger.nextElementSibling;
-            const icon = trigger.querySelector('.faq-icon');
-            const isOpen = item.classList.contains('active');
-            
-            // Close all other panels
-            document.querySelectorAll('.faq-item').forEach(otherItem => {
-                if (otherItem !== item) {
-                    otherItem.classList.remove('active');
-                    const otherPanel = otherItem.querySelector('.faq-panel');
-                    if (otherPanel) otherPanel.style.maxHeight = null;
-                    const otherIcon = otherItem.querySelector('.faq-icon');
-                    if (otherIcon) {
-                        otherIcon.textContent = '+';
-                        otherIcon.style.transform = 'rotate(0deg)';
-                    }
-                }
-            });
-            
-            // Toggle current panel
-            if (isOpen) {
-                item.classList.remove('active');
-                panel.style.maxHeight = null;
-                icon.textContent = '+';
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                item.classList.add('active');
-                panel.style.maxHeight = panel.scrollHeight + "px";
-                icon.textContent = '−';
-                icon.style.transform = 'rotate(180deg)';
-            }
-        });
     });
 });
 
