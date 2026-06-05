@@ -224,15 +224,6 @@ function setLanguage(lang) {
     
     // Save preference
     localStorage.setItem('preferredLang', lang);
-
-    // Update URL parameter without page reload
-    const url = new URL(window.location.href);
-    if (lang === 'en') {
-        url.searchParams.delete('lang');
-    } else {
-        url.searchParams.set('lang', lang);
-    }
-    window.history.replaceState({}, '', url.toString() + window.location.hash);
     
     // Update active dropdown items state
     document.querySelectorAll('.lang-dropdown-item').forEach(btn => {
@@ -260,11 +251,14 @@ function selectLanguage(lang) {
 window.selectLanguage = selectLanguage;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlLang = urlParams.get('lang');
-    const validLangs = ['en', 'pl', 'es'];
-    const savedLang = (urlLang && validLangs.includes(urlLang)) ? urlLang : (localStorage.getItem('preferredLang') || 'en');
-    setLanguage(savedLang);
+    const path = window.location.pathname;
+    let detectedLang = 'en';
+    if (path.includes('/pl/')) {
+        detectedLang = 'pl';
+    } else if (path.includes('/es/')) {
+        detectedLang = 'es';
+    }
+    setLanguage(detectedLang);
 
     // Robust Initialization of FAQ Accordion Trigger
     try {
