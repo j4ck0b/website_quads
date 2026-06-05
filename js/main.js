@@ -392,6 +392,9 @@ document.addEventListener('DOMContentLoaded', () => {
             scale: 0.8,
             duration: 0.6,
             delay: i % 4 * 0.1
+        });
+    });
+
     // Initialize FAQ Accordion Trigger
     const triggers = document.querySelectorAll('.faq-trigger');
     triggers.forEach(trigger => {
