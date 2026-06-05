@@ -1,7 +1,7 @@
 const translations = {
     en: {
-        "seo.title": "Teide Quad Excursions Tenerife | Mount Teide Quad Tours | Prime Quads",
-        "seo.description": "Experience the ultimate off-road adventure with Prime Quads Tenerife. Guided Mount Teide quad excursions and tours departing from Las Américas. Book your 550cc XL quad tour today!",
+        "seo.title": "Teide Quad Tour Tenerife | #1 Excursion from Las Américas",
+        "seo.description": "⭐ 4.9/5 (480+ reviews) | Premium 550cc quad tours to Mount Teide. Small groups, sunset & afternoon tours. Book instantly via WhatsApp. From €120.",
         "nav.tour": "The Tour",
         "nav.booking": "Book Now",
         "nav.about": "About Us",
@@ -124,8 +124,8 @@ const translations = {
         "faq.a4": "Yes! Our premium 550cc XL quad bikes are fully automatic, very stable, and easy to ride. Before every tour, our expert guides provide a comprehensive safety briefing and training to ensure you feel 100% confident."
     },
     pl: {
-        "seo.title": "Quady na Teneryfie | Wycieczki na Quadach Teide | Prime Quads",
-        "seo.description": "Odkryj wulkan Teide z Prime Quads Tenerife. Niezapomniane wycieczki i wyprawy na quadach na Teneryfie z Las Américas. Zarezerwuj quady na Teneryfie online!",
+        "seo.title": "Quady na Teneryfie | Wycieczka na Teide z Las Américas | Prime Quads",
+        "seo.description": "⭐ Ocena 4.9/5 (480+ opinii) | Wyprawy na quadach 550cc na wulkan Teide. Kameralne grupy, zachody słońca. Zarezerwuj przez WhatsApp od €120.",
         "nav.tour": "Wycieczka",
         "nav.booking": "Zarezerwuj",
         "nav.about": "O nas",
@@ -248,8 +248,8 @@ const translations = {
         "faq.a4": "Tak! Nasze quady premium 550cc XL posiadają w pełni automatyczną skrzynię biegów, są niezwykle stabilne i proste w obsłudze. Przed startem każdy uczestnik przechodzi szczegółowe szkolenie z zasad bezpieczeństwa i techniki jazdy."
     },
     es: {
-        "seo.title": "Excursiones en Quad Tenerife | Tours al Teide | Prime Quads",
-        "seo.description": "Disfruta de las mejores excursiones en quad en Tenerife al Teide con Prime Quads. Rutas guiadas en quad de 550cc XL desde Las Américas. ¡Reserva online!",
+        "seo.title": "Excursiones en Quad Tenerife | Tour al Teide desde Las Américas | Prime Quads",
+        "seo.description": "⭐ 4.9/5 (480+ opiniones) | Tours en quad de 550cc al Teide. Grupos reducidos, excursiones al atardecer. Reserva por WhatsApp desde €120.",
         "nav.tour": "El Tour",
         "nav.booking": "Reservar",
         "nav.about": "Nosotros",
