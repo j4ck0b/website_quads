@@ -444,8 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
             delay: i % 4 * 0.1
         });
     });
-
-    });
 });
 
 // Switch Main Image in Gallery Showcase
