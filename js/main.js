@@ -256,6 +256,9 @@ function selectLanguage(lang) {
     if (arrow) arrow.style.transform = 'rotate(0deg)';
 }
 
+// Expose globally for inline HTML onclick attributes on mobile/Safari
+window.selectLanguage = selectLanguage;
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const urlLang = urlParams.get('lang');
@@ -317,6 +320,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (arrow) {
                 arrow.style.transform = menu.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
             }
+        });
+        
+        // Prevent clicks inside the dropdown from bubbling to document and closing it on mobile
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
         
         // Close dropdown when clicking outside
