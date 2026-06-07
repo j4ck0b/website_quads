@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /seo_audit_primequads.html
 
 Sitemap: https://primequads.com/sitemap.xml

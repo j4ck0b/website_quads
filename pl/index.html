@@ -8,13 +8,15 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://primequads.com/pl/">
     
-    <!-- Multilingual Alternate SEO Links -->
+                    <!-- Multilingual Alternate SEO Links -->
     <link rel="alternate" hreflang="en" href="https://primequads.com/">
     <link rel="alternate" hreflang="pl" href="https://primequads.com/pl/">
     <link rel="alternate" hreflang="es" href="https://primequads.com/es/">
     <link rel="alternate" hreflang="x-default" href="https://primequads.com/">
-    <!-- Dynamic SVG Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🏍️%3C/text%3E%3C/svg%3E">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+
 
     <!-- Open Graph / Facebook / Instagram -->
     <meta property="og:type" content="website">
@@ -181,7 +183,46 @@
     </script>
     
     <!-- Dynamic FAQ Page JSON-LD Structured Data for Generic Search Snippets -->
-    <script id="faq-schema" type="application/ld+json"></script>
+    <script id="faq-schema" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the best quad excursion in Tenerife?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Teide National Park Quad Expedition is highly rated as the best quad excursion in Tenerife. Departing from Las Américas, it takes you on a spectacular route through the pine forests of Corona Forestal up to the volcanic lava landscapes of Mount Teide National Park, over 2,000 meters above sea level."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a driver's license for a Teide quad tour?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, a valid driver's license (Category B) is mandatory for driving a quad bike on public roads in Spain. It must be valid for at least 1 year. Passengers do not need a license but must be at least 7 years old."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I wear for a quad excursion to Mount Teide?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We recommend wearing comfortable sportswear and closed-toe shoes (mandatory, no sandals). Since the tour ascends to high altitudes where temperatures drop, we provide warm windproof jackets during the excursion."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the quad excursions suitable for beginners?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Our premium 550cc XL quad bikes are fully automatic, very stable, and easy to ride. Before every tour, our expert guides provide a comprehensive safety briefing and training to ensure you feel 100% confident."
+      }
+    }
+  ]
+}
+</script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -199,12 +240,13 @@
     <nav id="navbar">
         <div class="container nav-content">
             <a href="#" class="logo">
-                <img src="../multimedia/prime_quads_logo.png" alt="Prime Quads Tenerife - Mount Teide Quad Tours & Excursions" style="height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(255, 102, 0, 0.25)); transition: var(--transition);">
+                <img src="../multimedia/prime_quads_logo.png" alt="Prime Quads Teneryfa - Wycieczki i wyprawy na quadach na wulkan Teide" data-i18n-alt="img.alt.logo" style="height: 46px; width: auto; filter: drop-shadow(0 0 8px rgba(255, 102, 0, 0.25)); transition: var(--transition);">
             </a>
             <ul class="nav-links">
                 <li><a href="#tour" data-i18n="nav.tour">Wycieczka</a></li>
                 <li><a href="#booking" data-i18n="nav.booking">Zarezerwuj</a></li>
                 <li><a href="#gallery" data-i18n="nav.gallery">Galeria</a></li>
+                <li><a href="../guides.html" data-i18n="nav.guides">Poradniki</a></li>
                 <li><a href="#contact" data-i18n="nav.contact">Kontakt</a></li>
             </ul>
             <div class="lang-dropdown-container">
@@ -224,12 +266,12 @@
 
     <header class="hero">
         <div class="hero-bg">
-            <img src="../multimedia/hero_sunset_coast.jpg" alt="Mount Teide Quad Excursions Tenerife - Sunset Off-Road Tour - Prime Quads">
+            <img src="../multimedia/hero_sunset_coast.jpg" alt="Wyprawa na quadach na Teide Teneryfa - Off-road o zachodzie słońca - Prime Quads" data-i18n-alt="img.alt.hero">
         </div>
         <div class="container hero-content">
             <h1 style="min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
                 <span style="font-size: 1.25rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 0.25rem;" data-i18n="hero.title.badge">Wyprawa Quadami na Teide</span>
-                <span id="hero-rotating-text" style="display: block; line-height: 1.1; color: #fff; text-shadow: 0 0 30px rgba(0,0,0,0.5);">Feel the Adrenaline</span>
+                <span id="hero-rotating-text" data-i18n="hero.rotate.1" style="display: block; line-height: 1.1; color: #fff; text-shadow: 0 0 30px rgba(0,0,0,0.5);">Quady na Teneryfie</span>
             </h1>
             <p data-i18n="hero.subtitle">Niezapomniana wyprawa i wycieczka na quadach do Parku Narodowego Teide ze startem w Las Américas. Odkryj quady na Teneryfie i jedź ponad chmurami.</p>
             <div class="hero-btns">
@@ -242,7 +284,7 @@
     <main>
         <section class="features">
             <div class="container">
-                <h2 class="sr-only">Our Premium Features & Off-Road Security</h2>
+                <h2 class="sr-only" data-i18n="features.heading">Nasze wyjątkowe zalety i bezpieczeństwo off-road</h2>
                 <!-- Features Grid -->
                 <div class="features-grid">
                     <div class="feature-item">
@@ -361,26 +403,26 @@
                     <!-- Left: Interactive Gallery Showcase -->
                     <div class="tour-gallery-showcase">
                         <div class="main-image-viewport">
-                            <img id="tour-main-img" src="../multimedia/IMG_5690.jpg" alt="Mount Teide Quad Excursions - 550cc XL Quad Bike Tour Tenerife - Prime Quads">
+                            <img id="tour-main-img" src="../multimedia/IMG_5690.jpg" alt="Wycieczki quadem na Teide - Quad Tour 550cc XL na Teneryfie - Prime Quads" data-i18n-alt="img.alt.tour_main">
                         </div>
                         <div class="thumbnail-row">
                             <div class="thumb-item active" onclick="switchMainImage('multimedia/IMG_5690.jpg', this)">
-                                <img src="../multimedia/IMG_5690.jpg" alt="Quady na Teneryfie - Premium Off-road Quad Tour">
+                                <img src="../multimedia/IMG_5690.jpg" alt="Para jadąca na podwójnym quadzie premium na trasie off-road na Teneryfie" data-i18n-alt="img.alt.img_5690">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_3179.jpg', this)">
-                                <img src="../multimedia/IMG_3179.jpg" alt="Teide Quad Tour Sunset Forest Corona Forestal">
+                                <img src="../multimedia/IMG_3179.jpg" alt="Zachód słońca nad lasem sosnowym podczas wycieczki off-road na quadach na Teneryfie" data-i18n-alt="img.alt.img_3179">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_5698.jpg', this)">
-                                <img src="../multimedia/IMG_5698.jpg" alt="Teide Quad Excursion Group Photo - Prime Quads Tenerife">
+                                <img src="../multimedia/IMG_5698.jpg" alt="Zdjęcie grupowe z wycieczki na Teide z pięknym górskim krajobrazem" data-i18n-alt="img.alt.img_5698">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_5714.jpg', this)">
-                                <img src="../multimedia/IMG_5714.jpg" alt="Mount Teide Quad Tour Stop at Sunset - Las Americas">
+                                <img src="../multimedia/IMG_5714.jpg" alt="Uczestnicy wycieczki na quadach 550cc XL zatrzymujący się na sesję zdjęciową" data-i18n-alt="img.alt.img_5714">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_3303.jpg', this)">
-                                <img src="../multimedia/IMG_3303.jpg" alt="Volcanic Trail Quad Excursion Teide - Off-road riding">
+                                <img src="../multimedia/IMG_3303.jpg" alt="Przejazd quadem wzdłuż wulkanicznych szlaków w Parku Narodowym Teide" data-i18n-alt="img.alt.img_3303">
                             </div>
                             <div class="thumb-item" onclick="switchMainImage('multimedia/IMG_3258.jpg', this)">
-                                <img src="../multimedia/IMG_3258.jpg" alt="Sunset Panorama Quad Biking Tenerife Above Chmury">
+                                <img src="../multimedia/IMG_3258.jpg" alt="Widok na zachód słońca ze szczytu Teide ponad chmurami podczas jazdy quadem" data-i18n-alt="img.alt.img_3258">
                             </div>
                         </div>
 
@@ -577,29 +619,29 @@
                 
                 <!-- Desktop Masonry Grid -->
                 <div class="gallery-grid">
-                    <div class="gallery-item wide"><img src="../multimedia/IMG_3258.jpg" alt="Panoramic sunset views over the clouds during a Mount Teide quad tour in Tenerife"></div>
-                    <div class="gallery-item"><img src="../multimedia/IMG_3303.jpg" alt="Off-road quad biking expedition along volcanic paths in Mount Teide National Park"></div>
-                    <div class="gallery-item tall"><img src="../multimedia/IMG_5694.jpg" alt="Premium quad bikes lined up on a scenic mountain road in Tenerife"></div>
-                    <div class="gallery-item"><img src="../multimedia/IMG_5695.jpg" alt="Adventure seekers enjoying a professional guided quad tour in Tenerife"></div>
-                    <div class="gallery-item wide"><img src="../multimedia/IMG_5698.jpg" alt="Teide quad expedition tour group photo with majestic mountain backdrop"></div>
-                    <div class="gallery-item"><img src="../multimedia/IMG_5714.jpg" alt="Riders on 550cc XL quad bikes stopping for a photo session in Tenerife"></div>
-                    <div class="gallery-item"><img src="../multimedia/IMG_3111.jpg" alt="Scenic forest trail road leading to Mount Teide quad tour stop"></div>
-                    <div class="gallery-item tall"><img src="../multimedia/IMG_3179.jpg" alt="Sunset over pine forest during an off-road quad biking excursion"></div>
-                    <div class="gallery-item wide"><img src="../multimedia/IMG_5690.jpg" alt="Couple riding a premium double quad bike on an off-road trail in Tenerife"></div>
+                    <div class="gallery-item wide"><img src="../multimedia/IMG_3258.jpg" alt="Widok na zachód słońca ze szczytu Teide ponad chmurami podczas jazdy quadem" data-i18n-alt="img.alt.img_3258"></div>
+                    <div class="gallery-item"><img src="../multimedia/IMG_3303.jpg" alt="Przejazd quadem wzdłuż wulkanicznych szlaków w Parku Narodowym Teide" data-i18n-alt="img.alt.img_3303"></div>
+                    <div class="gallery-item tall"><img src="../multimedia/IMG_5694.jpg" alt="Quady premium przygotowane do wyprawy na górskiej drodze na Teneryfie" data-i18n-alt="img.alt.img_5694"></div>
+                    <div class="gallery-item"><img src="../multimedia/IMG_5695.jpg" alt="Uczestnicy wycieczki pod opieką profesjonalnego przewodnika na quadach" data-i18n-alt="img.alt.img_5695"></div>
+                    <div class="gallery-item wide"><img src="../multimedia/IMG_5698.jpg" alt="Zdjęcie grupowe z wycieczki na Teide z pięknym górskim krajobrazem" data-i18n-alt="img.alt.img_5698"></div>
+                    <div class="gallery-item"><img src="../multimedia/IMG_5714.jpg" alt="Uczestnicy wycieczki na quadach 550cc XL zatrzymujący się na sesję zdjęciową" data-i18n-alt="img.alt.img_5714"></div>
+                    <div class="gallery-item"><img src="../multimedia/IMG_3111.jpg" alt="Malownicza leśna trasa wiodąca w stronę wulkanu Teide na Teneryfie" data-i18n-alt="img.alt.img_3111"></div>
+                    <div class="gallery-item tall"><img src="../multimedia/IMG_3179.jpg" alt="Zachód słońca nad lasem sosnowym podczas wycieczki off-road na quadach na Teneryfie" data-i18n-alt="img.alt.img_3179"></div>
+                    <div class="gallery-item wide"><img src="../multimedia/IMG_5690.jpg" alt="Para jadąca na podwójnym quadzie premium na trasie off-road na Teneryfie" data-i18n-alt="img.alt.img_5690"></div>
                 </div>
 
                 <!-- Innovative Interactive 3D Card Stack Gallery (Mobile-Only) -->
                 <div class="gallery-stack-container">
                     <div class="gallery-card-deck">
-                        <div class="gallery-card"><img src="../multimedia/IMG_3258.jpg" alt="Panoramic sunset views over the clouds during a Mount Teide quad tour in Tenerife"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_3303.jpg" alt="Off-road quad biking expedition along volcanic paths in Mount Teide National Park"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_5694.jpg" alt="Premium quad bikes lined up on a scenic mountain road in Tenerife"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_5695.jpg" alt="Adventure seekers enjoying a professional guided quad tour in Tenerife"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_5698.jpg" alt="Teide quad expedition tour group photo with majestic mountain backdrop"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_5714.jpg" alt="Riders on 550cc XL quad bikes stopping for a photo session in Tenerife"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_3111.jpg" alt="Scenic forest trail road leading to Mount Teide quad tour stop"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_3179.jpg" alt="Sunset over pine forest during an off-road quad biking excursion"></div>
-                        <div class="gallery-card"><img src="../multimedia/IMG_5690.jpg" alt="Couple riding a premium double quad bike on an off-road trail in Tenerife"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_3258.jpg" alt="Widok na zachód słońca ze szczytu Teide ponad chmurami podczas jazdy quadem" data-i18n-alt="img.alt.img_3258"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_3303.jpg" alt="Przejazd quadem wzdłuż wulkanicznych szlaków w Parku Narodowym Teide" data-i18n-alt="img.alt.img_3303"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_5694.jpg" alt="Quady premium przygotowane do wyprawy na górskiej drodze na Teneryfie" data-i18n-alt="img.alt.img_5694"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_5695.jpg" alt="Uczestnicy wycieczki pod opieką profesjonalnego przewodnika na quadach" data-i18n-alt="img.alt.img_5695"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_5698.jpg" alt="Zdjęcie grupowe z wycieczki na Teide z pięknym górskim krajobrazem" data-i18n-alt="img.alt.img_5698"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_5714.jpg" alt="Uczestnicy wycieczki na quadach 550cc XL zatrzymujący się na sesję zdjęciową" data-i18n-alt="img.alt.img_5714"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_3111.jpg" alt="Malownicza leśna trasa wiodąca w stronę wulkanu Teide na Teneryfie" data-i18n-alt="img.alt.img_3111"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_3179.jpg" alt="Zachód słońca nad lasem sosnowym podczas wycieczki off-road na quadach na Teneryfie" data-i18n-alt="img.alt.img_3179"></div>
+                        <div class="gallery-card"><img src="../multimedia/IMG_5690.jpg" alt="Para jadąca na podwójnym quadzie premium na trasie off-road na Teneryfie" data-i18n-alt="img.alt.img_5690"></div>
                     </div>
                 </div>
 
@@ -633,7 +675,7 @@
                         </button>
                         <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                                <p data-i18n="faq.a1" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                                <p data-i18n="faq.a1" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Nasza wycieczka do Parku Narodowego Teide to najpopularniejsza wyprawa na quadach na Teneryfie. Wyruszamy z Las Américas, przejeżdżamy przez malownicze lasy sosnowe Corona Forestal i docieramy na wysokość ponad 2000 metrów, wprost na niesamowite pola lawy wulkanicznej u stóp Teide.</p>
                             </div>
                         </div>
                     </div>
@@ -646,7 +688,7 @@
                         </button>
                         <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                                <p data-i18n="faq.a2" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                                <p data-i18n="faq.a2" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Tak, aby móc kierować quadem na drogach publicznych na Teneryfie, wymagane jest fizyczne prawo jazdy kategorii B (samochodowe), które jest ważne od minimum 1 roku. Pasażerowie nie muszą posiadać prawa jazdy, ale muszą mieć ukończone 7 lat.</p>
                             </div>
                         </div>
                     </div>
@@ -659,7 +701,7 @@
                         </button>
                         <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                                <p data-i18n="faq.a3" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                                <p data-i18n="faq.a3" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Zalecamy założenie wygodnych ubrań sportowych oraz bezwzględnie pełnego, zakrytego obuwia (np. adidasy). Ponieważ wjeżdżamy na wysokość ponad 2000 metrów n.p.m., gdzie temperatura może być znacznie niższa, na trasie zapewniamy ciepłe kurtki wiatroodporne.</p>
                             </div>
                         </div>
                     </div>
@@ -672,7 +714,7 @@
                         </button>
                         <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                                <p data-i18n="faq.a4" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;"></p>
+                                <p data-i18n="faq.a4" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Tak! Nasze quady premium 550cc XL posiadają w pełni automatyczną skrzynię biegów, są niezwykle stabilne i proste w obsłudze. Przed startem każdy uczestnik przechodzi szczegółowe szkolenie z zasad bezpieczeństwa i techniki jazdy.</p>
                             </div>
                         </div>
                     </div>
@@ -747,7 +789,7 @@
         <div class="container footer-content">
             <div class="footer-info" style="text-align: left;">
                 <a href="#" class="logo" style="margin-bottom: 1.5rem;">
-                    <img src="../multimedia/prime_quads_logo.png" alt="Prime Quads Logo" style="height: 58px; width: auto; filter: drop-shadow(0 0 10px rgba(255, 102, 0, 0.25)); transition: var(--transition);">
+                    <img src="../multimedia/prime_quads_logo.png" alt="Prime Quads Teneryfa - Wycieczki i wyprawy na quadach na wulkan Teide" data-i18n-alt="img.alt.logo" style="height: 58px; width: auto; filter: drop-shadow(0 0 10px rgba(255, 102, 0, 0.25)); transition: var(--transition);">
                 </a>
                 <p style="color: var(--text-muted); line-height: 1.6; max-width: 320px;" data-i18n="footer.desc">Najlepszy sposób na odkrywanie Teneryfy. Przygoda, bezpieczeństwo i niezapomniane wspomnienia z Prime Quads.</p>
             </div>
@@ -757,6 +799,7 @@
                     <li><a href="#tour" data-i18n="nav.tour">Wycieczka</a></li>
                     <li><a href="#booking" data-i18n="nav.booking">Zarezerwuj</a></li>
                     <li><a href="#gallery" data-i18n="nav.gallery">Galeria</a></li>
+                    <li><a href="../guides.html" data-i18n="nav.guides">Poradniki</a></li>
                 </ul>
             </div>
             <div class="footer-links" style="text-align: left;">
@@ -777,7 +820,7 @@
         <span class="lightbox-close">&times;</span>
         <button class="lightbox-prev" aria-label="Previous image">&#10094;</button>
         <div class="lightbox-content">
-            <img id="lightbox-img" src="" alt="Zoomed Gallery Image">
+            <img id="lightbox-img" src="" alt="Powiększone zdjęcie z galerii" data-i18n-alt="img.alt.lightbox">
         </div>
         <button class="lightbox-next" aria-label="Next image">&#10095;</button>
         <div class="lightbox-counter">1 / 9</div>

@@ -74,8 +74,8 @@ def load_translations():
                     
         return translations
 
-def translate_html(html_content, lang, translations):
-    """Replaces data-i18n and data-i18n-placeholder elements with translated text."""
+def translate_html(html_content, lang, translations, filename="index.html"):
+    """Replaces data-i18n, data-i18n-placeholder and data-i18n-alt elements with translated text."""
     lang_dict = translations.get(lang, {})
     if not lang_dict:
         return html_content
@@ -109,7 +109,7 @@ def translate_html(html_content, lang, translations):
         opening_tag_end = full_tag.find('>') + 1
         closing_tag_start = full_tag.rfind(f'</{tag_name}>')
         
-        if opening_tag_end > 0 and closing_tag_start > opening_tag_end:
+        if opening_tag_end > 0 and closing_tag_start >= opening_tag_end:
             # Check if there are nested tags we shouldn't overwrite, but normally data-i18n is for text
             return full_tag[:opening_tag_end] + translated_text + full_tag[closing_tag_start:]
         
@@ -140,42 +140,109 @@ def translate_html(html_content, lang, translations):
             return full_tag.replace('data-i18n-placeholder=', f'placeholder="{translated_text}" data-i18n-placeholder=')
 
     html_content = re.sub(r'<[^>]*?data-i18n-placeholder="[^"]+"[^>]*?>', repl_placeholder, html_content)
+
+    # Translate image alt tags with data-i18n-alt="key"
+    def repl_alt(match):
+        full_tag = match.group(0)
+        i18n_key_match = re.search(r'data-i18n-alt="([^"]+)"', full_tag)
+        if not i18n_key_match:
+            return full_tag
+        key = i18n_key_match.group(1)
+        translated_text = lang_dict.get(key)
+        if translated_text is None:
+            return full_tag
+        
+        # Replace the alt="..." attribute or inject it
+        if re.search(r'(?<!data-i18n-)alt="[^"]+"', full_tag):
+            return re.sub(r'(?<!data-i18n-)alt="[^"]+"', f'alt="{translated_text}"', full_tag)
+        else:
+            return full_tag.replace('data-i18n-alt=', f'alt="{translated_text}" data-i18n-alt=')
+
+    html_content = re.sub(r'<img[^>]*?data-i18n-alt="[^"]+"[^>]*?>', repl_alt, html_content)
     
     # Update Page Title
-    if "seo.title" in lang_dict:
+    if f"seo.title.{filename}" in lang_dict:
+        html_content = re.sub(r'<title>.*?</title>', f'<title>{lang_dict[f"seo.title.{filename}"]}</title>', html_content)
+    elif "seo.title" in lang_dict:
         html_content = re.sub(r'<title>.*?</title>', f'<title>{lang_dict["seo.title"]}</title>', html_content)
         
     # Update Meta Description
-    if "seo.description" in lang_dict:
+    target_desc_key = f"seo.description.{filename}" if f"seo.description.{filename}" in lang_dict else "seo.description"
+    if target_desc_key in lang_dict:
         html_content = re.sub(
             r'<meta\s+name="description"\s+content="[^"]+"',
-            f'<meta name="description" content="{lang_dict["seo.description"]}"',
+            f'<meta name="description" content="{lang_dict[target_desc_key]}"',
             html_content
         )
         # Update Open Graph / Twitter descriptions too
         html_content = re.sub(
             r'<meta\s+property="og:description"\s+content="[^"]+"',
-            f'<meta property="og:description" content="{lang_dict["seo.description"]}"',
+            f'<meta property="og:description" content="{lang_dict[target_desc_key]}"',
             html_content
         )
         html_content = re.sub(
             r'<meta\s+property="twitter:description"\s+content="[^"]+"',
-            f'<meta property="twitter:description" content="{lang_dict["seo.description"]}"',
+            f'<meta property="twitter:description" content="{lang_dict[target_desc_key]}"',
             html_content
         )
 
     # Update Open Graph Titles
-    if "seo.title" in lang_dict:
+    target_title_key = f"seo.title.{filename}" if f"seo.title.{filename}" in lang_dict else "seo.title"
+    if target_title_key in lang_dict:
         html_content = re.sub(
             r'<meta\s+property="og:title"\s+content="[^"]+"',
-            f'<meta property="og:title" content="{lang_dict["seo.title"]}"',
+            f'<meta property="og:title" content="{lang_dict[target_title_key]}"',
             html_content
         )
         html_content = re.sub(
             r'<meta\s+property="twitter:title"\s+content="[^"]+"',
-            f'<meta property="twitter:title" content="{lang_dict["seo.title"]}"',
+            f'<meta property="twitter:title" content="{lang_dict[target_title_key]}"',
             html_content
         )
+
+    # Pre-render FAQPage JSON-LD schema
+    if filename == "index.html" and "faq.q1" in lang_dict:
+        faq_schema = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": lang_dict.get("faq.q1", ""),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": lang_dict.get("faq.a1", "")
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": lang_dict.get("faq.q2", ""),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": lang_dict.get("faq.a2", "")
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": lang_dict.get("faq.q3", ""),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": lang_dict.get("faq.a3", "")
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": lang_dict.get("faq.q4", ""),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": lang_dict.get("faq.a4", "")
+                    }
+                }
+            ]
+        }
+        faq_schema_str = json.dumps(faq_schema, ensure_ascii=False, indent=2)
+        faq_script = f'<script id="faq-schema" type="application/ld+json">\n{faq_schema_str}\n</script>'
+        html_content = re.sub(r'<script\s+id="faq-schema"\s+type="application/ld\+json"\s*>\s*</script>', faq_script, html_content)
 
     return html_content
 
@@ -183,9 +250,11 @@ def update_relative_paths(html_content, lang):
     """Prepends '../' to css, js, img, and multimedia paths for subdirectory HTML pages, and fixes language switch links."""
     # 1. Update css/ js/ multimedia/ img/ paths
     html_content = re.sub(r'(href|src)="((css|js|multimedia|img)/[^"]+)"', r'\1="../\2"', html_content)
+    # Update favicon paths
+    html_content = re.sub(r'(href)="(favicon\.(ico|png))"', r'\1="../\2"', html_content)
     
-    # 2. Update legal links (privacy.html -> ../privacy.html, terms.html -> ../terms.html)
-    html_content = re.sub(r'href="(privacy\.html|terms\.html)"', r'href="../\1"', html_content)
+    # 2. Update legal and guide links (privacy.html -> ../privacy.html, terms.html -> ../terms.html, guides.html -> ../guides.html)
+    html_content = re.sub(r'href="(privacy\.html|terms\.html|guides\.html)"', r'href="../\1"', html_content)
     
     # 3. Update language switcher links
     # For a subdirectory like /pl/, the parent is ../
@@ -197,29 +266,72 @@ def update_relative_paths(html_content, lang):
         html_content = html_content.replace('href="index.html"', 'href="../index.html"')
         html_content = html_content.replace('href="pl/index.html"', 'href="index.html"')
         html_content = html_content.replace('href="es/index.html"', 'href="../es/index.html"')
+        html_content = html_content.replace('href="guides.html"', 'href="../guides.html"')
+        html_content = html_content.replace('href="pl/guides.html"', 'href="guides.html"')
+        html_content = html_content.replace('href="es/guides.html"', 'href="../es/guides.html"')
     elif lang == "es":
         html_content = html_content.replace('href="index.html"', 'href="../index.html"')
         html_content = html_content.replace('href="pl/index.html"', 'href="../pl/index.html"')
         html_content = html_content.replace('href="es/index.html"', 'href="index.html"')
+        html_content = html_content.replace('href="guides.html"', 'href="../guides.html"')
+        html_content = html_content.replace('href="pl/guides.html"', 'href="../pl/guides.html"')
+        html_content = html_content.replace('href="es/guides.html"', 'href="guides.html"')
         
     return html_content
 
-def update_seo_metadata(html_content, lang):
-    """Updates Canonical, hreflangs, and OG URLs for the specific language subdirectory."""
+def update_seo_metadata(html_content, lang, filename="index.html"):
+    """Updates Canonical, hreflangs, and OG URLs for the specific language subdirectory and filename."""
     lang_path = "" if lang == "en" else f"{lang}/"
-    base_url = f"https://primequads.com/{lang_path}"
+    page_path = "" if filename == "index.html" else filename
+    base_url = f"https://primequads.com/{lang_path}{page_path}"
     
     # Canonical link
-    html_content = re.sub(r'<link\s+rel="canonical"\s+href="[^"]+"', f'<link rel="canonical" href="{base_url}"', html_content)
+    if re.search(r'<link\s+rel="canonical"\s+href="[^"]+"', html_content):
+        html_content = re.sub(r'<link\s+rel="canonical"\s+href="[^"]+"', f'<link rel="canonical" href="{base_url}"', html_content)
+    else:
+        # insert before </head>
+        html_content = html_content.replace('</head>', f'    <link rel="canonical" href="{base_url}">\n</head>')
+    
+    # Generate matching alternate hreflang tags for this page
+    en_url = f"https://primequads.com/{page_path}"
+    pl_url = f"https://primequads.com/pl/{page_path}"
+    es_url = f"https://primequads.com/es/{page_path}"
+    
+    hreflangs_html = f"""    <!-- Multilingual Alternate SEO Links -->
+    <link rel="alternate" hreflang="en" href="{en_url}">
+    <link rel="alternate" hreflang="pl" href="{pl_url}">
+    <link rel="alternate" hreflang="es" href="{es_url}">
+    <link rel="alternate" hreflang="x-default" href="{en_url}">"""
+    
+    # Check if there is already an alternate links block or alternate tags
+    if '<!-- Multilingual Alternate SEO Links -->' in html_content:
+        pattern = r'<!-- Multilingual Alternate SEO Links -->.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>'
+        html_content = re.sub(pattern, hreflangs_html, html_content, flags=re.DOTALL)
+    elif '<link rel="alternate"' in html_content:
+        # remove old ones first, then insert new one
+        html_content = re.sub(r'<link\s+rel="alternate"\s+hreflang="[^"]+"\s+href="[^"]+"\s*/?>\s*', '', html_content)
+        html_content = html_content.replace('</head>', f'{hreflangs_html}\n</head>')
+    else:
+        html_content = html_content.replace('</head>', f'{hreflangs_html}\n</head>')
     
     # OG URL
-    html_content = re.sub(r'<meta\s+property="og:url"\s+content="[^"]+"', f'<meta property="og:url" content="{base_url}"', html_content)
-    html_content = re.sub(r'<meta\s+property="twitter:url"\s+content="[^"]+"', f'<meta property="twitter:url" content="{base_url}"', html_content)
+    if 'property="og:url"' in html_content:
+        html_content = re.sub(r'<meta\s+property="og:url"\s+content="[^"]+"', f'<meta property="og:url" content="{base_url}"', html_content)
+    else:
+        html_content = html_content.replace('</head>', f'    <meta property="og:url" content="{base_url}">\n</head>')
+        
+    if 'property="twitter:url"' in html_content:
+        html_content = re.sub(r'<meta\s+property="twitter:url"\s+content="[^"]+"', f'<meta property="twitter:url" content="{base_url}"', html_content)
+    else:
+        html_content = html_content.replace('</head>', f'    <meta property="twitter:url" content="{base_url}">\n</head>')
     
     # OG Locale
     locale_map = {"en": "en_US", "pl": "pl_PL", "es": "es_ES"}
     target_locale = locale_map.get(lang, "en_US")
-    html_content = re.sub(r'<meta\s+property="og:locale"\s+content="[^"]+"', f'<meta property="og:locale" content="{target_locale}"', html_content)
+    if 'property="og:locale"' in html_content:
+        html_content = re.sub(r'<meta\s+property="og:locale"\s+content="[^"]+"', f'<meta property="og:locale" content="{target_locale}"', html_content)
+    else:
+        html_content = html_content.replace('</head>', f'    <meta property="og:locale" content="{target_locale}">\n</head>')
     
     return html_content
 
@@ -227,53 +339,51 @@ def build_pages():
     translations = load_translations()
     print("Loaded languages:", list(translations.keys()))
     
-    # Read core files
-    with open(INDEX_PATH, "r", encoding="utf-8") as f:
-        index_html = f.read()
-    with open(PRIVACY_PATH, "r", encoding="utf-8") as f:
-        privacy_html = f.read()
-    with open(TERMS_PATH, "r", encoding="utf-8") as f:
-        terms_html = f.read()
+    # Define file mappings
+    templates = {
+        "index.html": INDEX_PATH,
+        "privacy.html": PRIVACY_PATH,
+        "terms.html": TERMS_PATH
+    }
+    
+    # Check if guides.html exists in root and include it if it does
+    GUIDES_PATH = os.path.join(BASE_DIR, "guides.html")
+    if os.path.exists(GUIDES_PATH):
+        templates["guides.html"] = GUIDES_PATH
+        print("Including guides.html in build templates.")
+    else:
+        print("guides.html template not found yet, will skip until it's created.")
         
     for lang in ["en", "pl", "es"]:
         print(f"\nProcessing lang: {lang}...")
         
-        # Statically translate content
-        t_index = translate_html(index_html, lang, translations)
-        t_privacy = translate_html(privacy_html, lang, translations)
-        t_terms = translate_html(terms_html, lang, translations)
-        
-        # Update SEO URL canonicals and hreflangs
-        t_index = update_seo_metadata(t_index, lang)
-        t_privacy = update_seo_metadata(t_privacy, lang)
-        t_terms = update_seo_metadata(t_terms, lang)
-        
-        if lang == "en":
-            # English goes directly in the root directory
-            with open(INDEX_PATH, "w", encoding="utf-8") as f:
-                f.write(t_index)
-            with open(PRIVACY_PATH, "w", encoding="utf-8") as f:
-                f.write(t_privacy)
-            with open(TERMS_PATH, "w", encoding="utf-8") as f:
-                f.write(t_terms)
-            print("Successfully updated root EN files.")
-        else:
-            # Polish and Spanish go into their respective subdirectories
-            lang_dir = os.path.join(BASE_DIR, lang)
-            os.makedirs(lang_dir, exist_ok=True)
+        for name, path in templates.items():
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+                
+            # Statically translate content
+            translated = translate_html(content, lang, translations, filename=name)
             
-            # Update paths to point to root directories (../../ or ../)
-            t_index = update_relative_paths(t_index, lang)
-            t_privacy = update_relative_paths(t_privacy, lang)
-            t_terms = update_relative_paths(t_terms, lang)
+            # Update SEO URL canonicals and hreflangs
+            translated = update_seo_metadata(translated, lang, filename=name)
             
-            with open(os.path.join(lang_dir, "index.html"), "w", encoding="utf-8") as f:
-                f.write(t_index)
-            with open(os.path.join(lang_dir, "privacy.html"), "w", encoding="utf-8") as f:
-                f.write(t_privacy)
-            with open(os.path.join(lang_dir, "terms.html"), "w", encoding="utf-8") as f:
-                f.write(t_terms)
-            print(f"Successfully created files in /{lang}/ subdirectory.")
+            if lang == "en":
+                # English goes directly in the root directory
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(translated)
+                print(f"Successfully updated root EN file: {name}")
+            else:
+                # Polish and Spanish go into their respective subdirectories
+                lang_dir = os.path.join(BASE_DIR, lang)
+                os.makedirs(lang_dir, exist_ok=True)
+                
+                # Update paths to point to root directories
+                translated = update_relative_paths(translated, lang)
+                
+                dest_path = os.path.join(lang_dir, name)
+                with open(dest_path, "w", encoding="utf-8") as f:
+                    f.write(translated)
+                print(f"Successfully created /{lang}/{name}")
 
 if __name__ == "__main__":
     build_pages()

@@ -197,13 +197,32 @@ function setLanguage(lang) {
         }
     });
 
+    // Translate alt attributes
+    document.querySelectorAll('[data-i18n-alt]').forEach(element => {
+        const key = element.getAttribute('data-i18n-alt');
+        if (translations[lang][key]) {
+            element.setAttribute('alt', translations[lang][key]);
+        }
+    });
+
     // Dynamically update document title & meta tags for premium SEO
-    if (translations[lang]["seo.title"]) {
+    const pageName = window.location.pathname.split('/').pop() || 'index.html';
+    const titleKey = `seo.title.${pageName}`;
+    const descKey = `seo.description.${pageName}`;
+
+    if (translations[lang][titleKey]) {
+        document.title = translations[lang][titleKey];
+    } else if (translations[lang]["seo.title"]) {
         document.title = translations[lang]["seo.title"];
     }
+
     const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc && translations[lang]["seo.description"]) {
-        metaDesc.setAttribute('content', translations[lang]["seo.description"]);
+    if (metaDesc) {
+        if (translations[lang][descKey]) {
+            metaDesc.setAttribute('content', translations[lang][descKey]);
+        } else if (translations[lang]["seo.description"]) {
+            metaDesc.setAttribute('content', translations[lang]["seo.description"]);
+        }
     }
     document.documentElement.lang = lang;
     
