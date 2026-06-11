@@ -293,6 +293,46 @@ def translate_html(html_content, lang, translations, filename="index.html"):
             flags=re.DOTALL
         )
 
+    # Pre-render BreadcrumbList JSON-LD schema dynamically
+    if filename == "guides.html":
+        breadcrumb_names = {
+            "en": ("Home", "Guides"),
+            "pl": ("Strona główna", "Poradniki"),
+            "es": ("Inicio", "Guías")
+        }
+        name_home, name_guides = breadcrumb_names.get(lang, ("Home", "Guides"))
+        
+        lang_path = "" if lang == "en" else f"{lang}/"
+        home_url = f"https://primequads.com/{lang_path}"
+        guides_url = f"https://primequads.com/{lang_path}guides.html"
+        
+        breadcrumb_schema = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": name_home,
+                    "item": home_url
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": name_guides,
+                    "item": guides_url
+                }
+            ]
+        }
+        breadcrumb_str = json.dumps(breadcrumb_schema, ensure_ascii=False, indent=2)
+        breadcrumb_script = f'<script id="breadcrumb-schema" type="application/ld+json">\n{breadcrumb_str}\n</script>'
+        html_content = re.sub(
+            r'<script\s+id="breadcrumb-schema"\s+type="application/ld\+json"\s*>.*?</script>',
+            breadcrumb_script,
+            html_content,
+            flags=re.DOTALL
+        )
+
     return html_content
 
 def update_relative_paths(html_content, lang):
