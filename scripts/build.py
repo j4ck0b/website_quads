@@ -200,84 +200,156 @@ def translate_html(html_content, lang, translations, filename="index.html"):
             html_content
         )
 
-    # Pre-render FAQPage JSON-LD schema
+    # Pre-render FAQPage JSON-LD schema dynamically
     if filename == "index.html" and "faq.q1" in lang_dict:
+        main_entity = []
+        i = 1
+        while f"faq.q{i}" in lang_dict:
+            main_entity.append({
+                "@type": "Question",
+                "name": lang_dict.get(f"faq.q{i}", ""),
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": lang_dict.get(f"faq.a{i}", "")
+                }
+            })
+            i += 1
+            
         faq_schema = {
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            "mainEntity": [
-                {
-                    "@type": "Question",
-                    "name": lang_dict.get("faq.q1", ""),
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": lang_dict.get("faq.a1", "")
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": lang_dict.get("faq.q2", ""),
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": lang_dict.get("faq.a2", "")
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": lang_dict.get("faq.q3", ""),
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": lang_dict.get("faq.a3", "")
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": lang_dict.get("faq.q4", ""),
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": lang_dict.get("faq.a4", "")
-                    }
-                }
-            ]
+            "mainEntity": main_entity
         }
         faq_schema_str = json.dumps(faq_schema, ensure_ascii=False, indent=2)
         faq_script = f'<script id="faq-schema" type="application/ld+json">\n{faq_schema_str}\n</script>'
-        html_content = re.sub(r'<script\s+id="faq-schema"\s+type="application/ld\+json"\s*>\s*</script>', faq_script, html_content)
+        html_content = re.sub(r'<script\s+id="faq-schema"\s+type="application/ld\+json"\s*>.*?</script>', faq_script, html_content, flags=re.DOTALL)
+
+    # Pre-render LocalBusiness / TouristAttraction schema for Polish
+    if filename == "index.html" and lang == "pl":
+        pl_business_schema = {
+            "@context": "https://schema.org",
+            "@type": "TouristAttraction",
+            "name": "Prime Quads Tenerife",
+            "description": "Wycieczki na quadach na Teneryfie do Parku Narodowego Teide. Quady 550cc XL, kameralne grupy do 5 quadów, trasy powyżej 2000 m n.p.m. Wyjazdy popołudniowe i o zachodzie słońca z Las Américas.",
+            "url": "https://primequads.com/pl/",
+            "telephone": "+34711075369",
+            "priceRange": "€120–€140",
+            "currenciesAccepted": "EUR",
+            "openingHours": "Mo-Su 09:00-20:00",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Las Américas",
+                "addressLocality": "Adeje",
+                "addressRegion": "Tenerife",
+                "addressCountry": "ES"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "28.0565",
+                "longitude": "-16.7232"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "480",
+                "bestRating": "5",
+                "worstRating": "1"
+            },
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Wycieczki na quadach",
+                "itemListElement": [
+                    {
+                        "@type": "Offer",
+                        "name": "Quad jednoosobowy – wycieczka na Teide",
+                        "price": "120",
+                        "priceCurrency": "EUR",
+                        "description": "3,5-godzinna wyprawa quadem 550cc XL z Las Américas do Parku Narodowego Teide.",
+                        "availability": "https://schema.org/InStock"
+                    },
+                    {
+                        "@type": "Offer",
+                        "name": "Quad dwuosobowy – wycieczka na Teide",
+                        "price": "140",
+                        "priceCurrency": "EUR",
+                        "description": "3,5-godzinna wyprawa quadem dwuosobowym 550cc XL z Las Américas do Parku Narodowego Teide.",
+                        "availability": "https://schema.org/InStock"
+                    }
+                ]
+            },
+            "tourBookingPage": "https://primequads.com/pl/#booking",
+            "inLanguage": ["pl", "en", "es", "de", "it", "pt"],
+            "sameAs": [
+                "https://www.tripadvisor.com/",
+                "https://www.google.com/maps/place/Extreme+Prime+Tours+SL"
+            ]
+        }
+        pl_schema_str = json.dumps(pl_business_schema, ensure_ascii=False, indent=2)
+        business_script = f'<script id="local-business-schema" type="application/ld+json">\n{pl_schema_str}\n</script>'
+        html_content = re.sub(
+            r'<script\s+id="local-business-schema"\s+type="application/ld\+json"\s*>.*?</script>',
+            business_script,
+            html_content,
+            flags=re.DOTALL
+        )
 
     return html_content
 
 def update_relative_paths(html_content, lang):
-    """Prepends '../' to css, js, img, and multimedia paths for subdirectory HTML pages, and fixes language switch links."""
+    """Prepends '../' to css, js, img, and multimedia paths for subdirectory HTML pages."""
     # 1. Update css/ js/ multimedia/ img/ paths
     html_content = re.sub(r'(href|src)="((css|js|multimedia|img)/[^"]+)"', r'\1="../\2"', html_content)
     # Update favicon paths
     html_content = re.sub(r'(href)="(favicon\.(ico|png))"', r'\1="../\2"', html_content)
     
-    # 2. Update legal and guide links (privacy.html -> ../privacy.html, terms.html -> ../terms.html, guides.html -> ../guides.html)
-    html_content = re.sub(r'href="(privacy\.html|terms\.html|guides\.html)"', r'href="../\1"', html_content)
-    
-    # 3. Update language switcher links
-    # For a subdirectory like /pl/, the parent is ../
-    # So:
-    # - en: href="index.html" -> href="../index.html"
-    # - pl: href="pl/index.html" -> href="index.html" (current folder)
-    # - es: href="es/index.html" -> href="../es/index.html"
+    # 2. Fix the blog post URL path for subdirectories
     if lang == "pl":
-        html_content = html_content.replace('href="index.html"', 'href="../index.html"')
-        html_content = html_content.replace('href="pl/index.html"', 'href="index.html"')
-        html_content = html_content.replace('href="es/index.html"', 'href="../es/index.html"')
-        html_content = html_content.replace('href="guides.html"', 'href="../guides.html"')
-        html_content = html_content.replace('href="pl/guides.html"', 'href="guides.html"')
-        html_content = html_content.replace('href="es/guides.html"', 'href="../es/guides.html"')
+        html_content = html_content.replace('href="pl/quady-na-teneryfie-przewodnik/index.html"', 'href="quady-na-teneryfie-przewodnik/index.html"')
     elif lang == "es":
-        html_content = html_content.replace('href="index.html"', 'href="../index.html"')
-        html_content = html_content.replace('href="pl/index.html"', 'href="../pl/index.html"')
-        html_content = html_content.replace('href="es/index.html"', 'href="index.html"')
-        html_content = html_content.replace('href="guides.html"', 'href="../guides.html"')
-        html_content = html_content.replace('href="pl/guides.html"', 'href="../pl/guides.html"')
-        html_content = html_content.replace('href="es/guides.html"', 'href="guides.html"')
+        html_content = html_content.replace('href="pl/quady-na-teneryfie-przewodnik/index.html"', 'href="../pl/quady-na-teneryfie-przewodnik/index.html"')
         
     return html_content
+
+def update_language_switcher(html_content, current_lang, filename):
+    """Specifically updates class="lang-dropdown-item" links so they point to correct relative directories without affecting navigation links."""
+    def repl(match):
+        attrs = match.group(1)
+        lang_match = re.search(r'data-lang="([^"]+)"', attrs)
+        href_match = re.search(r'href="([^"]+)"', attrs)
+        if not lang_match or not href_match:
+            return match.group(0)
+            
+        target_lang = lang_match.group(1)
+        
+        # Determine target href
+        if current_lang == "en":
+            # We are in the root directory.
+            # - en: href="filename"
+            # - pl: href="pl/filename"
+            # - es: href="es/filename"
+            if target_lang == "en":
+                new_href = filename
+            else:
+                new_href = f"{target_lang}/{filename}"
+        elif current_lang == target_lang:
+            # We are in the subdirectory, pointing to the same language page.
+            # e.g. current_lang="pl", target_lang="pl" -> href="filename"
+            new_href = filename
+        else:
+            # We are in a subdirectory, pointing to another language.
+            # e.g. current_lang="pl", target_lang="en" -> href="../filename"
+            # e.g. current_lang="pl", target_lang="es" -> href="../es/filename"
+            if target_lang == "en":
+                new_href = f"../{filename}"
+            else:
+                new_href = f"../{target_lang}/{filename}"
+                
+        # Reconstruct the tag
+        new_attrs = re.sub(r'href="[^"]+"', f'href="{new_href}"', attrs)
+        return f'<a {new_attrs}>'
+        
+    pattern = r'<a\s+([^>]*?class="lang-dropdown-item"[^>]*?)>'
+    return re.sub(pattern, repl, html_content)
 
 def update_seo_metadata(html_content, lang, filename="index.html"):
     """Updates Canonical, hreflangs, and OG URLs for the specific language subdirectory and filename."""
@@ -377,8 +449,15 @@ def build_pages():
             # Update SEO URL canonicals and hreflangs
             translated = update_seo_metadata(translated, lang, filename=name)
             
+            # Pre-render default expanded FAQ items for Polish index.html
+            if lang == "pl" and name == "index.html":
+                translated = translated.replace('class="faq-item"', 'class="faq-item active"')
+                translated = translated.replace('class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+', 'class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">−')
+                translated = translated.replace('class="faq-panel" style="max-height: 0;', 'class="faq-panel" style="max-height: none;')
+            
             if lang == "en":
                 # English goes directly in the root directory
+                translated = update_language_switcher(translated, lang, filename=name)
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(translated)
                 print(f"Successfully updated root EN file: {name}")
@@ -389,6 +468,8 @@ def build_pages():
                 
                 # Update paths to point to root directories
                 translated = update_relative_paths(translated, lang)
+                # Update language switcher dropdown links specifically
+                translated = update_language_switcher(translated, lang, filename=name)
                 
                 dest_path = os.path.join(lang_dir, name)
                 with open(dest_path, "w", encoding="utf-8") as f:

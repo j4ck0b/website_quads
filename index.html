@@ -17,7 +17,7 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://primequads.com/">
     
-                                        <!-- Multilingual Alternate SEO Links -->
+                                                <!-- Multilingual Alternate SEO Links -->
     <link rel="alternate" hreflang="en" href="https://primequads.com/">
     <link rel="alternate" hreflang="pl" href="https://primequads.com/pl/">
     <link rel="alternate" hreflang="es" href="https://primequads.com/es/">
@@ -46,7 +46,7 @@
     <meta property="twitter:image" content="https://primequads.com/multimedia/IMG_3037.jpg">
 
     <!-- JSON-LD Structured Data for Local Business & Tour SEO -->
-    <script type="application/ld+json">
+    <script id="local-business-schema" type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
@@ -228,6 +228,30 @@
         "@type": "Answer",
         "text": "Yes! Our premium 550cc XL quad bikes are fully automatic, very stable, and easy to ride. Before every tour, our expert guides provide a comprehensive safety briefing and training to ensure you feel 100% confident."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does a quad tour in Tenerife cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A single quad bike costs €120, and a double quad costs €140. The price includes: helmet, gloves, jacket, insurance, fuel, and a professional multilingual guide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the quad excursions safe for beginners?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Our 550cc XL quad bikes are fully automatic, stable, and easy to ride. Before every tour, our guides provide a comprehensive safety briefing. Groups are limited to a maximum of 5 quads for personalized care."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What time are the quad excursions in Tenerife?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Prime Quads offers two slots: afternoon tour at 13:00 and sunset tour at 18:00. The sunset tour is highly recommended – the panorama above the clouds in shades of orange and purple is unforgettable."
+      }
     }
   ]
 }
@@ -278,8 +302,8 @@
             <img src="multimedia/hero_sunset_coast.jpg" alt="Mount Teide Quad Excursions Tenerife - Sunset Off-Road Tour - Prime Quads" data-i18n-alt="img.alt.hero">
         </div>
         <div class="container hero-content">
-            <h1 style="min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
-                <span style="font-size: 1.25rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 0.25rem;" data-i18n="hero.title.badge">Teide Quad Expedition</span>
+            <span style="font-size: 1.25rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 0.75rem;" data-i18n="hero.title.badge">Teide Quad Expedition</span>
+            <h1 style="min-height: 110px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
                 <span id="hero-rotating-text" data-i18n="hero.rotate.1" style="display: block; line-height: 1.1; color: #fff; text-shadow: 0 0 30px rgba(0,0,0,0.5);">Teide Quad Excursions</span>
             </h1>
             <p data-i18n="hero.subtitle">The ultimate Mount Teide National Park quad excursion departing from Las Américas. Explore active volcanoes, pine forests, and enjoy quad biking in Tenerife above the clouds.</p>
@@ -736,6 +760,45 @@
                         <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                                 <p data-i18n="faq.a4" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Yes! Our premium 550cc XL quad bikes are fully automatic, very stable, and easy to ride. Before every tour, our expert guides provide a comprehensive safety briefing and training to ensure you feel 100% confident.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 5 -->
+                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                        <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
+                            <strong data-i18n="faq.q5" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">How much does a quad tour in Tenerife cost?</strong>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                        </button>
+                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                            <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                                <p data-i18n="faq.a5" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">A single quad bike costs €120, and a double quad costs €140. The price includes: helmet, gloves, jacket, insurance, fuel, and a professional multilingual guide.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 6 -->
+                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                        <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
+                            <strong data-i18n="faq.q6" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">Are the quad excursions safe for beginners?</strong>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                        </button>
+                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                            <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                                <p data-i18n="faq.a6" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Yes. Our 550cc XL quad bikes are fully automatic, stable, and easy to ride. Before every tour, our guides provide a comprehensive safety briefing. Groups are limited to a maximum of 5 quads for personalized care.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 7 -->
+                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                        <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
+                            <strong data-i18n="faq.q7" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">What time are the quad excursions in Tenerife?</strong>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                        </button>
+                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                            <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                                <p data-i18n="faq.a7" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Prime Quads offers two slots: afternoon tour at 13:00 and sunset tour at 18:00. The sunset tour is highly recommended – the panorama above the clouds in shades of orange and purple is unforgettable.</p>
                             </div>
                         </div>
                     </div>
