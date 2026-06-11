@@ -4,4 +4,11 @@
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db
+
+# Secrets & Database files
+backend/.env
+backend/bookings.db
+
+# SEO Audits & Docs
+SEO_PL_PrimeQuads_2026.docx
+seo_audit_primequads.html

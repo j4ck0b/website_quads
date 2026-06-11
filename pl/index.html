@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-800D9P2R4Q"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-800D9P2R4Q');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quady na Teneryfie | Wycieczka na Teide z Las Américas | Prime Quads</title>
-    <meta name="description" content="⭐ Ocena 4.9/5 (480+ opinii) | Wyprawy na quadach 550cc na wulkan Teide. Kameralne grupy, zachody słońca. Zarezerwuj przez WhatsApp od €120.">
+    <title>Quady Teneryfa | Wycieczki na Quadach – Prime Quads</title>
+    <meta name="description" content="⭐ 4.9/5 | Quady na Teneryfie – wycieczka na wulkan Teide. Quady 550cc, kameralne grupy, zachód słońca. Rezerwacja przez WhatsApp. Od €120.">
+    <meta name="keywords" content="quady Teneryfa, quady na Teneryfie, Teneryfa wycieczki na quadach, quad Teide, wycieczka quad Teneryfa, quad Las Americas Teneryfa">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://primequads.com/pl/">
     
-                    <!-- Multilingual Alternate SEO Links -->
+                                            <!-- Multilingual Alternate SEO Links -->
     <link rel="alternate" hreflang="en" href="https://primequads.com/">
     <link rel="alternate" hreflang="pl" href="https://primequads.com/pl/">
     <link rel="alternate" hreflang="es" href="https://primequads.com/es/">
@@ -182,47 +192,7 @@
     }
     </script>
     
-    <!-- Dynamic FAQ Page JSON-LD Structured Data for Generic Search Snippets -->
-    <script id="faq-schema" type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is the best quad excursion in Tenerife?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "The Teide National Park Quad Expedition is highly rated as the best quad excursion in Tenerife. Departing from Las Américas, it takes you on a spectacular route through the pine forests of Corona Forestal up to the volcanic lava landscapes of Mount Teide National Park, over 2,000 meters above sea level."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Do I need a driver's license for a Teide quad tour?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes, a valid driver's license (Category B) is mandatory for driving a quad bike on public roads in Spain. It must be valid for at least 1 year. Passengers do not need a license but must be at least 7 years old."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What should I wear for a quad excursion to Mount Teide?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "We recommend wearing comfortable sportswear and closed-toe shoes (mandatory, no sandals). Since the tour ascends to high altitudes where temperatures drop, we provide warm windproof jackets during the excursion."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Are the quad excursions suitable for beginners?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes! Our premium 550cc XL quad bikes are fully automatic, very stable, and easy to ride. Before every tour, our expert guides provide a comprehensive safety briefing and training to ensure you feel 100% confident."
-      }
-    }
-  ]
-}
-</script>
+
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -512,23 +482,39 @@
 
                 <div class="booking-widget-wrapper" style="max-width: 800px;">
                     <form id="whatsapp-booking-form" class="premium-booking-form">
-                        <!-- Date & Time Row -->
+                        <!-- Date & Time Row (Custom Calendar Grid) -->
                         <div class="form-row date-time-row">
                             <div class="form-group">
-                                <label for="booking-date" data-i18n="booking.form.date">Wybierz Datę</label>
-                                <div class="input-icon-wrapper">
-                                    <span class="input-icon">📅</span>
-                                    <input type="date" id="booking-date" required>
+                                <label data-i18n="booking.form.date">Wybierz Datę</label>
+                                <input type="hidden" id="booking-date" required>
+                                
+                                <div class="custom-calendar-container">
+                                    <div class="calendar-header">
+                                        <button type="button" class="calendar-nav-btn" id="cal-prev">◀</button>
+                                        <h4 id="cal-month-year">-</h4>
+                                        <button type="button" class="calendar-nav-btn" id="cal-next">▶</button>
+                                    </div>
+                                    <div class="calendar-grid-header">
+                                        <span data-i18n="calendar.day.mon">Pn</span>
+                                        <span data-i18n="calendar.day.tue">Wt</span>
+                                        <span data-i18n="calendar.day.wed">Śr</span>
+                                        <span data-i18n="calendar.day.thu">Cz</span>
+                                        <span data-i18n="calendar.day.fri">Pi</span>
+                                        <span data-i18n="calendar.day.sat">So</span>
+                                        <span data-i18n="calendar.day.sun">Nd</span>
+                                    </div>
+                                    <div class="calendar-grid-days" id="cal-days">
+                                        <!-- Dynamic days -->
+                                    </div>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="booking-time" data-i18n="booking.form.time">Preferowana Godzina</label>
-                                <div class="input-icon-wrapper">
-                                    <span class="input-icon">🕒</span>
-                                    <select id="booking-time" required>
-                                        <option value="13:00" data-i18n="booking.form.time.afternoon">Wycieczka Popołudniowa (13:00)</option>
-                                        <option value="18:00" data-i18n="booking.form.time.sunset">Wycieczka o Zachodzie Słońca (18:00)</option>
-                                    </select>
+                                <label data-i18n="booking.form.time">Preferowana Godzina</label>
+                                <input type="hidden" id="booking-time" required>
+                                
+                                <div id="time-slots-container" class="time-slots-container">
+                                    <div style="color: var(--text-muted); font-size: 0.95rem; font-style: italic; text-align: center; padding: 2rem 0;" data-i18n="booking.form.time.select_date_first">Wybierz najpierw datę...</div>
                                 </div>
                             </div>
                         </div>
@@ -600,13 +586,9 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-whatsapp-booking">
-                            <span class="whatsapp-btn-icon">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.46h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                                </svg>
-                            </span>
-                            <span data-i18n="booking.form.submit">Zarezerwuj przez WhatsApp</span>
+                        <button type="submit" class="btn btn-pay-booking">
+                            <span style="font-size: 1.25rem; margin-right: 0.5rem;">💳</span>
+                            <span data-i18n="booking.form.submit">Zarezerwuj i zapłać online</span>
                         </button>
                     </form>
                 </div>
@@ -668,12 +650,12 @@
                 
                 <div class="faq-accordion-container" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
                     <!-- FAQ Item 1 -->
-                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                    <div class="faq-item active" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
                         <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
                             <strong data-i18n="faq.q1" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">Jaka jest najlepsza wycieczka na quadach na Teneryfie?</strong>
-                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease; transform: rotate(180deg);">−</span>
                         </button>
-                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                        <div class="faq-panel" style="max-height: none; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                                 <p data-i18n="faq.a1" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Nasza wycieczka do Parku Narodowego Teide to najpopularniejsza wyprawa na quadach na Teneryfie. Wyruszamy z Las Américas, przejeżdżamy przez malownicze lasy sosnowe Corona Forestal i docieramy na wysokość ponad 2000 metrów, wprost na niesamowite pola lawy wulkanicznej u stóp Teide.</p>
                             </div>
@@ -681,12 +663,12 @@
                     </div>
                     
                     <!-- FAQ Item 2 -->
-                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                    <div class="faq-item active" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
                         <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
                             <strong data-i18n="faq.q2" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">Czy potrzebne jest prawo jazdy na quady na Teneryfie?</strong>
-                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease; transform: rotate(180deg);">−</span>
                         </button>
-                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                        <div class="faq-panel" style="max-height: none; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                                 <p data-i18n="faq.a2" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Tak, aby móc kierować quadem na drogach publicznych na Teneryfie, wymagane jest fizyczne prawo jazdy kategorii B (samochodowe), które jest ważne od minimum 1 roku. Pasażerowie nie muszą posiadać prawa jazdy, ale muszą mieć ukończone 7 lat.</p>
                             </div>
@@ -694,12 +676,12 @@
                     </div>
                     
                     <!-- FAQ Item 3 -->
-                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                    <div class="faq-item active" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
                         <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
                             <strong data-i18n="faq.q3" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">Jak się ubrać na wycieczkę quadem na Teide?</strong>
-                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease; transform: rotate(180deg);">−</span>
                         </button>
-                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                        <div class="faq-panel" style="max-height: none; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                                 <p data-i18n="faq.a3" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Zalecamy założenie wygodnych ubrań sportowych oraz bezwzględnie pełnego, zakrytego obuwia (np. adidasy). Ponieważ wjeżdżamy na wysokość ponad 2000 metrów n.p.m., gdzie temperatura może być znacznie niższa, na trasie zapewniamy ciepłe kurtki wiatroodporne.</p>
                             </div>
@@ -707,12 +689,12 @@
                     </div>
                     
                     <!-- FAQ Item 4 -->
-                    <div class="faq-item" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
+                    <div class="faq-item active" style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); overflow: hidden;">
                         <button class="faq-trigger" style="width: 100%; padding: 1.5rem; background: none; border: none; outline: none; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #fff; font-family: inherit;">
                             <strong data-i18n="faq.q4" style="font-size: 1.15rem; font-weight: 700; transition: var(--transition);">Czy wycieczki na quadach są odpowiednie dla początkujących?</strong>
-                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease;">+</span>
+                            <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s ease; transform: rotate(180deg);">−</span>
                         </button>
-                        <div class="faq-panel" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
+                        <div class="faq-panel" style="max-height: none; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;">
                             <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                                 <p data-i18n="faq.a4" style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">Tak! Nasze quady premium 550cc XL posiadają w pełni automatyczną skrzynię biegów, są niezwykle stabilne i proste w obsłudze. Przed startem każdy uczestnik przechodzi szczegółowe szkolenie z zasad bezpieczeństwa i techniki jazdy.</p>
                             </div>
@@ -825,6 +807,125 @@
         <button class="lightbox-next" aria-label="Next image">&#10095;</button>
         <div class="lightbox-counter">1 / 9</div>
     </div>
+
+    <!-- JSON-LD Structured Data for Local/Tour SEO in Polish -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      "name": "Prime Quads Tenerife",
+      "description": "Wycieczki na quadach na Teneryfie do Parku Narodowego Teide. Quady 550cc XL, kameralne grupy do 5 quadów, trasy powyżej 2000 m n.p.m. Wyjazdy popołudniowe i o zachodzie słońca z Las Américas.",
+      "url": "https://primequads.com/pl/",
+      "telephone": "+34711075369",
+      "priceRange": "€120–€140",
+      "currenciesAccepted": "EUR",
+      "openingHours": "Mo-Su 09:00-20:00",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Las Américas",
+        "addressLocality": "Adeje",
+        "addressRegion": "Tenerife",
+        "addressCountry": "ES"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "28.0565",
+        "longitude": "-16.7232"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "480",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Wycieczki na quadach",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": "Quad jednoosobowy – wycieczka na Teide",
+            "price": "120",
+            "priceCurrency": "EUR",
+            "description": "3,5-godzinna wyprawa quadem 550cc XL z Las Américas do Parku Narodowego Teide.",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "name": "Quad dwuosobowy – wycieczka na Teide",
+            "price": "140",
+            "priceCurrency": "EUR",
+            "description": "3,5-godzinna wyprawa quadem dwuosobowym 550cc XL z Las Américas do Parku Narodowego Teide.",
+            "availability": "https://schema.org/InStock"
+          }
+        ]
+      },
+      "tourBookingPage": "https://primequads.com/pl/#booking",
+      "inLanguage": ["pl", "en", "es", "de", "it", "pt"],
+      "sameAs": [
+        "https://www.tripadvisor.com/",
+        "https://www.google.com/maps/place/Extreme+Prime+Tours+SL"
+      ]
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Jakie quady są dostępne na Teneryfie w Prime Quads?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Prime Quads oferuje automatyczne quady 550cc XL – dostępne jako jednoosobowe (€120) i dwuosobowe (€140). Są to nowe, mocne maszyny odpowiednie zarówno dla początkujących, jak i doświadczonych kierowców."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Czy potrzebuję prawa jazdy na quady na Teneryfie?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tak. Do prowadzenia quada na Teneryfie wymagane jest prawo jazdy kategorii B ważne co najmniej 1 rok. Pasażerowie nie potrzebują prawa jazdy, ale muszą mieć ukończone 7 lat."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Skąd startuje wycieczka quadem na Teide?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Wycieczki Prime Quads startują z biura w Las Américas (Adeje, Teneryfa) i prowadzą przez lasy sosnowe Corona Forestal do Parku Narodowego Teide – powyżej 2000 m n.p.m. Czas trwania to 3,5 godziny."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Ile kosztuje wycieczka na quadach na Teneryfie?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quad jednoosobowy kosztuje €120, a dwuosobowy €140. W cenie: kask, rękawice, kurtka, ubezpieczenie, paliwo i profesjonalny przewodnik wielojęzyczny."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Czy wycieczki na quadach są bezpieczne dla początkujących?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tak. Quady 550cc XL są w pełni automatyczne, stabilne i łatwe w obsłudze. Przed każdą wyprawą przewodnicy przeprowadzają szkolenie BHP. Grupy liczą maksymalnie 5 quadów, co zapewnia indywidualną opiekę."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O której godzinie są wycieczki na quadach na Teneryfie?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Prime Quads oferuje dwa terminy: wycieczka popołudniowa o 13:00 i wycieczka o zachodzie słońca o 18:00. Wyjazd o zachodzie słońca jest szczególnie polecany – panorama ponad chmurami w barwach pomarańczu i fioletu jest niezapomniana."
+          }
+        }
+      ]
+    }
+    </script>
 
     <!-- JS -->
     <script src="../js/translations.js"></script>

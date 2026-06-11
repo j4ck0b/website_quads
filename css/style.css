@@ -1518,4 +1518,196 @@ footer {
     margin: 0;
 }
 
+/* --- Premium Pay Booking Form CSS --- */
+.btn-pay-booking {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, #ff8c00 100%);
+    color: #fff;
+    border-radius: 8px;
+    padding: 1.2rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(255, 102, 0, 0.25);
+    border: none;
+    transition: var(--transition);
+}
+
+.btn-pay-booking:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(255, 102, 0, 0.45);
+    filter: brightness(1.1);
+}
+
+.btn-pay-booking:active {
+    transform: translateY(-1px);
+}
+
+/* --- Custom Interactive Calendar Grid --- */
+.custom-calendar-container {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 0.25rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.calendar-header h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.calendar-nav-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: var(--transition);
+}
+
+.calendar-nav-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: scale(1.08);
+}
+
+.calendar-grid-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.calendar-grid-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.4rem;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid transparent;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.calendar-day:hover:not(.empty):not(.disabled) {
+    background: rgba(255, 102, 0, 0.15);
+    border-color: rgba(255, 102, 0, 0.4);
+}
+
+.calendar-day.selected {
+    background: var(--primary) !important;
+    color: #fff !important;
+    font-weight: 700;
+    box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+    border-color: var(--primary) !important;
+}
+
+.calendar-day.today {
+    border-color: rgba(255, 102, 0, 0.5);
+    color: var(--primary);
+}
+
+.calendar-day.disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.calendar-day.empty {
+    background: transparent;
+    cursor: default;
+}
+
+/* Time slots container */
+.time-slots-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.time-slot-pill {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1.1rem 1.25rem;
+    color: #fff;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.time-slot-pill:hover:not(.disabled) {
+    border-color: rgba(255, 102, 0, 0.3);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.time-slot-pill.selected {
+    background: rgba(255, 102, 0, 0.08) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 15px rgba(255, 102, 0, 0.15);
+}
+
+.time-slot-pill.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    background: rgba(0,0,0,0.15);
+    border-color: rgba(255,255,255,0.02);
+}
+
+.time-slot-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.time-slot-status {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.time-slot-pill.selected .time-slot-status {
+    color: var(--primary);
+}
+
 

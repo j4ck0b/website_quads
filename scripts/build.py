@@ -353,6 +353,16 @@ def build_pages():
         print("Including guides.html in build templates.")
     else:
         print("guides.html template not found yet, will skip until it's created.")
+
+    # Check if success.html and cancel.html exist
+    SUCCESS_PATH = os.path.join(BASE_DIR, "success.html")
+    if os.path.exists(SUCCESS_PATH):
+        templates["success.html"] = SUCCESS_PATH
+        print("Including success.html in build templates.")
+    CANCEL_PATH = os.path.join(BASE_DIR, "cancel.html")
+    if os.path.exists(CANCEL_PATH):
+        templates["cancel.html"] = CANCEL_PATH
+        print("Including cancel.html in build templates.")
         
     for lang in ["en", "pl", "es"]:
         print(f"\nProcessing lang: {lang}...")

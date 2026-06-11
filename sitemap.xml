@@ -128,4 +128,12 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- Polish Guide Article: Quady na Teneryfie -->
+  <url>
+    <loc>https://primequads.com/pl/quady-na-teneryfie-przewodnik/</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
