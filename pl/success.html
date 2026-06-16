@@ -25,7 +25,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="canonical" href="https://primequads.com/pl/success.html">
-                                                                            <!-- Multilingual Alternate SEO Links -->
+                                                                                <!-- Multilingual Alternate SEO Links -->
     <link rel="alternate" hreflang="en" href="https://primequads.com/success.html">
     <link rel="alternate" hreflang="pl" href="https://primequads.com/pl/success.html">
     <link rel="alternate" hreflang="es" href="https://primequads.com/es/success.html">
@@ -116,9 +116,24 @@
                             document.getElementById('summary-date').innerText = data.date;
                             document.getElementById('summary-time').innerText = data.time;
                             
+                            const path = window.location.pathname;
+                            let singleWord = 'Single';
+                            let doubleWord = 'Double';
+                            
+                            if (path.includes('/pl/')) {
+                                singleWord = data.single_quads === 1 ? 'Jednoosobowy' : 'Jednoosobowe';
+                                doubleWord = data.double_quads === 1 ? 'Dwuosobowy' : 'Dwuosobowe';
+                            } else if (path.includes('/es/')) {
+                                singleWord = data.single_quads === 1 ? 'Individual' : 'Individuales';
+                                doubleWord = data.double_quads === 1 ? 'Doble' : 'Dobles';
+                            } else {
+                                singleWord = data.single_quads === 1 ? 'Single' : 'Singles';
+                                doubleWord = data.double_quads === 1 ? 'Double' : 'Doubles';
+                            }
+
                             let quadsText = [];
-                            if (data.single_quads > 0) quadsText.push(`${data.single_quads} Single`);
-                            if (data.double_quads > 0) quadsText.push(`${data.double_quads} Double`);
+                            if (data.single_quads > 0) quadsText.push(`${data.single_quads} ${singleWord}`);
+                            if (data.double_quads > 0) quadsText.push(`${data.double_quads} ${doubleWord}`);
                             document.getElementById('summary-quads').innerText = quadsText.join(', ');
                             document.getElementById('summary-total').innerText = `€${data.total_price}`;
                         }

@@ -260,7 +260,7 @@ function initContactForm() {
         fetch(API_BASE_URL + '/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name, email: email, message: message })
+            body: JSON.stringify({ name: name, email: email, message: message, lang: currentLang })
         })
         .then(response => {
             if (!response.ok) {
@@ -718,7 +718,8 @@ function initBookingForm() {
                 date:         date.value,
                 time:         time.value,
                 single_quads: singleQuadsCount,
-                double_quads: doubleQuadsCount
+                double_quads: doubleQuadsCount,
+                lang:         currentLang
             })
         })
         .then(function(r) { return r.json(); })

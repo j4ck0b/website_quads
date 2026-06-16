@@ -109,6 +109,10 @@ def new_booking():
     phone = data.get("phone")
     date_str = data.get("date")
     time_str = data.get("time")
+    lang = data.get("lang", "en")
+    
+    if lang not in ["en", "pl", "es"]:
+        lang = "en"
     
     # Input Validation & Sanitization
     if not all([name, email, phone, date_str, time_str]):
@@ -216,8 +220,10 @@ def new_booking():
             customer_email=email,
             success_url=f"{origin}/success.html?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{origin}/cancel.html",
+            locale=lang,
             metadata={
-                "booking_id": booking_id
+                "booking_id": booking_id,
+                "lang": lang
             }
         )
         
@@ -255,6 +261,10 @@ def contact_form():
     name = data.get("name")
     email = data.get("email")
     message = data.get("message")
+    lang = data.get("lang", "en")
+    
+    if lang not in ["en", "pl", "es"]:
+        lang = "en"
     
     if not all([name, email, message]):
         return jsonify({"error": "Missing required fields"}), 400
@@ -269,7 +279,7 @@ def contact_form():
     if not re.match(EMAIL_REGEX, email):
         return jsonify({"error": "Invalid email address format"}), 400
         
-    success = send_contact_email(name, email, message)
+    success = send_contact_email(name, email, message, lang=lang)
     if success:
         return jsonify({"status": "success", "message": "Message sent successfully"}), 200
     else:
@@ -310,6 +320,10 @@ def stripe_webhook():
                 # Confirm booking status
                 confirm_booking(booking["id"])
                 booking["status"] = "confirmed" # Update locally for notifications
+                
+                # Retrieve lang from Stripe metadata
+                lang = session.get("metadata", {}).get("lang", "en")
+                booking["lang"] = lang
                 
                 # Send email confirmations with calendar invites (.ics)
                 send_booking_emails(booking)
