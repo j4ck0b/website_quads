@@ -1,7 +1,7 @@
 const translations = {
     en: {
         "seo.title": "Teide Quad Tour Tenerife | #1 Excursion from Las Américas",
-        "seo.description": "⭐ 4.9/5 (480+ reviews) | Premium 550cc quad tours to Mount Teide. Small groups, sunset & afternoon tours. Book instantly via WhatsApp. From €120.",
+        "seo.description": "⭐ 4.9/5 | Premium 550cc quad tours to Mount Teide. Small groups, sunset & afternoon tours. Book instantly via WhatsApp. From €120.",
         "seo.title.guides.html": "Tenerife Quad Excursion Guides & Mount Teide Tips | Prime Quads",
         "seo.description.guides.html": "Read our professional guides on how to plan your Mount Teide quad tour and discover the best off-road routes and trails in Tenerife.",
         "nav.tour": "The Tour",
@@ -36,7 +36,7 @@ const translations = {
         "tour.title": "Teide National Park Quad Expedition",
         "tour.subtitle": "Tenerife's #1 Volcanic Adventure",
         "tour.badge": "Best Seller",
-        "tour.rating": "⭐ 4.9 (480+ Reviews)",
+        "tour.rating": "⭐ 4.9 (Google Reviews)",
         
         "tour.duration.label": "Duration",
         "tour.duration.val": "3.5 Hours",
@@ -207,10 +207,10 @@ const translations = {
         "calendar.day.sun": "Su"
     },
     pl: {
-        "seo.title": "Quady na Teneryfie | Wycieczka na Teide z Las Américas | Prime Quads",
-        "seo.title.index.html": "Quady Teneryfa | Wycieczki na Quadach – Prime Quads",
-        "seo.description": "⭐ Ocena 4.9/5 (480+ opinii) | Wyprawy na quadach 550cc na wulkan Teide. Kameralne grupy, zachody słońca. Zarezerwuj przez WhatsApp od €120.",
-        "seo.description.index.html": "⭐ 4.9/5 | Quady na Teneryfie – wycieczka na wulkan Teide. Quady 550cc, kameralne grupy, zachód słońca. Rezerwacja przez WhatsApp. Od €120.",
+        "seo.title": "Quady na Teneryfie | Wycieczki i Quady na Teide z Prime Quads",
+        "seo.title.index.html": "Quady Teneryfa | Quady na Teneryfie z Prime Quads",
+        "seo.description": "⭐ 4.9/5 | Wycieczki i quady na Teneryfie z polskim przewodnikiem! Odkryj wulkan Teide i wjedź ponad chmury z Prime Quads. Zarezerwuj online od €120.",
+        "seo.description.index.html": "⭐ 4.9/5 | Najlepsze quady na Teneryfie! Przeżyj niezapomnianą wycieczkę na wulkan Teide z Prime Quads. Zarezerwuj quady Teneryfa od €120.",
         "seo.title.guides.html": "Poradniki wycieczek na quadach na Teide | Prime Quads",
         "seo.description.guides.html": "Przeczytaj nasze profesjonalne poradniki o tym, jak zaplanować wycieczkę quadami na wulkan Teide i poznaj najlepsze trasy off-road na Teneryfie.",
         "nav.tour": "Wycieczka",
@@ -222,13 +222,13 @@ const translations = {
         "nav.home": "Strona Główna",
         "nav.guides": "Poradniki",
         "hero.title.badge": "Wycieczki na Teneryfie",
-        "hero.rotate.1": "Quady na Teneryfie — wycieczka quadem na Teide",
-        "hero.rotate.2": "Terenowy Off-road",
-        "hero.rotate.3": "Zachody słońca w chmurach",
-        "hero.rotate.4": "Przygoda i adrenalina",
-        "hero.rotate.5": "Kameralne grupy",
+        "hero.rotate.1": "Quady na Teneryfie z Prime Quads",
+        "hero.rotate.2": "Najlepsze wycieczki — Quady Teneryfa",
+        "hero.rotate.3": "Wyprawa na wulkan Teide z Las Américas",
+        "hero.rotate.4": "Zachód słońca ponad chmurami z Prime Quads",
+        "hero.rotate.5": "Kameralne grupy i quady 550cc XL",
 
-        "hero.subtitle": "Niezapomniana wyprawa i wycieczka na quadach do Parku Narodowego Teide ze startem w Las Américas. Odkryj quady na Teneryfie i jedź ponad chmurami.",
+        "hero.subtitle": "Odkryj quady na Teneryfie z Prime Quads! Niezapomniana wyprawa i wycieczka na quadach do Parku Narodowego Teide ze startem w Las Américas. Wybierz najlepsze quady Teneryfa i jedź ponad chmurami.",
         "hero.cta": "Rezerwuj Teraz",
         "hero.explore": "Zobacz Szczegóły",
         
@@ -243,10 +243,10 @@ const translations = {
         "features.4.title": "Punkty Widokowe",
         "features.4.desc": "Cudowne punkty widokowe i sesje zdjęciowe.",
         
-        "tour.title": "Wyprawa Quadami do Parku Narodowego Teide",
+        "tour.title": "Wycieczka i Wyprawa na Teide z Prime Quads Tenerife",
         "tour.subtitle": "Przygoda nr 1 na Teneryfie",
         "tour.badge": "Bestseller",
-        "tour.rating": "⭐ 4.9 (480+ Opinii)",
+        "tour.rating": "⭐ 4.9 (Opinie Google)",
         
         "tour.duration.label": "Czas trwania",
         "tour.duration.val": "3.5 Godziny",
@@ -259,7 +259,7 @@ const translations = {
         "tour.license.label": "Wymagania",
         "tour.license.val": "Prawo jazdy kat. B ważne od min. 1 roku",
         
-        "tour.description": "Wyrusz na niesamowitą górską przygodę na Teneryfie! Ta ekskluzywna wyprawa quadami zabierze Cię z naszego biura w Las Américas, prowadząc przez malownicze górskie drogi wprost do spektakularnych krajobrazów Parku Narodowego Teide. Przejedziesz przez majestatyczne lasy sosnowe Corona Forestal oraz pokonasz niesamowite pola lawy wulkanicznej, wjeżdżając na wysokość ponad 2000 metrów n.p.m. Po drodze zatrzymamy się w kilku wyjątkowych miejscach, by podziwiać zapierające dech w piersiach widoki i zrobić pamiątkowe zdjęcia z majestatycznym szczytem wulkanu Teide. Idealna wyprawa dla par, rodzin oraz poszukiwaczy przygód poszukujących najlepszych wycieczek na quadach na Teneryfie.",
+        "tour.description": "Wyrusz na niesamowitą górską przygodę z Prime Quads! Nasza ekskluzywna wycieczka na quady na Teneryfie zabierze Cię z biura w Las Américas, prowadząc przez malownicze drogi wprost do spektakularnych krajobrazów Parku Narodowego Teide. Przejedziesz przez lasy Corona Forestal oraz pola wulkaniczne, wjeżdżając na wysokość ponad 2000 m n.p.m. Zatrzymamy się w wyjątkowych punktach widokowych, by podziwiać wulkan Teide. To idealna wyprawa dla par, rodzin i każdego, kto szuka niezapomnianej przygody pod hasłem quady Teneryfa.",
         
         "tour.highlights.title": "Co jest w cenie",
         "tour.highlight.1": "Nowoczesny dwu- lub jednoosobowy quad 550cc XL",
@@ -333,7 +333,7 @@ const translations = {
         "faq.title": "Najczęściej Zadawane Pytania",
         "faq.subtitle": "Masz pytania dotyczące wycieczek na quadach na Teneryfie i wypraw na wulkan Teide? Przeczytaj poniższe odpowiedzi.",
         "faq.q1": "Jaka jest najlepsza wycieczka na quadach na Teneryfie?",
-        "faq.a1": "Nasza wycieczka do Parku Narodowego Teide to najpopularniejsza wyprawa na quadach na Teneryfie. Wyruszamy z Las Américas, przejeżdżamy przez malownicze lasy sosnowe Corona Forestal i docieramy na wysokość ponad 2000 metrów, wprost na niesamowite pola lawy wulkanicznej u stóp Teide.",
+        "faq.a1": "Nasza wycieczka do Parku Narodowego Teide organizowana przez Prime Quads to najwyżej oceniana wyprawa na quady na Teneryfie. Wyruszamy z Las Américas, przejeżdżamy przez malownicze lasy sosnowe Corona Forestal i docieramy na wysokość ponad 2000 metrów, wprost na niesamowite pola lawy wulkanicznej u stóp Teide. Jeśli interesują Cię profesjonalne quady Teneryfa, nasza oferta jest bezkonkurencyjna.",
         "faq.q2": "Czy potrzebne jest prawo jazdy na quady na Teneryfie?",
         "faq.a2": "Tak, aby móc kierować quadem na drogach publicznych na Teneryfie, wymagane jest fizyczne prawo jazdy kategorii B (samochodowe), które jest ważne od minimum 1 roku. Pasażerowie nie muszą posiadać prawa jazdy, ale muszą mieć ukończone 7 lat.",
         "faq.q3": "Jak się ubrać na wycieczkę quadem na Teide?",
@@ -345,7 +345,7 @@ const translations = {
         "faq.q6": "Czy wycieczki na quadach są bezpieczne dla początkujących?",
         "faq.a6": "Tak. Quady 550cc XL są w pełni automatyczne, stabilne i łatwe w obsłudze. Przed każdą wyprawą przewodnicy przeprowadzają szkolenie BHP. Grupy liczą maksymalnie 5 quadów, co zapewnia indywidualną opiekę.",
         "faq.q7": "O której godzinie są wycieczki na quadach na Teneryfie?",
-        "faq.a7": "Prime Quads oferuje dwa terminy: wycieczka popołudniowa o 13:00 i wycieczka o zachodzie słońca o 18:00. Wyjazd o zachodzie słońca jest szczególnie polecany – panorama ponad chmurami w barwach pomarańczu i fioletu jest niezapomniana.",
+        "faq.a7": "Firma Prime Quads oferuje dwa terminy na quady na Teneryfie: wycieczka popołudniowa o 13:00 i wycieczka o zachodzie słońca o 18:00. Wyjazd o zachodzie słońca to absolutny hit jeśli chodzi o quady Teneryfa – panorama ponad chmurami w barwach pomarańczu i fioletu jest niezapomniana.",
 
         "img.alt.logo": "Prime Quads Teneryfa - Wycieczki i wyprawy na quadach na wulkan Teide",
         "img.alt.hero": "Wyprawa na quadach na Teide Teneryfa - Off-road o zachodzie słońca - Prime Quads",
@@ -365,8 +365,8 @@ const translations = {
         "guides.hero.subtitle": "Poznaj profesjonalne wskazówki, mapy i przewodniki, które uczynią Twoją wycieczkę quadem na Teide niezapomnianą.",
         "guides.art1.category": "Planowanie Wycieczki",
         "guides.art1.readtime": "5 Min Czytania",
-        "guides.art1.title": "Jak zaplanować wycieczkę na Teide quadem (Kompletny Poradnik)",
-        "guides.art1.p1": "Wulkan Teide to największa duma Teneryfy, wznosząca się na ponad 3700 metrów nad poziomem Oceanu Atlantyckiego. Eksploracja wysokogórskich lasów i wulkanicznych pól lawy na pokładzie potężnego quada 550cc to jedna z najpopularniejszych atrakcji na wyspie. Aby zapewnić sobie bezpieczną i bezproblemową przygodę, przeczytaj wszystko, co warto wiedzieć przed startem.",
+        "guides.art1.title": "Jak zaplanować wycieczkę na Teide i quady na Teneryfie z Prime Quads",
+        "guides.art1.p1": "Wulkan Teide to największa duma Teneryfy, wznosząca się na ponad 3700 metrów nad poziomem oceanu. Eksploracja wysokogórskich lasów i wulkanicznych pól lawy z Prime Quads to jedna z najpopularniejszych atrakcji na wyspie. Aby zaplanować niezapomniane quady na Teneryfie i w pełni cieszyć się przygodą, przeczytaj nasz poradnik przed startem.",
         "guides.art1.h1": "1. Wybierz odpowiednią porę dnia",
         "guides.art1.p2": "Nasze wycieczki na quadach na Teide odbywają się w trzech różnych porach, z których każda oferuje zupełnie inne wrażenia wizualne:",
         "guides.art1.h2": "2. Co zabrać i jak się ubrać",
@@ -381,8 +381,8 @@ const translations = {
         "guides.art1.li6": "<strong>Ubranie:</strong> Komfortowe warstwy. Prime Quads zapewnia ciepłe kurtki wiatroodporne dla wszystkich uczestników – bezpłatnie.",
         "guides.art2.category": "Trasy i Szlaki",
         "guides.art2.readtime": "4 Min Czytania",
-        "guides.art2.title": "Najpiękniejsze trasy quad na Teneryfie i szlaki off-road",
-        "guides.art2.p1": "Mikroklimat Teneryfy i jej wulkaniczny charakter oferują jedne z najbardziej zróżnicowanych terenów off-road w Europie. Od piaszczystych szlaków wybrzeża, przez lasy sosnowe, po surowe wulkaniczne pustynie. Poznaj trasy, dzięki którym jazda quadem na Teneryfie to absolutny must-have.",
+        "guides.art2.title": "Najpiękniejsze trasy i wycieczki na quady na Teneryfie z Prime Quads",
+        "guides.art2.p1": "Mikroklimat wyspy i jej wulkaniczny charakter oferują zróżnicowane tereny off-road. Od leśnych szlaków po wulkaniczne pustynie – poznaj trasy, dzięki którym quady Teneryfa to absolutny hit. Przekonaj się, dlaczego wycieczki z Prime Quads cieszą się tak dużą popularnością.",
         "guides.art2.h1": "Leśny szlak Corona Forestal",
         "guides.art2.p2": "Klasyczna trasa prowadząca wokół stóp Parku Narodowego Teide. Przejazd przez gęsty las sosnowy oferuje doskonałe połączenie szutrowych ścieżek i asfaltowych zakrętów. Niesamowity zapach żywicy oraz zjawisko morza chmur sprawiają, że to jedna z najbardziej klimatycznych tras na świecie.",
         "guides.art2.h2": "Wulkaniczne pola lawy pod Teide",
@@ -391,8 +391,8 @@ const translations = {
         "guides.art2.p4": "Park Narodowy Teide jest obszarem chronionym UNESCO. Jazda off-road jest ściśle kontrolowana, by chronić endemiczną florę i faunę. Dołączając do Prime Quads, jedziesz wyłącznie legalnymi, zatwierdzonymi szlakami z doświadczonym przewodnikiem, dbając o środowisko i ciesząc się pełnią możliwości quadów 550cc.",
         "guides.art3.category": "Poradniki",
         "guides.art3.readtime": "6 Min Czytania",
-        "guides.art3.title": "Quady na Teneryfie — Kompletny Przewodnik",
-        "guides.art3.p1": "Kompletny przewodnik o wycieczkach na quadach na Teneryfie i wyprawach na Teide. Poznaj ceny, trasy, wymagania i wskazówki praktyczne.",
+        "guides.art3.title": "Quady Teneryfa i Wyprawa na Teide — Przewodnik Prime Quads",
+        "guides.art3.p1": "Kompletny przewodnik o wycieczkach i wyprawach na quady na Teneryfie z Prime Quads. Poznaj ceny, trasy, wymagania i wskazówki praktyczne.",
         "guides.art3.btn": "Przeczytaj Poradnik",
         
         "success.title": "Rezerwacja Potwierdzona | Prime Quads Teneryfa",
@@ -418,7 +418,7 @@ const translations = {
     },
     es: {
         "seo.title": "Excursiones en Quad Tenerife | Tour al Teide desde Las Américas | Prime Quads",
-        "seo.description": "⭐ 4.9/5 (480+ opiniones) | Tours en quad de 550cc al Teide. Grupos reducidos, excursiones al atardecer. Reserva por WhatsApp desde €120.",
+        "seo.description": "⭐ 4.9/5 | Tours en quad de 550cc al Teide. Grupos reducidos, excursiones al atardecer. Reserva por WhatsApp desde €120.",
         "seo.title.guides.html": "Guías de rutas en quad y consejos para subir al Teide | Prime Quads",
         "seo.description.guides.html": "Lee nuestras guías profesionales sobre cómo planificar tu tour en quad al Teide y descubre las mejores rutas de aventura off-road en Tenerife.",
         "nav.tour": "El Tour",
@@ -453,7 +453,7 @@ const translations = {
         "tour.title": "Expedición en Quad al Parque Nacional del Teide",
         "tour.subtitle": "La Aventura Volcánica N.º 1 en Tenerife",
         "tour.badge": "Más Vendido",
-        "tour.rating": "⭐ 4.9 (480+ Opiniones)",
+        "tour.rating": "⭐ 4.9 (Reseñas de Google)",
         
         "tour.duration.label": "Duración",
         "tour.duration.val": "3.5 Horas",
