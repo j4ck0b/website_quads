@@ -3,6 +3,11 @@
    All DOM queries are null-guarded to work on every page.
    ============================================================= */
 
+// ─── Configuration ────────────────────────────────────────────
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')
+    ? 'http://localhost:5005'
+    : 'https://prime-quads-backend.onrender.com'; // Zmień na swój docelowy adres API w chmurze
+
 // ─── State ────────────────────────────────────────────────────
 let currentLang = 'en';
 let activeRotatorIndex = 0;
@@ -507,7 +512,7 @@ function selectDate(dateVal) {
         slotsContainer.innerHTML = '<div style="color:var(--text-muted);font-size:.95rem;font-style:italic;text-align:center;padding:2rem 0;">' + loadingText + '</div>';
     }
 
-    fetch('http://localhost:5005/api/availability?date=' + dateVal)
+    fetch(API_BASE_URL + '/api/availability?date=' + dateVal)
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (data && data.slots) {
@@ -674,7 +679,7 @@ function initBookingForm() {
             submitBtn.innerText = currentLang === 'pl' ? 'Przekierowywanie…' : currentLang === 'es' ? 'Redirigiendo…' : 'Redirecting to payment…';
         }
 
-        fetch('http://localhost:5005/api/bookings', {
+        fetch(API_BASE_URL + '/api/bookings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
