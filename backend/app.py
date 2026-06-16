@@ -14,40 +14,65 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 # Import our custom database and integration layers
 from db import init_db, get_slot_availability, create_booking, get_booking_by_stripe_session, confirm_booking
-from email_sender import send_booking_emails
+from email_sender import send_booking_emails, send_contact_email
 from calendar_sync import sync_to_google_calendar
 
 app = Flask(__name__)
 
-# Configure CORS
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5500")
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# Configure CORS (Restrict origins to trusted domains, allow all in development mode)
+if os.getenv("FLASK_ENV") == "development":
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+else:
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5500")
+    allowed_origins = [url.strip() for url in FRONTEND_URL.split(",") if url.strip()]
+    if not allowed_origins:
+        allowed_origins = ["*"]
+    CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
-# Simple in-memory rate limiting to protect endpoints against abuse
-IP_REQUESTS = {}
-RATE_LIMIT_MAX = 60  # Max 60 requests per minute
-RATE_LIMIT_WINDOW = 60  # 60 seconds
+# Endpoint-specific rate limiting configurations
+PATH_LIMITS = {
+    "/api/contact": (3, 60),      # 3 requests per 60 seconds
+    "/api/bookings": (5, 60),     # 5 requests per 60 seconds
+    "/api/availability": (30, 60) # 30 requests per 60 seconds
+}
+IP_PATH_REQUESTS = {}
 
 @app.before_request
 def rate_limiter():
-    """Applies a simple rate limiter per client IP address."""
+    """Applies strict rate limiting per path & IP, respecting proxies on Vercel."""
     import time
-    ip = request.remote_addr
+    path = request.path
+    if path not in PATH_LIMITS:
+        return
+        
+    # Extract client IP (handle Vercel proxies via X-Forwarded-For)
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    if ip and "," in ip:
+        ip = ip.split(",")[0].strip()
+        
     now = time.time()
+    limit_max, limit_window = PATH_LIMITS[path]
     
-    # Clean up old records
-    if ip in IP_REQUESTS:
-        timestamps = [t for t in IP_REQUESTS[ip] if now - t < RATE_LIMIT_WINDOW]
-        IP_REQUESTS[ip] = timestamps
-    else:
-        IP_REQUESTS[ip] = []
+    if ip not in IP_PATH_REQUESTS:
+        IP_PATH_REQUESTS[ip] = {}
+    if path not in IP_PATH_REQUESTS[ip]:
+        IP_PATH_REQUESTS[ip][path] = []
         
-    if len(IP_REQUESTS[ip]) >= RATE_LIMIT_MAX:
-        return jsonify({"error": "Too many requests. Please try again later."}), 429
+    # Clean up older records
+    IP_PATH_REQUESTS[ip][path] = [t for t in IP_PATH_REQUESTS[ip][path] if now - t < limit_window]
+    
+    if len(IP_PATH_REQUESTS[ip][path]) >= limit_max:
+        return jsonify({"error": f"Too many requests to {path}. Please try again later."}), 429
         
-    # Exclude stripe webhooks from rate limiting
-    if request.path != "/api/webhook":
-        IP_REQUESTS[ip].append(now)
+    IP_PATH_REQUESTS[ip][path].append(now)
+
+@app.after_request
+def add_security_headers(response):
+    """Adds standard security headers to all HTTP responses."""
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
 
 @app.route("/api/availability", methods=["GET"])
 def check_availability():
@@ -84,14 +109,38 @@ def new_booking():
     phone = data.get("phone")
     date_str = data.get("date")
     time_str = data.get("time")
-    single_quads = int(data.get("single_quads", 0))
-    double_quads = int(data.get("double_quads", 0))
     
+    # Input Validation & Sanitization
     if not all([name, email, phone, date_str, time_str]):
         return jsonify({"error": "Missing required fields"}), 400
         
-    if single_quads <= 0 and double_quads <= 0:
+    # Limit lengths to prevent memory/DoS abuse
+    name = str(name).strip()[:100]
+    email = str(email).strip()[:100]
+    phone = str(phone).strip()[:30]
+    date_str = str(date_str).strip()[:15]
+    time_str = str(time_str).strip()[:10]
+    
+    # Validate email format
+    import re
+    EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    if not re.match(EMAIL_REGEX, email):
+        return jsonify({"error": "Invalid email address format"}), 400
+        
+    try:
+        single_quads = int(data.get("single_quads", 0))
+        double_quads = int(data.get("double_quads", 0))
+    except (ValueError, TypeError):
+        return jsonify({"error": "Quad counts must be integers"}), 400
+        
+    if single_quads < 0 or double_quads < 0:
+        return jsonify({"error": "Quad counts cannot be negative"}), 400
+        
+    if single_quads == 0 and double_quads == 0:
         return jsonify({"error": "Must select at least 1 quad bike"}), 400
+        
+    if single_quads + double_quads > 5:
+        return jsonify({"error": "Cannot book more than 5 quads in total"}), 400
         
     try:
         # Check real-time availability before booking
@@ -107,8 +156,8 @@ def new_booking():
                 "error": f"Not enough slots available. Only {remaining_capacity} quad(s) left for this tour."
             }), 400
             
-        # Prices: Single = €1, Double = €1 (TEMPORARY FOR TESTING)
-        total_price = (single_quads * 1) + (double_quads * 1)
+        # Reverted prices back to standard (Single = €120, Double = €140)
+        total_price = (single_quads * 120) + (double_quads * 140)
         booking_id = str(uuid.uuid4())
         
         # Build Stripe Checkout Session
@@ -121,7 +170,7 @@ def new_booking():
                         'name': 'Teide Quad Expedition - Single Quad (1 Driver)',
                         'description': 'Premium 550cc quad tour to Mount Teide (Single Rider)',
                     },
-                    'unit_amount': 100, # €1.00
+                    'unit_amount': 12000, # €120.00
                 },
                 'quantity': single_quads,
             })
@@ -134,7 +183,7 @@ def new_booking():
                         'name': 'Teide Quad Expedition - Double Quad (Driver + Passenger)',
                         'description': 'Premium 550cc quad tour to Mount Teide (Double Rider)',
                     },
-                    'unit_amount': 100, # €1.00
+                    'unit_amount': 14000, # €140.00
                 },
                 'quantity': double_quads,
             })
@@ -173,6 +222,38 @@ def new_booking():
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/contact", methods=["POST"])
+def contact_form():
+    """
+    Handles submissions from the website contact form, validates fields, and sends an email to the owner.
+    """
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid request payload"}), 400
+        
+    name = data.get("name")
+    email = data.get("email")
+    message = data.get("message")
+    
+    if not all([name, email, message]):
+        return jsonify({"error": "Missing required fields"}), 400
+        
+    # Validate and sanitize inputs to protect against large payloads
+    name = str(name).strip()[:100]
+    email = str(email).strip()[:100]
+    message = str(message).strip()[:3000]
+    
+    import re
+    EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    if not re.match(EMAIL_REGEX, email):
+        return jsonify({"error": "Invalid email address format"}), 400
+        
+    success = send_contact_email(name, email, message)
+    if success:
+        return jsonify({"status": "success", "message": "Message sent successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to send email. Check backend logs."}), 500
 
 @app.route("/api/webhook", methods=["POST"])
 def stripe_webhook():

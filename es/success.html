@@ -25,7 +25,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="canonical" href="https://primequads.com/es/success.html">
-                                                                <!-- Multilingual Alternate SEO Links -->
+                                                                    <!-- Multilingual Alternate SEO Links -->
     <link rel="alternate" hreflang="en" href="https://primequads.com/success.html">
     <link rel="alternate" hreflang="pl" href="https://primequads.com/pl/success.html">
     <link rel="alternate" hreflang="es" href="https://primequads.com/es/success.html">
@@ -101,7 +101,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const sessionId = urlParams.get('session_id');
-            const backendUrl = "http://localhost:5005"; // Can be dynamic or relative in production
+            const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')
+                ? 'http://localhost:5005'
+                : ''; // Puste dla produkcji na Vercelu (ścieżki relatywne)
 
             if (sessionId) {
                 fetch(`${backendUrl}/api/booking-details?session_id=${sessionId}`)

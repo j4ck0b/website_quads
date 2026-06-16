@@ -242,17 +242,46 @@ function initContactForm() {
     if (!form) return;
     form.addEventListener('submit', e => {
         e.preventDefault();
+        
+        const nameInput = form.querySelector('input[type="text"]');
+        const emailInput = form.querySelector('input[type="email"]');
+        const messageInput = form.querySelector('textarea');
         const btn = form.querySelector('button');
         if (!btn) return;
+        
+        const name = nameInput ? nameInput.value : '';
+        const email = emailInput ? emailInput.value : '';
+        const message = messageInput ? messageInput.value : '';
+        
         const t = (translations && translations[currentLang]) || {};
         btn.innerText = t['contact.form.sending'] || 'Sending…';
         btn.disabled = true;
-        setTimeout(() => {
+        
+        fetch(API_BASE_URL + '/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, email: email, message: message })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errData => {
+                    throw new Error(errData.error || 'Failed to send message');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
             showPremiumToast(t['contact.form.success'] || 'Thank you!', 'success');
             form.reset();
+        })
+        .catch(err => {
+            console.error('Contact form error:', err);
+            showPremiumToast(err.message || 'Error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
             btn.innerText = t['contact.form.submit'] || 'Send Message';
             btn.disabled = false;
-        }, 1500);
+        });
     });
 }
 
@@ -600,7 +629,7 @@ window.adjustQuad = adjustQuad;
 
 function updateBookingPrice() {
     var priceEl = document.getElementById('booking-total-price');
-    if (priceEl) priceEl.innerText = '€' + (singleQuadsCount * 1 + doubleQuadsCount * 1);
+    if (priceEl) priceEl.innerText = '€' + (singleQuadsCount * 120 + doubleQuadsCount * 140);
 }
 window.updateBookingPrice = updateBookingPrice;
 

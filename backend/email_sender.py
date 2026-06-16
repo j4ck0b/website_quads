@@ -15,6 +15,7 @@ SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 BUSINESS_OWNER_EMAIL = os.getenv("BUSINESS_OWNER_EMAIL")
 EMAIL_FROM = os.getenv("EMAIL_FROM", SMTP_USER)
+REPLY_TO = os.getenv("REPLY_TO", "info@primequads.com")
 
 def generate_ics_content(booking):
     """
@@ -79,6 +80,7 @@ def send_booking_emails(booking):
         msg_client = MIMEMultipart()
         msg_client['From'] = EMAIL_FROM
         msg_client['To'] = booking['email']
+        msg_client['Reply-To'] = REPLY_TO
         msg_client['Subject'] = 'Booking Confirmed - Teide Quad Expedition ✨'
         
         body_client = (
@@ -121,6 +123,7 @@ def send_booking_emails(booking):
         msg_owner = MIMEMultipart()
         msg_owner['From'] = EMAIL_FROM
         msg_owner['To'] = owner_email
+        msg_owner['Reply-To'] = booking['email']
         msg_owner['Subject'] = f"New Booking Confirmed: {booking['name']} - {booking['date']}"
         
         body_owner = (
@@ -155,5 +158,43 @@ def send_booking_emails(booking):
             
     except Exception as e:
         print(f"Error sending email to business owner: {e}")
+        
+    return True
+
+def send_contact_email(name, email, message):
+    """
+    Sends contact form details to the business owner.
+    """
+    # Verify SMTP configuration
+    if not all([SMTP_SERVER, SMTP_PORT, SMTP_USER, SMTP_PASSWORD]):
+        print("[WARNING] SMTP settings are incomplete in .env. Skipping contact email sending.")
+        return False
+        
+    owner_email = BUSINESS_OWNER_EMAIL or SMTP_USER
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_FROM
+        msg['To'] = owner_email
+        msg['Reply-To'] = email
+        msg['Subject'] = f"New Contact Message from {name} ✉️"
+        
+        body = (
+            f"You received a new message from the contact form on Prime Quads:\n\n"
+            f"👤 Name: {name}\n"
+            f"✉️ Email: {email}\n\n"
+            f"💬 Message:\n{message}\n"
+        )
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Connect & Send
+        with smtplib.SMTP(SMTP_SERVER, int(SMTP_PORT)) as server:
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.send_message(msg)
+            print(f"Contact email successfully sent to owner: {owner_email}")
+            
+    except Exception as e:
+        print(f"Error sending contact email: {e}")
+        return False
         
     return True
