@@ -188,14 +188,34 @@ def new_booking():
                 'quantity': double_quads,
             })
             
+        # Determine the redirect origin dynamically (handling local dev, custom domain, Vercel URLs)
+        origin = request.headers.get("Origin")
+        fallback_url = os.getenv("FRONTEND_URL", "http://localhost:5500").split(",")[0].strip()
+        if not origin:
+            origin = fallback_url
+        else:
+            # Basic validation to ensure origin is a trusted domain
+            import urllib.parse
+            parsed_origin = urllib.parse.urlparse(origin).hostname
+            if parsed_origin:
+                is_trusted = (
+                    parsed_origin in ["localhost", "127.0.0.1"] or
+                    parsed_origin.endswith("primequads.com") or
+                    parsed_origin.endswith("vercel.app")
+                )
+                if not is_trusted:
+                    origin = fallback_url
+            else:
+                origin = fallback_url
+
         # Create Stripe Session
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=line_items,
             mode='payment',
             customer_email=email,
-            success_url=f"{FRONTEND_URL}/success.html?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{FRONTEND_URL}/cancel.html",
+            success_url=f"{origin}/success.html?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{origin}/cancel.html",
             metadata={
                 "booking_id": booking_id
             }
