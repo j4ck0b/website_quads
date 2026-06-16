@@ -1,10 +1,15 @@
 import os
+import re
 from datetime import datetime, timedelta
 import pytz
+import dateutil.parser
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 GOOGLE_SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE")
+if GOOGLE_SERVICE_ACCOUNT_FILE and not os.path.isabs(GOOGLE_SERVICE_ACCOUNT_FILE):
+    GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), GOOGLE_SERVICE_ACCOUNT_FILE)
+
 GOOGLE_CALENDAR_ID = os.getenv("GOOGLE_CALENDAR_ID", "primary")
 
 def sync_to_google_calendar(booking):
@@ -82,3 +87,133 @@ def sync_to_google_calendar(booking):
     except Exception as e:
         print(f"Error syncing to Google Calendar: {e}")
         return False
+
+def parse_quads_from_event(summary, description=""):
+    """
+    Parses the number of quads blocked or booked from an event title/description.
+    """
+    summary = (summary or "").strip()
+    description = (description or "").strip()
+    
+    # 1. Check if it's a manual block/closure
+    block_keywords = ["block", "blok", "close", "zamkn", "priv", "prywatn", "cerrar", "ocupado", "off"]
+    if any(kw in summary.lower() for kw in block_keywords) or any(kw in description.lower() for kw in block_keywords):
+        # Try to find a valid quad count (1 to 5) in the summary/description
+        nums = [int(n) for n in re.findall(r"\b(\d+)\b", summary + " " + description) if 1 <= int(n) <= 5]
+        if nums:
+            return nums[0]
+        else:
+            # Block the entire tour slot (default max capacity is 5)
+            return 5
+            
+    # 2. Check for standard pattern (XS, YD) or similar in summary/description
+    single_count = 0
+    double_count = 0
+    text_to_search = f"{summary} {description}"
+    
+    # Match XS / X S / Xs
+    s_match = re.search(r"(\d+)\s*[sS]\b", text_to_search)
+    if s_match:
+        single_count = int(s_match.group(1))
+    else:
+        # Match "X single"
+        s_match_text = re.search(r"(\d+)\s*single", text_to_search, re.IGNORECASE)
+        if s_match_text:
+            single_count = int(s_match_text.group(1))
+            
+    # Match XD / X D / Xd
+    d_match = re.search(r"(\d+)\s*[dD]\b", text_to_search)
+    if d_match:
+        double_count = int(d_match.group(1))
+    else:
+        # Match "X double" or "X podwoj" or "X doble"
+        d_match_text = re.search(r"(\d+)\s*(double|podw|doble)", text_to_search, re.IGNORECASE)
+        if d_match_text:
+            double_count = int(d_match_text.group(1))
+            
+    if single_count > 0 or double_count > 0:
+        return single_count + double_count
+        
+    # 3. If it contains booking keywords, default to 1 or any number found in summary
+    booking_keywords = ["quad", "tour", "wycieczka", "book", "rezerw", "reser"]
+    if any(kw in summary.lower() for kw in booking_keywords):
+        nums = re.findall(r"\b(\d+)\b", summary)
+        if nums:
+            return int(nums[0])
+        return 1
+        
+    # 4. Default for other calendar events
+    return 1
+
+def get_calendar_events_for_date(date_str):
+    """
+    Queries Google Calendar API for events on the given date (YYYY-MM-DD).
+    Returns a dictionary of occupied capacity per slot, e.g. {"13:00": 2, "18:00": 0}.
+    If Google credentials are not set or calendar sync fails, returns None.
+    """
+    if not GOOGLE_SERVICE_ACCOUNT_FILE or not os.path.exists(GOOGLE_SERVICE_ACCOUNT_FILE):
+        return None
+        
+    try:
+        # Define scopes
+        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        
+        # Authenticate using Service Account
+        creds = service_account.Credentials.from_service_account_file(
+            GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
+        
+        # Build Calendar service
+        service = build('calendar', 'v3', credentials=creds)
+        
+        # Tenerife timezone
+        tz = pytz.timezone('Atlantic/Canary')
+        
+        # Start and end of the day in Tenerife local time
+        start_dt = tz.localize(datetime.strptime(f"{date_str} 00:00:00", "%Y-%m-%d %H:%M:%S"))
+        end_dt = tz.localize(datetime.strptime(f"{date_str} 23:59:59", "%Y-%m-%d %H:%M:%S"))
+        
+        # Format for API
+        timeMin = start_dt.isoformat()
+        timeMax = end_dt.isoformat()
+        
+        # Fetch events
+        events_result = service.events().list(
+            calendarId=GOOGLE_CALENDAR_ID,
+            timeMin=timeMin,
+            timeMax=timeMax,
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+        events = events_result.get('items', [])
+        
+        occupied = {
+            "13:00": 0,
+            "18:00": 0
+        }
+        
+        for event in events:
+            # Get event start time
+            start_time_str = event['start'].get('dateTime')
+            if not start_time_str:
+                # All-day events do not block specific slots by default unless explicitly matching booking keywords
+                continue
+                
+            # Parse start time and convert to local Tenerife time
+            event_start = dateutil.parser.isoparse(start_time_str).astimezone(tz)
+            hour = event_start.hour
+            
+            # Count quads blocked
+            quads = parse_quads_from_event(event.get('summary'), event.get('description'))
+            
+            # Map start hour to slots (13:00 / 18:00)
+            if 12 <= hour <= 15:
+                occupied["13:00"] += quads
+            elif 17 <= hour <= 20:
+                occupied["18:00"] += quads
+                
+        return occupied
+        
+    except Exception as e:
+        print(f"[ERROR] Error fetching events from Google Calendar: {e}")
+        return None

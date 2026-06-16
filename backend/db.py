@@ -3,6 +3,7 @@ import sqlite3
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime, timedelta
+from calendar_sync import get_calendar_events_for_date
 
 DB_TYPE = os.getenv("DB_TYPE", "sqlite").lower()
 SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
@@ -160,23 +161,70 @@ def get_active_bookings(date_str):
         conn.close()
     return bookings_list
 
+def get_pending_bookings(date_str):
+    """
+    Returns only pending bookings on a specific date created in the last 15 minutes.
+    """
+    conn = get_db_connection()
+    bookings_list = []
+    try:
+        fifteen_minutes_ago = datetime.now() - timedelta(minutes=15)
+        
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT time, single_quads, double_quads FROM bookings 
+                    WHERE date = %s AND status = 'pending' AND created_at > %s
+                """, (date_str, fifteen_minutes_ago))
+                bookings_list = [dict(row) for row in cur.fetchall()]
+        else:
+            cur = conn.cursor()
+            fifteen_mins_ago_str = fifteen_minutes_ago.isoformat()
+            cur.execute("""
+                SELECT time, single_quads, double_quads FROM bookings 
+                WHERE date = ? AND status = 'pending' AND created_at > ?
+            """, (date_str, fifteen_mins_ago_str))
+            bookings_list = [dict(row) for row in cur.fetchall()]
+    finally:
+        conn.close()
+    return bookings_list
+
 def get_slot_availability(date_str, max_capacity=5):
     """
     Calculates remaining quad capacity for standard time slots:
     '13:00' (Afternoon) and '18:00' (Sunset)
+    Queries Google Calendar if enabled, and combines it with recent pending bookings.
+    Falls back to querying the database if Google Calendar is not configured.
     """
-    bookings = get_active_bookings(date_str)
+    # Try fetching from Google Calendar first
+    cal_occupied = get_calendar_events_for_date(date_str)
     
-    # Initialize capacity
     slots = {
         "13:00": max_capacity,
         "18:00": max_capacity
     }
     
-    for b in bookings:
-        slot_time = b["time"]
-        quads_booked = int(b.get("single_quads", 0)) + int(b.get("double_quads", 0))
-        if slot_time in slots:
-            slots[slot_time] = max(0, slots[slot_time] - quads_booked)
-            
+    if cal_occupied is not None:
+        # Google Calendar is enabled and returned data
+        # We subtract calendar-occupied quads
+        for slot_time, quads_booked in cal_occupied.items():
+            if slot_time in slots:
+                slots[slot_time] = max(0, slots[slot_time] - quads_booked)
+                
+        # We also count pending database bookings created in the last 15 mins (to prevent double bookings during checkout)
+        pending_bookings = get_pending_bookings(date_str)
+        for b in pending_bookings:
+            slot_time = b["time"]
+            quads_booked = int(b.get("single_quads", 0)) + int(b.get("double_quads", 0))
+            if slot_time in slots:
+                slots[slot_time] = max(0, slots[slot_time] - quads_booked)
+    else:
+        # Fallback to local database (confirmed + pending bookings)
+        bookings = get_active_bookings(date_str)
+        for b in bookings:
+            slot_time = b["time"]
+            quads_booked = int(b.get("single_quads", 0)) + int(b.get("double_quads", 0))
+            if slot_time in slots:
+                slots[slot_time] = max(0, slots[slot_time] - quads_booked)
+                
     return slots

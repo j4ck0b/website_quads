@@ -14,6 +14,7 @@ SMTP_PORT = os.getenv("SMTP_PORT", "587")
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 BUSINESS_OWNER_EMAIL = os.getenv("BUSINESS_OWNER_EMAIL")
+EMAIL_FROM = os.getenv("EMAIL_FROM", SMTP_USER)
 
 def generate_ics_content(booking):
     """
@@ -76,7 +77,7 @@ def send_booking_emails(booking):
     # 1. Send email to Client
     try:
         msg_client = MIMEMultipart()
-        msg_client['From'] = SMTP_USER
+        msg_client['From'] = EMAIL_FROM
         msg_client['To'] = booking['email']
         msg_client['Subject'] = 'Booking Confirmed - Teide Quad Expedition ✨'
         
@@ -118,7 +119,7 @@ def send_booking_emails(booking):
     owner_email = BUSINESS_OWNER_EMAIL or SMTP_USER
     try:
         msg_owner = MIMEMultipart()
-        msg_owner['From'] = SMTP_USER
+        msg_owner['From'] = EMAIL_FROM
         msg_owner['To'] = owner_email
         msg_owner['Subject'] = f"New Booking Confirmed: {booking['name']} - {booking['date']}"
         

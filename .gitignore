@@ -8,6 +8,7 @@ ehthumbs.db
 # Secrets & Database files
 backend/.env
 backend/bookings.db
+backend/service-account.json
 
 # SEO Audits & Docs
 SEO_PL_PrimeQuads_2026.docx
