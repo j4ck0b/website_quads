@@ -600,7 +600,7 @@ window.adjustQuad = adjustQuad;
 
 function updateBookingPrice() {
     var priceEl = document.getElementById('booking-total-price');
-    if (priceEl) priceEl.innerText = '€' + (singleQuadsCount * 120 + doubleQuadsCount * 140);
+    if (priceEl) priceEl.innerText = '€' + (singleQuadsCount * 1 + doubleQuadsCount * 1);
 }
 window.updateBookingPrice = updateBookingPrice;
 
