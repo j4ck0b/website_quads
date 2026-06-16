@@ -156,8 +156,8 @@ def new_booking():
                 "error": f"Not enough slots available. Only {remaining_capacity} quad(s) left for this tour."
             }), 400
             
-        # Reverted prices back to standard (Single = €120, Double = €140)
-        total_price = (single_quads * 120) + (double_quads * 140)
+        # Temporary prices for testing (Single = €0.50, Double = €0.50)
+        total_price = (single_quads * 0.50) + (double_quads * 0.50)
         booking_id = str(uuid.uuid4())
         
         # Build Stripe Checkout Session
@@ -170,7 +170,7 @@ def new_booking():
                         'name': 'Teide Quad Expedition - Single Quad (1 Driver)',
                         'description': 'Premium 550cc quad tour to Mount Teide (Single Rider)',
                     },
-                    'unit_amount': 12000, # €120.00
+                    'unit_amount': 50, # €0.50
                 },
                 'quantity': single_quads,
             })
@@ -183,7 +183,7 @@ def new_booking():
                         'name': 'Teide Quad Expedition - Double Quad (Driver + Passenger)',
                         'description': 'Premium 550cc quad tour to Mount Teide (Double Rider)',
                     },
-                    'unit_amount': 14000, # €140.00
+                    'unit_amount': 50, # €0.50
                 },
                 'quantity': double_quads,
             })
