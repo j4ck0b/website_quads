@@ -17,8 +17,9 @@ def sync_to_google_calendar(booking):
     Inserts a confirmed booking directly into the business owner's Google Calendar
     using Google service account OAuth credentials.
     """
-    if not GOOGLE_SERVICE_ACCOUNT_FILE or not os.path.exists(GOOGLE_SERVICE_ACCOUNT_FILE):
-        print("[INFO] Google Service Account credentials file not found. Skipping Google Calendar direct sync.")
+    google_json_str = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+    if not google_json_str and (not GOOGLE_SERVICE_ACCOUNT_FILE or not os.path.exists(GOOGLE_SERVICE_ACCOUNT_FILE)):
+        print("[INFO] Google Service Account credentials not found. Skipping Google Calendar direct sync.")
         return False
         
     try:
@@ -26,9 +27,16 @@ def sync_to_google_calendar(booking):
         SCOPES = ['https://www.googleapis.com/auth/calendar']
         
         # Authenticate using Service Account
-        creds = service_account.Credentials.from_service_account_file(
-            GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
-        )
+        if google_json_str:
+            import json
+            info = json.loads(google_json_str)
+            creds = service_account.Credentials.from_service_account_info(
+                info, scopes=SCOPES
+            )
+        else:
+            creds = service_account.Credentials.from_service_account_file(
+                GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
+            )
         
         # Build Calendar service
         service = build('calendar', 'v3', credentials=creds)
@@ -151,7 +159,8 @@ def get_calendar_events_for_date(date_str):
     Returns a dictionary of occupied capacity per slot, e.g. {"13:00": 2, "18:00": 0}.
     If Google credentials are not set or calendar sync fails, returns None.
     """
-    if not GOOGLE_SERVICE_ACCOUNT_FILE or not os.path.exists(GOOGLE_SERVICE_ACCOUNT_FILE):
+    google_json_str = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+    if not google_json_str and (not GOOGLE_SERVICE_ACCOUNT_FILE or not os.path.exists(GOOGLE_SERVICE_ACCOUNT_FILE)):
         return None
         
     try:
@@ -159,9 +168,16 @@ def get_calendar_events_for_date(date_str):
         SCOPES = ['https://www.googleapis.com/auth/calendar']
         
         # Authenticate using Service Account
-        creds = service_account.Credentials.from_service_account_file(
-            GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
-        )
+        if google_json_str:
+            import json
+            info = json.loads(google_json_str)
+            creds = service_account.Credentials.from_service_account_info(
+                info, scopes=SCOPES
+            )
+        else:
+            creds = service_account.Credentials.from_service_account_file(
+                GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
+            )
         
         # Build Calendar service
         service = build('calendar', 'v3', credentials=creds)

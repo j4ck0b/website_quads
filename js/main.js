@@ -6,7 +6,7 @@
 // ─── Configuration ────────────────────────────────────────────
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')
     ? 'http://localhost:5005'
-    : 'https://prime-quads-backend.onrender.com'; // Zmień na swój docelowy adres API w chmurze
+    : ''; // Puste dla produkcji na Vercelu (ścieżki relatywne)
 
 // ─── State ────────────────────────────────────────────────────
 let currentLang = 'en';
