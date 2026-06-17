@@ -147,6 +147,7 @@ function setLanguage(lang) {
     // Text content
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
+        if (el.id === 'gallery-toggle-btn') return; // Handled separately below
         if (t[key] !== undefined) el.innerText = t[key];
     });
 
@@ -194,6 +195,14 @@ function setLanguage(lang) {
             if (ic) { ic.textContent = '+'; ic.style.transform = 'rotate(0deg)'; }
         }
     });
+
+    // Gallery toggle button translation respecting open state
+    const toggleBtn = document.getElementById('gallery-toggle-btn');
+    if (toggleBtn) {
+        const isOpen = document.querySelector('.gallery-item.hidden-item.show-item') !== null;
+        const key = isOpen ? 'gallery.show_less' : 'gallery.load_more';
+        if (t[key] !== undefined) toggleBtn.innerText = t[key];
+    }
 
     updateFAQSchema(lang);
 
@@ -309,7 +318,7 @@ function initLightbox() {
 
     const desktopImages = document.querySelectorAll('.gallery-grid .gallery-item img');
     let currentIndex = 0;
-    const imagesArray = Array.from(desktopImages).map(img => img.src);
+    const imagesArray = Array.from(desktopImages).map(img => img.getAttribute('data-full-src') || img.src);
 
     function showImage(index) {
         if (!lightboxImg || !imagesArray.length) return;
@@ -416,7 +425,19 @@ function initCardStack() {
             } else if (Math.abs(curX) < 5 && Math.abs(curY) < 5) {
                 if (lightbox) {
                     lightbox.classList.add('active');
-                    if (window.showLightboxImage) window.showLightboxImage(idx);
+                    const imgEl = card.querySelector('img');
+                    let foundIdx = -1;
+                    if (imgEl && window.showLightboxImage) {
+                        const srcVal = imgEl.getAttribute('data-full-src') || imgEl.getAttribute('src');
+                        const imagesArray = Array.from(document.querySelectorAll('.gallery-grid .gallery-item img')).map(i => i.getAttribute('data-full-src') || i.src);
+                        for (let i = 0; i < imagesArray.length; i++) {
+                            if (imagesArray[i] === imgEl.src || imagesArray[i].endsWith(srcVal)) {
+                                foundIdx = i;
+                                break;
+                            }
+                        }
+                    }
+                    if (window.showLightboxImage) window.showLightboxImage(foundIdx !== -1 ? foundIdx : idx);
                     document.body.style.overflow = 'hidden';
                 }
             } else {
@@ -782,8 +803,8 @@ function initAnimations() {
     var bw = document.querySelector('.booking-widget-wrapper');
     if (bw) gsap.from(bw, { scrollTrigger: { trigger: bw, start: 'top 85%' }, opacity: 0, y: 50, duration: 1 });
 
-    // Gallery
-    gsap.utils.toArray('.gallery-item').forEach(function(item, i) {
+    // Gallery (only visible ones on start)
+    gsap.utils.toArray('.gallery-item:not(.hidden-item)').forEach(function(item, i) {
         gsap.from(item, { scrollTrigger: { trigger: item, start: 'top 90%' }, opacity: 0, scale: .8, duration: .6, delay: (i % 4) * .1 });
     });
 }
@@ -805,4 +826,52 @@ document.addEventListener('DOMContentLoaded', function() {
     initCalendar();
     initBookingForm();
     initAnimations();
+    initGalleryToggle();
 });
+
+// ─── Gallery Toggle (Load More) ───────────────────────────────
+function initGalleryToggle() {
+    const toggleBtn = document.getElementById('gallery-toggle-btn');
+    if (!toggleBtn) return;
+
+    let isOpen = false;
+
+    toggleBtn.addEventListener('click', () => {
+        isOpen = !isOpen;
+        const hiddenItems = document.querySelectorAll('.gallery-grid .gallery-item.hidden-item');
+        const t = (translations && translations[currentLang]) || {};
+
+        if (isOpen) {
+            // Show hidden items
+            hiddenItems.forEach(item => {
+                item.classList.add('show-item');
+            });
+            // Animate using GSAP
+            if (window.gsap) {
+                gsap.fromTo(hiddenItems, 
+                    { opacity: 0, scale: 0.9, y: 30 }, 
+                    { opacity: 1, scale: 1, y: 0, duration: 0.6, stagger: 0.04, ease: 'power2.out', overwrite: 'auto' }
+                );
+            }
+            toggleBtn.innerText = t['gallery.show_less'] || 'Show Less';
+        } else {
+            // Hide items
+            if (window.gsap) {
+                gsap.to(hiddenItems, {
+                    opacity: 0, scale: 0.9, y: 20, duration: 0.4, ease: 'power2.in',
+                    onComplete: () => {
+                        hiddenItems.forEach(item => item.classList.remove('show-item'));
+                        // Smooth scroll back to gallery top so user is not lost
+                        const gallerySec = document.getElementById('gallery');
+                        if (gallerySec) gallerySec.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            } else {
+                hiddenItems.forEach(item => item.classList.remove('show-item'));
+                const gallerySec = document.getElementById('gallery');
+                if (gallerySec) gallerySec.scrollIntoView({ behavior: 'smooth' });
+            }
+            toggleBtn.innerText = t['gallery.load_more'] || 'Load More Photos';
+        }
+    });
+}

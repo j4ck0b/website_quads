@@ -351,6 +351,31 @@ nav.scrolled {
     grid-row: span 2;
 }
 
+/* Dynamic Gallery Extensions */
+.gallery-item.hidden-item {
+    display: none;
+}
+.gallery-item.hidden-item.show-item {
+    display: block;
+}
+
+#gallery-toggle-btn {
+    border-color: var(--primary);
+    color: var(--text-main);
+    padding: 0.8rem 2.5rem;
+    font-size: 0.95rem;
+    box-shadow: 0 0 15px rgba(255, 102, 0, 0.15);
+    background: transparent;
+    transition: var(--transition);
+}
+#gallery-toggle-btn:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 102, 0, 0.35);
+}
+
 /* Gallery Indicators (hidden by default on desktop) */
 .gallery-indicators {
     display: none;
