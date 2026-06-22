@@ -233,3 +233,53 @@ def get_calendar_events_for_date(date_str):
     except Exception as e:
         print(f"[ERROR] Error fetching events from Google Calendar: {e}")
         return None
+
+def delete_from_google_calendar(booking_id):
+    """
+    Finds and deletes calendar event matching a booking ID.
+    """
+    google_json_str = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+    if not google_json_str and (not GOOGLE_SERVICE_ACCOUNT_FILE or not os.path.exists(GOOGLE_SERVICE_ACCOUNT_FILE)):
+        print("[INFO] Google Service Account credentials not found. Skipping Google Calendar deletion.")
+        return False
+        
+    try:
+        # Define scopes
+        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        
+        # Authenticate using Service Account
+        if google_json_str:
+            import json
+            info = json.loads(google_json_str)
+            creds = service_account.Credentials.from_service_account_info(
+                info, scopes=SCOPES
+            )
+        else:
+            creds = service_account.Credentials.from_service_account_file(
+                GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
+            )
+        
+        # Build Calendar service
+        service = build('calendar', 'v3', credentials=creds)
+        
+        # Search for events containing booking_id
+        events_result = service.events().list(
+            calendarId=GOOGLE_CALENDAR_ID,
+            q=booking_id,
+            singleEvents=True
+        ).execute()
+        events = events_result.get('items', [])
+        
+        if not events:
+            print(f"[INFO] No calendar event found for booking ID: {booking_id}")
+            return False
+            
+        for event in events:
+            service.events().delete(calendarId=GOOGLE_CALENDAR_ID, eventId=event['id']).execute()
+            print(f"Successfully deleted event {event['id']} from Google Calendar matching booking ID {booking_id}")
+            
+        return True
+    except Exception as e:
+        print(f"Error deleting event from Google Calendar: {e}")
+        return False
+

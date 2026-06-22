@@ -518,6 +518,11 @@
             color: var(--warning);
             border: 1px solid rgba(255, 204, 0, 0.2);
         }
+        .status-badge.cancelled {
+            background: rgba(255, 51, 51, 0.12);
+            color: var(--danger);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+        }
 
         .btn-confirm {
             background: rgba(0, 204, 102, 0.12);
@@ -533,6 +538,22 @@
         .btn-confirm:hover {
             background: var(--success);
             color: #000;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 51, 51, 0.12);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            color: var(--danger);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-cancel:hover {
+            background: var(--danger);
+            color: #fff;
         }
 
         .booking-details-box {
@@ -719,6 +740,22 @@
                                         <option value="18:00">Wycieczka o zachodzie słońca (18:00)</option>
                                     </select>
                                 </div>
+                                <div class="input-group">
+                                    <label for="block-type">Typ blokady</label>
+                                    <select id="block-type" class="select-field" style="width: 100%; height: 45px;">
+                                        <option value="full">Pełna (Zablokuj cały termin)</option>
+                                        <option value="partial">Częściowa (Zablokuj wybrane quady)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group" id="block-quads-group" style="display: none;">
+                                    <label for="block-quads">Liczba quadów do zablokowania</label>
+                                    <select id="block-quads" class="select-field" style="width: 100%; height: 45px;">
+                                        <option value="1">1 quad</option>
+                                        <option value="2">2 quady</option>
+                                        <option value="3">3 quady</option>
+                                        <option value="4">4 quady (wszystkie)</option>
+                                    </select>
+                                </div>
                                 <button type="submit" class="btn-primary" id="block-submit-btn">Zablokuj Termin</button>
                             </form>
                         </div>
@@ -752,6 +789,7 @@
                                 <option value="all">Wszystkie</option>
                                 <option value="confirmed">Potwierdzone</option>
                                 <option value="pending">Oczekujące (Pending)</option>
+                                <option value="cancelled">Anulowane</option>
                             </select>
                         </div>
                     </div>
@@ -806,6 +844,9 @@
         const blockForm = document.getElementById('block-form');
         const blockDate = document.getElementById('block-date');
         const blockTime = document.getElementById('block-time');
+        const blockType = document.getElementById('block-type');
+        const blockQuadsGroup = document.getElementById('block-quads-group');
+        const blockQuads = document.getElementById('block-quads');
         const blockedSlotsContainer = document.getElementById('blocked-slots-container');
         const bookingsTableBody = document.getElementById('bookings-table-body');
         const bookingsSearch = document.getElementById('bookings-search');
@@ -983,10 +1024,14 @@
                 else if (item.time === '13:00') slotLabel = 'Wycieczka popołudniowa (13:00)';
                 else if (item.time === '18:00') slotLabel = 'Wycieczka o zachodzie słońca (18:00)';
 
+                const quadsBlocked = parseInt(item.quads || 0);
+                const quadsLabel = quadsBlocked === 0 ? 'Pełna blokada (wszystkie quady)' : `Zablokowane quady: ${quadsBlocked}`;
+
                 card.innerHTML = `
                     <div class="block-info">
                         <h4>📅 ${item.date}</h4>
                         <p>🕒 ${slotLabel}</p>
+                        <p style="color:var(--primary); font-weight: 600; font-size: 0.8rem; margin-top: 0.2rem;">🔒 ${quadsLabel}</p>
                     </div>
                     <button class="btn-action-icon" onclick="deleteBlock('${item.id}')" title="Usuń blokadę">
                         <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
@@ -998,10 +1043,24 @@
             gsap.from('.block-card', { opacity: 0, scale: 0.9, duration: 0.3, stagger: 0.05, ease: 'power2.out', overwrite: 'auto' });
         }
 
+        // Toggle block quads input visibility based on type selection
+        if (blockType) {
+            blockType.addEventListener('change', function() {
+                if (this.value === 'partial') {
+                    blockQuadsGroup.style.display = 'block';
+                    gsap.fromTo(blockQuadsGroup, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
+                } else {
+                    blockQuadsGroup.style.display = 'none';
+                }
+            });
+        }
+
         blockForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const dateValue = blockDate.value;
             const timeValue = blockTime.value;
+            const typeValue = blockType.value;
+            const quadsValue = typeValue === 'partial' ? parseInt(blockQuads.value) : 0;
             
             const submitBtn = document.getElementById('block-submit-btn');
             submitBtn.disabled = true;
@@ -1012,7 +1071,7 @@
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify({ date: dateValue, time: timeValue })
+                body: JSON.stringify({ date: dateValue, time: timeValue, quads: quadsValue })
             })
             .then(res => {
                 if (!res.ok) {
@@ -1024,6 +1083,7 @@
                 showToast("Pomyślnie zablokowano termin!", "success");
                 loadBlockedSlots();
                 blockForm.reset();
+                blockQuadsGroup.style.display = 'none';
                 blockDate.setAttribute('min', today);
             })
             .catch(err => {
@@ -1114,7 +1174,9 @@
                 const tr = document.createElement('tr');
                 
                 // Status Badge
-                const statusLabel = b.status === 'confirmed' ? 'Potwierdzona' : 'Pending';
+                let statusLabel = 'Oczekująca';
+                if (b.status === 'confirmed') statusLabel = 'Potwierdzona';
+                else if (b.status === 'cancelled') statusLabel = 'Anulowana';
                 const statusBadge = `<span class="status-badge ${b.status}">${statusLabel}</span>`;
                 
                 // Format Date of Creation
@@ -1124,10 +1186,28 @@
                     createdAtFormatted = `${parts[0]} ${parts[1].substring(0, 5)}`;
                 }
 
-                // Action button (Confirm manually for pending)
-                const actionCell = b.status === 'pending'
-                    ? `<button class="btn-confirm" onclick="confirmManual('${b.id}')">Zatwierdź</button>`
-                    : `<span style="color:var(--text-muted);font-size:0.8rem;">Brak akcji</span>`;
+                // Action cell (Confirm manuals, and allow cancellation)
+                let actionCell = '';
+                if (b.status === 'pending') {
+                    actionCell = `
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end;">
+                            <button class="btn-confirm" onclick="confirmManual('${b.id}')">Zatwierdź</button>
+                            <button class="btn-cancel" onclick="cancelBookingHandler('${b.id}')">Anuluj</button>
+                        </div>
+                    `;
+                } else if (b.status === 'confirmed') {
+                    actionCell = `
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button class="btn-cancel" onclick="cancelBookingHandler('${b.id}')">Anuluj</button>
+                        </div>
+                    `;
+                } else {
+                    actionCell = `<span style="color:var(--text-muted);font-size:0.8rem;">Brak akcji</span>`;
+                }
+
+                const stripeSessionText = b.stripe_session_id 
+                    ? `💳 Stripe: ${b.stripe_session_id.substring(0, 15)}...` 
+                    : `💳 Ręczna rezerwacja`;
 
                 tr.innerHTML = `
                     <td>
@@ -1135,6 +1215,7 @@
                             <span class="customer-name">${escapeHTML(b.name)}</span>
                             <span class="customer-contacts">✉️ ${escapeHTML(b.email)}</span>
                             <span class="customer-contacts">📞 ${escapeHTML(b.phone)}</span>
+                            <span class="customer-contacts" style="font-family: monospace; font-size: 0.75rem; color: var(--accent); margin-top: 0.1rem;" title="${escapeHTML(b.stripe_session_id || '')}">${stripeSessionText}</span>
                         </div>
                     </td>
                     <td>
@@ -1185,6 +1266,37 @@
                 showToast(err.message, "error");
                 confirmBtn.disabled = false;
                 confirmBtn.innerText = 'Zatwierdź';
+            });
+        };
+
+        // Cancel booking handler
+        window.cancelBookingHandler = function(bookingId) {
+            if (!confirm("Czy na pewno chcesz anulować/odrzucić tę rezerwację? Spowoduje to zwolnienie quadów w kalendarzu i zmianę statusu na Anulowana.")) return;
+
+            const cancelBtn = event.target;
+            cancelBtn.disabled = true;
+            cancelBtn.innerText = 'Anulowanie...';
+
+            fetch(API_BASE_URL + '/api/admin/cancel-booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ id: bookingId })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Nie udało się anulować rezerwacji");
+                return res.json();
+            })
+            .then(data => {
+                showToast("Rezerwacja została anulowana pomyślnie!", "success");
+                loadBookings();
+            })
+            .catch(err => {
+                showToast(err.message, "error");
+                cancelBtn.disabled = false;
+                cancelBtn.innerText = 'Anuluj';
             });
         };
 

@@ -52,10 +52,16 @@ def init_db():
                         id VARCHAR(255) PRIMARY KEY,
                         date VARCHAR(50) NOT NULL,
                         time VARCHAR(50) NOT NULL,
+                        quads INTEGER DEFAULT 0,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     );
                 """)
                 cur.execute("CREATE INDEX IF NOT EXISTS idx_blocked_date ON blocked_slots(date);")
+                # Run migration to add quads column if not exists
+                try:
+                    cur.execute("ALTER TABLE blocked_slots ADD COLUMN IF NOT EXISTS quads INTEGER DEFAULT 0;")
+                except Exception as pg_mig_err:
+                    print(f"PostgreSQL migration warning (blocked_slots.quads): {pg_mig_err}")
             conn.commit()
             print("Supabase/PostgreSQL database initialized successfully.")
         else:
@@ -84,10 +90,17 @@ def init_db():
                     id TEXT PRIMARY KEY,
                     date TEXT NOT NULL,
                     time TEXT NOT NULL,
+                    quads INTEGER DEFAULT 0,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             conn.execute("CREATE INDEX IF NOT EXISTS idx_blocked_date ON blocked_slots(date);")
+            # Run migration to add quads column in SQLite
+            try:
+                conn.execute("ALTER TABLE blocked_slots ADD COLUMN quads INTEGER DEFAULT 0;")
+            except Exception as sq_mig_err:
+                # column might already exist, ignore this error
+                pass
             conn.commit()
             print("SQLite local database initialized successfully.")
     except Exception as e:
@@ -252,19 +265,31 @@ def get_slot_availability(date_str, max_capacity=4):
     # Apply admin blocked slots
     try:
         blocked = get_blocked_slots_by_date(date_str)
-        for b_time in blocked:
-            if b_time == "all":
-                slots["13:00"] = 0
-                slots["18:00"] = 0
-            elif b_time in slots:
-                slots[b_time] = 0
+        for b in blocked:
+            b_time = b["time"]
+            b_quads = b.get("quads", 0)
+            
+            # If b_quads is 0 or None, it means a full block (0 capacity)
+            if b_quads == 0 or b_quads is None:
+                if b_time == "all":
+                    slots["13:00"] = 0
+                    slots["18:00"] = 0
+                elif b_time in slots:
+                    slots[b_time] = 0
+            else:
+                # Partial block: subtract b_quads from capacity
+                if b_time == "all":
+                    slots["13:00"] = max(0, slots["13:00"] - b_quads)
+                    slots["18:00"] = max(0, slots["18:00"] - b_quads)
+                elif b_time in slots:
+                    slots[b_time] = max(0, slots[b_time] - b_quads)
     except Exception as e:
         print(f"Error applying blocked slots: {e}")
         
     return slots
 
-def block_slot(date_str, time_str):
-    """Blocks a slot (time_str can be '13:00', '18:00', or 'all') for a given date."""
+def block_slot(date_str, time_str, quads=0):
+    """Blocks a slot (time_str can be '13:00', '18:00', or 'all') for a given date with specified quads."""
     import uuid
     conn = get_db_connection()
     try:
@@ -273,22 +298,30 @@ def block_slot(date_str, time_str):
             with conn.cursor() as cur:
                 # First check if block already exists
                 cur.execute("SELECT id FROM blocked_slots WHERE date = %s AND time = %s", (date_str, time_str))
-                if cur.fetchone():
-                    return False
+                row = cur.fetchone()
+                if row:
+                    # Update existing block's quads
+                    cur.execute("UPDATE blocked_slots SET quads = %s WHERE date = %s AND time = %s", (quads, date_str, time_str))
+                    conn.commit()
+                    return True
                 cur.execute("""
-                    INSERT INTO blocked_slots (id, date, time)
-                    VALUES (%s, %s, %s)
-                """, (block_id, date_str, time_str))
+                    INSERT INTO blocked_slots (id, date, time, quads)
+                    VALUES (%s, %s, %s, %s)
+                """, (block_id, date_str, time_str, quads))
             conn.commit()
         else:
             cur = conn.cursor()
             cur.execute("SELECT id FROM blocked_slots WHERE date = ? AND time = ?", (date_str, time_str))
-            if cur.fetchone():
-                return False
+            row = cur.fetchone()
+            if row:
+                # Update existing block's quads
+                conn.execute("UPDATE blocked_slots SET quads = ? WHERE date = ? AND time = ?", (quads, date_str, time_str))
+                conn.commit()
+                return True
             conn.execute("""
-                INSERT INTO blocked_slots (id, date, time)
-                VALUES (?, ?, ?)
-            """, (block_id, date_str, time_str))
+                INSERT INTO blocked_slots (id, date, time, quads)
+                VALUES (?, ?, ?, ?)
+            """, (block_id, date_str, time_str, quads))
             conn.commit()
         return True
     finally:
@@ -310,21 +343,21 @@ def unblock_slot(block_id):
         conn.close()
 
 def get_blocked_slots_by_date(date_str):
-    """Returns a list of blocked time slots for a given date."""
+    """Returns a list of blocked slots (dictionaries with time and quads) for a given date."""
     conn = get_db_connection()
-    blocked_times = []
+    blocked_slots = []
     try:
         if DB_TYPE == "supabase" and SUPABASE_DB_URL:
-            with conn.cursor() as cur:
-                cur.execute("SELECT time FROM blocked_slots WHERE date = %s", (date_str,))
-                blocked_times = [row[0] for row in cur.fetchall()]
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("SELECT time, quads FROM blocked_slots WHERE date = %s", (date_str,))
+                blocked_slots = [dict(row) for row in cur.fetchall()]
         else:
             cur = conn.cursor()
-            cur.execute("SELECT time FROM blocked_slots WHERE date = ?", (date_str,))
-            blocked_times = [row[0] for row in cur.fetchall()]
+            cur.execute("SELECT time, quads FROM blocked_slots WHERE date = ?", (date_str,))
+            blocked_slots = [{"time": row[0], "quads": row[1]} for row in cur.fetchall()]
     finally:
         conn.close()
-    return blocked_times
+    return blocked_slots
 
 def get_all_blocked_slots():
     """Returns all blocked slots in the database, ordered by date ascending."""
@@ -333,11 +366,11 @@ def get_all_blocked_slots():
     try:
         if DB_TYPE == "supabase" and SUPABASE_DB_URL:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute("SELECT id, date, time FROM blocked_slots ORDER BY date ASC, time ASC")
+                cur.execute("SELECT id, date, time, quads FROM blocked_slots ORDER BY date ASC, time ASC")
                 blocked_list = [dict(row) for row in cur.fetchall()]
         else:
             cur = conn.cursor()
-            cur.execute("SELECT id, date, time FROM blocked_slots ORDER BY date ASC, time ASC")
+            cur.execute("SELECT id, date, time, quads FROM blocked_slots ORDER BY date ASC, time ASC")
             blocked_list = [dict(row) for row in cur.fetchall()]
     finally:
         conn.close()
@@ -350,7 +383,7 @@ def get_all_bookings():
     try:
         if DB_TYPE == "supabase" and SUPABASE_DB_URL:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute("SELECT id, name, email, phone, date, time, single_quads, double_quads, total_price, status, created_at FROM bookings ORDER BY created_at DESC")
+                cur.execute("SELECT id, name, email, phone, date, time, single_quads, double_quads, total_price, status, stripe_session_id, created_at FROM bookings ORDER BY created_at DESC")
                 for row in cur.fetchall():
                     d_row = dict(row)
                     d_row["total_price"] = float(d_row["total_price"])
@@ -360,7 +393,7 @@ def get_all_bookings():
                     bookings_list.append(d_row)
         else:
             cur = conn.cursor()
-            cur.execute("SELECT id, name, email, phone, date, time, single_quads, double_quads, total_price, status, created_at FROM bookings ORDER BY created_at DESC")
+            cur.execute("SELECT id, name, email, phone, date, time, single_quads, double_quads, total_price, status, stripe_session_id, created_at FROM bookings ORDER BY created_at DESC")
             bookings_list = [dict(row) for row in cur.fetchall()]
     finally:
         conn.close()
@@ -384,6 +417,34 @@ def manually_confirm_booking(booking_id):
             conn.commit()
         else:
             conn.execute("UPDATE bookings SET status = 'confirmed' WHERE id = ?", (booking_id,))
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,))
+            row = cur.fetchone()
+            if row:
+                booking = dict(row)
+            conn.commit()
+    finally:
+        conn.close()
+    return booking
+
+def cancel_booking(booking_id):
+    """Cancels a booking by setting its status to 'cancelled' and returns the updated booking dictionary."""
+    conn = get_db_connection()
+    booking = None
+    try:
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("UPDATE bookings SET status = 'cancelled' WHERE id = %s", (booking_id,))
+                cur.execute("SELECT * FROM bookings WHERE id = %s", (booking_id,))
+                res = cur.fetchone()
+                if res:
+                    booking = dict(res)
+                    booking["total_price"] = float(booking["total_price"])
+                    if booking.get("created_at"):
+                        booking["created_at"] = booking["created_at"].isoformat()
+            conn.commit()
+        else:
+            conn.execute("UPDATE bookings SET status = 'cancelled' WHERE id = ?", (booking_id,))
             cur = conn.cursor()
             cur.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,))
             row = cur.fetchone()

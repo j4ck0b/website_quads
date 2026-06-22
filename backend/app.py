@@ -16,10 +16,10 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 from db import (
     init_db, get_slot_availability, create_booking, get_booking_by_stripe_session, 
     confirm_booking, block_slot, unblock_slot, get_all_blocked_slots, 
-    get_all_bookings, manually_confirm_booking
+    get_all_bookings, manually_confirm_booking, cancel_booking
 )
 from email_sender import send_booking_emails, send_contact_email
-from calendar_sync import sync_to_google_calendar
+from calendar_sync import sync_to_google_calendar, delete_from_google_calendar
 
 app = Flask(__name__)
 
@@ -454,14 +454,18 @@ def block_date_time():
     data = request.json or {}
     date_str = data.get("date")
     time_str = data.get("time") # '13:00', '18:00', or 'all'
+    try:
+        quads = int(data.get("quads", 0))
+    except (ValueError, TypeError):
+        quads = 0
     
     if not date_str or not time_str:
         return jsonify({"error": "Missing date or time parameter"}), 400
         
     try:
-        success = block_slot(date_str, time_str)
+        success = block_slot(date_str, time_str, quads)
         if success:
-            return jsonify({"message": f"Successfully blocked {time_str} on {date_str}"}), 200
+            return jsonify({"message": f"Successfully blocked {time_str} on {date_str} (quads: {quads})"}), 200
         else:
             return jsonify({"error": "This block already exists"}), 400
     except Exception as e:
@@ -516,6 +520,30 @@ def admin_confirm_booking():
                 print(f"[ADMIN CONFIRM] Google calendar sync failed: {cal_err}")
                 
             return jsonify({"message": "Booking manually confirmed successfully"}), 200
+        else:
+            return jsonify({"error": "Booking not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/cancel-booking", methods=["POST"])
+@require_admin
+def admin_cancel_booking():
+    data = request.json or {}
+    booking_id = data.get("id")
+    
+    if not booking_id:
+        return jsonify({"error": "Missing booking ID"}), 400
+        
+    try:
+        booking = cancel_booking(booking_id)
+        if booking:
+            # Sync cancellation by deleting event from Google Calendar if configured
+            try:
+                delete_from_google_calendar(booking_id)
+            except Exception as cal_err:
+                print(f"[ADMIN CANCEL] Google calendar deletion failed: {cal_err}")
+                
+            return jsonify({"message": "Booking cancelled successfully"}), 200
         else:
             return jsonify({"error": "Booking not found"}), 404
     except Exception as e:
