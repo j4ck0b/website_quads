@@ -1313,6 +1313,34 @@ footer {
     -webkit-appearance: none;
 }
 
+/* Phone prefix select dropdown rules */
+.phone-input-wrapper {
+    display: flex !important;
+    width: 100%;
+}
+.phone-prefix-select {
+    flex: 0 0 115px;
+    min-width: 115px;
+    background: rgba(30, 30, 30, 0.5) url("data:image/svg+xml;utf8,<svg fill='white' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 0.2rem center !important;
+    border: 1px solid var(--glass-border);
+    border-right: none !important;
+    border-radius: 8px 0 0 8px !important;
+    padding: 1.1rem 1.4rem 1.1rem 2.6rem !important;
+    font-size: 0.95rem;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.phone-input-wrapper input[type="tel"] {
+    flex: 1;
+    border-radius: 0 8px 8px 0 !important;
+    padding-left: 1rem !important;
+    width: auto !important;
+}
+
 .premium-booking-form input:focus,
 .premium-booking-form select:focus {
     outline: none;

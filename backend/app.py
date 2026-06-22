@@ -158,6 +158,40 @@ def new_booking():
         if time_str not in slots:
             return jsonify({"error": "Selected tour slot does not exist"}), 400
             
+        # Check cut-off time rules and return helpful messages based on language
+        # (Atlantic/Canary timezone)
+        try:
+            import pytz
+            from datetime import datetime
+            tz = pytz.timezone('Atlantic/Canary')
+            now_in_tz = datetime.now(tz)
+            slot_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            current_date = now_in_tz.date()
+            
+            is_past_cutoff = False
+            if slot_date < current_date:
+                is_past_cutoff = True
+            elif slot_date == current_date:
+                if time_str == "13:00":
+                    cutoff_13 = now_in_tz.replace(hour=9, minute=0, second=0, microsecond=0)
+                    if now_in_tz >= cutoff_13:
+                        is_past_cutoff = True
+                elif time_str == "18:00":
+                    cutoff_18 = now_in_tz.replace(hour=16, minute=0, second=0, microsecond=0)
+                    if now_in_tz >= cutoff_18:
+                        is_past_cutoff = True
+                        
+            if is_past_cutoff:
+                if lang == "pl":
+                    err_msg = "Rezerwacja na tę godzinę jest już zamknięta. Wycieczka o 13:00 wymaga rezerwacji z minimum 4-godzinnym wyprzedzeniem, a o 18:00 z 2-godzinnym wyprzedzeniem."
+                elif lang == "es":
+                    err_msg = "La reserva para este horario ya está cerrada. La excursión de las 13:00 requiere reserva con al menos 4 horas de antelación, y la de las 18:00 con 2 horas de antelación."
+                else:
+                    err_msg = "Booking for this tour is now closed. The 13:00 tour requires booking at least 4 hours in advance, and the 18:00 tour requires 2 hours in advance."
+                return jsonify({"error": err_msg}), 400
+        except Exception as e:
+            print(f"Error validating cut-off times in bookings endpoint: {e}")
+            
         remaining_capacity = slots[time_str]
         if requested_quads > remaining_capacity:
             return jsonify({

@@ -286,6 +286,31 @@ def get_slot_availability(date_str, max_capacity=4):
     except Exception as e:
         print(f"Error applying blocked slots: {e}")
         
+    # Apply cut-off time rules (Tenerife time)
+    # - 13:00 slot: min 4h preparation time -> cut-off at 09:00
+    # - 18:00 slot: min 2h preparation time -> cut-off at 16:00
+    try:
+        import pytz
+        tz = pytz.timezone('Atlantic/Canary')
+        now_in_tz = datetime.now(tz)
+        slot_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        current_date = now_in_tz.date()
+        
+        if slot_date < current_date:
+            slots["13:00"] = 0
+            slots["18:00"] = 0
+        elif slot_date == current_date:
+            # 13:00 tour: cut-off is 09:00
+            cutoff_13 = now_in_tz.replace(hour=9, minute=0, second=0, microsecond=0)
+            if now_in_tz >= cutoff_13:
+                slots["13:00"] = 0
+            # 18:00 tour: cut-off is 16:00
+            cutoff_18 = now_in_tz.replace(hour=16, minute=0, second=0, microsecond=0)
+            if now_in_tz >= cutoff_18:
+                slots["18:00"] = 0
+    except Exception as e:
+        print(f"Error applying cut-off times: {e}")
+        
     return slots
 
 def block_slot(date_str, time_str, quads=0):

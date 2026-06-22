@@ -712,6 +712,7 @@ function initBookingForm() {
         var name  = document.getElementById('booking-name');
         var phone = document.getElementById('booking-phone');
         var email = document.getElementById('booking-email');
+        var prefixEl = document.getElementById('booking-phone-prefix');
 
         if (!date || !date.value) {
             showPremiumToast(currentLang === 'pl' ? 'Proszę wybrać datę z kalendarza.' : 'Please select a date from the calendar.', 'error');
@@ -735,7 +736,18 @@ function initBookingForm() {
             body: JSON.stringify({
                 name:         name  ? name.value  : '',
                 email:        email ? email.value : '',
-                phone:        phone ? phone.value : '',
+                phone:        (function() {
+                    var rawPhone = phone ? phone.value.trim() : '';
+                    var prefix = prefixEl ? prefixEl.value : '';
+                    var fullPhone = rawPhone;
+                    if (prefix && !rawPhone.startsWith('+') && !rawPhone.startsWith('00')) {
+                        if (rawPhone.startsWith('0')) {
+                            rawPhone = rawPhone.substring(1);
+                        }
+                        fullPhone = prefix + ' ' + rawPhone;
+                    }
+                    return fullPhone;
+                })(),
                 date:         date.value,
                 time:         time.value,
                 single_quads: singleQuadsCount,
