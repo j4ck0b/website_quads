@@ -45,6 +45,17 @@ def init_db():
                 """)
                 # Create index on date/time for performance and availability checks
                 cur.execute("CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);")
+                
+                # Create blocked_slots table in PostgreSQL
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS blocked_slots (
+                        id VARCHAR(255) PRIMARY KEY,
+                        date VARCHAR(50) NOT NULL,
+                        time VARCHAR(50) NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_blocked_date ON blocked_slots(date);")
             conn.commit()
             print("Supabase/PostgreSQL database initialized successfully.")
         else:
@@ -66,6 +77,17 @@ def init_db():
                 );
             """)
             conn.execute("CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);")
+            
+            # Create blocked_slots table in SQLite
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS blocked_slots (
+                    id TEXT PRIMARY KEY,
+                    date TEXT NOT NULL,
+                    time TEXT NOT NULL,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_blocked_date ON blocked_slots(date);")
             conn.commit()
             print("SQLite local database initialized successfully.")
     except Exception as e:
@@ -227,4 +249,147 @@ def get_slot_availability(date_str, max_capacity=5):
             if slot_time in slots:
                 slots[slot_time] = max(0, slots[slot_time] - quads_booked)
                 
+    # Apply admin blocked slots
+    try:
+        blocked = get_blocked_slots_by_date(date_str)
+        for b_time in blocked:
+            if b_time == "all":
+                slots["13:00"] = 0
+                slots["18:00"] = 0
+            elif b_time in slots:
+                slots[b_time] = 0
+    except Exception as e:
+        print(f"Error applying blocked slots: {e}")
+        
     return slots
+
+def block_slot(date_str, time_str):
+    """Blocks a slot (time_str can be '13:00', '18:00', or 'all') for a given date."""
+    import uuid
+    conn = get_db_connection()
+    try:
+        block_id = str(uuid.uuid4())
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor() as cur:
+                # First check if block already exists
+                cur.execute("SELECT id FROM blocked_slots WHERE date = %s AND time = %s", (date_str, time_str))
+                if cur.fetchone():
+                    return False
+                cur.execute("""
+                    INSERT INTO blocked_slots (id, date, time)
+                    VALUES (%s, %s, %s)
+                """, (block_id, date_str, time_str))
+            conn.commit()
+        else:
+            cur = conn.cursor()
+            cur.execute("SELECT id FROM blocked_slots WHERE date = ? AND time = ?", (date_str, time_str))
+            if cur.fetchone():
+                return False
+            conn.execute("""
+                INSERT INTO blocked_slots (id, date, time)
+                VALUES (?, ?, ?)
+            """, (block_id, date_str, time_str))
+            conn.commit()
+        return True
+    finally:
+        conn.close()
+
+def unblock_slot(block_id):
+    """Unblocks a previously blocked slot."""
+    conn = get_db_connection()
+    try:
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM blocked_slots WHERE id = %s", (block_id,))
+            conn.commit()
+        else:
+            conn.execute("DELETE FROM blocked_slots WHERE id = ?", (block_id,))
+            conn.commit()
+        return True
+    finally:
+        conn.close()
+
+def get_blocked_slots_by_date(date_str):
+    """Returns a list of blocked time slots for a given date."""
+    conn = get_db_connection()
+    blocked_times = []
+    try:
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor() as cur:
+                cur.execute("SELECT time FROM blocked_slots WHERE date = %s", (date_str,))
+                blocked_times = [row[0] for row in cur.fetchall()]
+        else:
+            cur = conn.cursor()
+            cur.execute("SELECT time FROM blocked_slots WHERE date = ?", (date_str,))
+            blocked_times = [row[0] for row in cur.fetchall()]
+    finally:
+        conn.close()
+    return blocked_times
+
+def get_all_blocked_slots():
+    """Returns all blocked slots in the database, ordered by date ascending."""
+    conn = get_db_connection()
+    blocked_list = []
+    try:
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("SELECT id, date, time FROM blocked_slots ORDER BY date ASC, time ASC")
+                blocked_list = [dict(row) for row in cur.fetchall()]
+        else:
+            cur = conn.cursor()
+            cur.execute("SELECT id, date, time FROM blocked_slots ORDER BY date ASC, time ASC")
+            blocked_list = [dict(row) for row in cur.fetchall()]
+    finally:
+        conn.close()
+    return blocked_list
+
+def get_all_bookings():
+    """Returns all bookings in the database, ordered by creation date descending."""
+    conn = get_db_connection()
+    bookings_list = []
+    try:
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("SELECT id, name, email, phone, date, time, single_quads, double_quads, total_price, status, created_at FROM bookings ORDER BY created_at DESC")
+                for row in cur.fetchall():
+                    d_row = dict(row)
+                    d_row["total_price"] = float(d_row["total_price"])
+                    # Convert datetime to string if needed
+                    if d_row.get("created_at"):
+                        d_row["created_at"] = d_row["created_at"].isoformat()
+                    bookings_list.append(d_row)
+        else:
+            cur = conn.cursor()
+            cur.execute("SELECT id, name, email, phone, date, time, single_quads, double_quads, total_price, status, created_at FROM bookings ORDER BY created_at DESC")
+            bookings_list = [dict(row) for row in cur.fetchall()]
+    finally:
+        conn.close()
+    return bookings_list
+
+def manually_confirm_booking(booking_id):
+    """Manually confirms a booking and returns the booking dictionary for email/calendar sync."""
+    conn = get_db_connection()
+    booking = None
+    try:
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("UPDATE bookings SET status = 'confirmed' WHERE id = %s", (booking_id,))
+                cur.execute("SELECT * FROM bookings WHERE id = %s", (booking_id,))
+                res = cur.fetchone()
+                if res:
+                    booking = dict(res)
+                    booking["total_price"] = float(booking["total_price"])
+                    if booking.get("created_at"):
+                        booking["created_at"] = booking["created_at"].isoformat()
+            conn.commit()
+        else:
+            conn.execute("UPDATE bookings SET status = 'confirmed' WHERE id = ?", (booking_id,))
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,))
+            row = cur.fetchone()
+            if row:
+                booking = dict(row)
+            conn.commit()
+    finally:
+        conn.close()
+    return booking

@@ -13,7 +13,11 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 # Import our custom database and integration layers
-from db import init_db, get_slot_availability, create_booking, get_booking_by_stripe_session, confirm_booking
+from db import (
+    init_db, get_slot_availability, create_booking, get_booking_by_stripe_session, 
+    confirm_booking, block_slot, unblock_slot, get_all_blocked_slots, 
+    get_all_bookings, manually_confirm_booking
+)
 from email_sender import send_booking_emails, send_contact_email
 from calendar_sync import sync_to_google_calendar
 
@@ -362,6 +366,158 @@ def get_booking_details():
             }), 200
         else:
             return jsonify({"error": "Booking not found or not confirmed yet"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ─── Admin CMS API Endpoints ─────────────────────────────────
+import hmac
+import hashlib
+import time
+import base64
+import json
+
+def generate_admin_token(username):
+    # Token valid for 7 days
+    expiry = int(time.time()) + (7 * 24 * 3600)
+    payload = json.dumps({"user": username, "exp": expiry})
+    payload_b64 = base64.urlsafe_b64encode(payload.encode()).decode()
+    
+    secret = os.getenv("STRIPE_SECRET_KEY", "fallback_secret_key_1234").encode()
+    signature = hmac.new(secret, payload_b64.encode(), hashlib.sha256).hexdigest()
+    return f"{payload_b64}.{signature}"
+
+def verify_admin_token(token):
+    if not token:
+        return None
+    try:
+        if token.startswith("Bearer "):
+            token = token[7:]
+        parts = token.split(".")
+        if len(parts) != 2:
+            return None
+        payload_b64, signature = parts
+        
+        secret = os.getenv("STRIPE_SECRET_KEY", "fallback_secret_key_1234").encode()
+        expected_sig = hmac.new(secret, payload_b64.encode(), hashlib.sha256).hexdigest()
+        
+        if not hmac.compare_digest(signature, expected_sig):
+            return None
+            
+        payload_bytes = base64.urlsafe_b64decode(payload_b64.encode())
+        payload = json.loads(payload_bytes.decode())
+        
+        if time.time() > payload.get("exp", 0):
+            return None
+            
+        return payload.get("user")
+    except Exception:
+        return None
+
+def require_admin(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        user = verify_admin_token(token)
+        if not user:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route("/api/admin/login", methods=["POST"])
+def admin_login():
+    data = request.json or {}
+    username = data.get("username")
+    password = data.get("password")
+    
+    expected_user = os.getenv("ADMIN_USERNAME", "admin")
+    expected_pass = os.getenv("ADMIN_PASSWORD", "admin123")
+    
+    if username == expected_user and password == expected_pass:
+        token = generate_admin_token(username)
+        return jsonify({"token": token}), 200
+    else:
+        return jsonify({"error": "Invalid username or password"}), 401
+
+@app.route("/api/admin/blocked", methods=["GET"])
+@require_admin
+def get_blocked():
+    try:
+        blocked = get_all_blocked_slots()
+        return jsonify({"blocked": blocked}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/block", methods=["POST"])
+@require_admin
+def block_date_time():
+    data = request.json or {}
+    date_str = data.get("date")
+    time_str = data.get("time") # '13:00', '18:00', or 'all'
+    
+    if not date_str or not time_str:
+        return jsonify({"error": "Missing date or time parameter"}), 400
+        
+    try:
+        success = block_slot(date_str, time_str)
+        if success:
+            return jsonify({"message": f"Successfully blocked {time_str} on {date_str}"}), 200
+        else:
+            return jsonify({"error": "This block already exists"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/unblock", methods=["POST"])
+@require_admin
+def unblock_date_time():
+    data = request.json or {}
+    block_id = data.get("id")
+    
+    if not block_id:
+        return jsonify({"error": "Missing block ID"}), 400
+        
+    try:
+        unblock_slot(block_id)
+        return jsonify({"message": "Successfully unblocked slot"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/bookings", methods=["GET"])
+@require_admin
+def list_bookings():
+    try:
+        bookings = get_all_bookings()
+        return jsonify({"bookings": bookings}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/admin/confirm-booking", methods=["POST"])
+@require_admin
+def admin_confirm_booking():
+    data = request.json or {}
+    booking_id = data.get("id")
+    
+    if not booking_id:
+        return jsonify({"error": "Missing booking ID"}), 400
+        
+    try:
+        booking = manually_confirm_booking(booking_id)
+        if booking:
+            # Send confirmation emails
+            try:
+                send_booking_emails(booking)
+            except Exception as email_err:
+                print(f"[ADMIN CONFIRM] Email sending failed: {email_err}")
+                
+            # Sync to Google Calendar
+            try:
+                sync_to_google_calendar(booking)
+            except Exception as cal_err:
+                print(f"[ADMIN CONFIRM] Google calendar sync failed: {cal_err}")
+                
+            return jsonify({"message": "Booking manually confirmed successfully"}), 200
+        else:
+            return jsonify({"error": "Booking not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

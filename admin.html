@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel CMS - PrimeQuads</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for Micro-animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #ff6600;
+            --primary-dark: #cc5200;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #ff9933;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.06);
+            --success: #00cc66;
+            --warning: #ffcc00;
+            --danger: #ff3333;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Ambient Background Glow */
+        .ambient-glow {
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.08) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .ambient-glow-2 {
+            position: fixed;
+            bottom: -20%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 153, 51, 0.05) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glass Container styling */
+        .glass-panel {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+        }
+
+        /* Header / Nav */
+        header {
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background: rgba(255, 51, 51, 0.1);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            color: var(--danger);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-logout:hover {
+            background: var(--danger);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Login Screen */
+        #login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-card h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        .login-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            padding: 0.9rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 102, 0, 0.25);
+        }
+        .btn-primary:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Dashboard Main Layout */
+        #dashboard {
+            display: none;
+            padding: 2.5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar Tabs and Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .sidebar-btn:hover {
+            background: var(--glass-hover);
+            color: #fff;
+        }
+        .sidebar-btn.active {
+            background: rgba(255, 102, 0, 0.1);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .main-content {
+            padding: 2rem;
+            min-height: 70vh;
+        }
+
+        .tab-section {
+            display: none;
+        }
+        .tab-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Calendar Management Styling */
+        .calendar-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 2rem;
+        }
+
+        .block-form-panel {
+            padding: 2rem;
+        }
+        .block-form-panel h3 {
+            font-size: 1.15rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .block-list-panel {
+            padding: 2rem;
+        }
+        .block-list-panel h3 {
+            font-size: 1.15rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .block-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .block-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            padding: 1.2rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        .block-card:hover {
+            border-color: rgba(255, 102, 0, 0.3);
+            background: var(--glass-hover);
+        }
+
+        .block-info h4 {
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+        .block-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-action-icon {
+            background: rgba(255, 51, 51, 0.1);
+            border: 1px solid rgba(255, 51, 51, 0.15);
+            color: var(--danger);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-action-icon:hover {
+            background: var(--danger);
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .no-data {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 3rem 1rem;
+            font-style: italic;
+            border: 1px dashed var(--glass-border);
+            border-radius: 12px;
+            grid-column: 1 / -1;
+        }
+
+        /* Bookings List Styling */
+        .filters-panel {
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        .search-field:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-icon-svg {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            fill: var(--text-muted);
+            width: 16px;
+            height: 16px;
+        }
+
+        .filter-select-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .filter-select-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .select-field {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .select-field:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Responsive Table */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            transition: var(--transition);
+        }
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        td {
+            padding: 1.1rem 1.5rem;
+            vertical-align: middle;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .status-badge.confirmed {
+            background: rgba(0, 204, 102, 0.12);
+            color: var(--success);
+            border: 1px solid rgba(0, 204, 102, 0.2);
+        }
+        .status-badge.pending {
+            background: rgba(255, 204, 0, 0.12);
+            color: var(--warning);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .btn-confirm {
+            background: rgba(0, 204, 102, 0.12);
+            border: 1px solid rgba(0, 204, 102, 0.2);
+            color: var(--success);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-confirm:hover {
+            background: var(--success);
+            color: #000;
+        }
+
+        .booking-details-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .customer-name {
+            font-weight: 700;
+            color: #fff;
+        }
+        .customer-contacts {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Toast System */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            min-width: 300px;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        .toast-icon {
+            font-size: 1.2rem;
+        }
+        .toast-message {
+            font-size: 0.9rem;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Responsive Layouts */
+        @media (max-width: 1024px) {
+            .calendar-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 1rem 0;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+                text-align: center;
+            }
+            .user-menu {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- LOGIN SCREEN -->
+    <section id="login-screen">
+        <div class="login-card glass-panel" id="login-card">
+            <div style="font-size:3.5rem; color:var(--primary); margin-bottom: 1rem;">🔥</div>
+            <h1>CMS Kalendarza</h1>
+            <p>Zaloguj się, aby zarządzać dostępnością</p>
+            
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Nazwa użytkownika</label>
+                    <input type="text" id="username" class="input-field" required placeholder="np. admin" autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label for="password">Hasło</label>
+                    <input type="password" id="password" class="input-field" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary" id="login-btn">Zaloguj się</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- DASHBOARD PANEL -->
+    <div id="dashboard">
+        <header class="glass-panel">
+            <div class="logo">
+                ⚡ Prime<span>Quads</span> CMS
+            </div>
+            <div class="user-menu">
+                <span class="user-info">Zalogowano jako: <strong id="logged-user-name">Admin</strong></span>
+                <button class="btn-logout" id="logout-btn">Wyloguj się</button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid" style="margin-top: 2rem;">
+            <!-- Sidebar -->
+            <aside class="glass-panel sidebar-menu">
+                <button class="sidebar-btn active" data-tab="tab-calendar">
+                    <svg style="width:18px;height:18px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19,4H18V2H16V4H8V2H6V4H5A2,2 0 0,0 3,6V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,17V6A2,2 0 0,0 19,4M19,19H5V9H19V19M5,7V6H19V7H5Z"/></svg>
+                    Zarządzanie Kalendarzem
+                </button>
+                <button class="sidebar-btn" data-tab="tab-bookings">
+                    <svg style="width:18px;height:18px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 19H5V5H19V19M7 10H9V12H7V10M7 7H9V9H7V7M7 13H9V15H7V13M10 10H17V12H10V10M10 7H17V9H10V7M10 13H17V15H10V13"/></svg>
+                    Lista Rezerwacji
+                </button>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="glass-panel main-content">
+                <!-- TAB 1: CALENDAR BLOCKS -->
+                <div id="tab-calendar" class="tab-section active">
+                    <div class="section-header">
+                        <h2>Blokowanie Terminów</h2>
+                        <p style="color:var(--text-muted); font-size:0.95rem;">Zablokuj daty lub wybrane godziny w kalendarzu, aby wyłączyć je z systemu rezerwacji klientów.</p>
+                    </div>
+
+                    <div class="calendar-layout">
+                        <!-- Block Form -->
+                        <div class="glass-panel block-form-panel">
+                            <h3>Dodaj Nową Blokadę</h3>
+                            <form id="block-form">
+                                <div class="input-group">
+                                    <label for="block-date">Wybierz datę</label>
+                                    <input type="date" id="block-date" class="input-field" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="block-time">Zakres blokady</label>
+                                    <select id="block-time" class="select-field" style="width: 100%; height: 45px;">
+                                        <option value="all">Cały dzień (Wszystkie godziny)</option>
+                                        <option value="13:00">Wycieczka popołudniowa (13:00)</option>
+                                        <option value="18:00">Wycieczka o zachodzie słońca (18:00)</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn-primary" id="block-submit-btn">Zablokuj Termin</button>
+                            </form>
+                        </div>
+
+                        <!-- Block List -->
+                        <div class="glass-panel block-list-panel">
+                            <h3>Aktualnie Zablokowane Terminy</h3>
+                            <div class="block-cards-grid" id="blocked-slots-container">
+                                <div class="no-data">Pobieranie zablokowanych terminów...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: BOOKINGS LIST -->
+                <div id="tab-bookings" class="tab-section">
+                    <div class="section-header">
+                        <h2>Rejestr Rezerwacji</h2>
+                        <span style="color: var(--text-muted); font-size:0.9rem;" id="bookings-count">Ładowanie rezerwacji...</span>
+                    </div>
+
+                    <!-- Filters Panel -->
+                    <div class="glass-panel filters-panel">
+                        <div class="search-wrapper">
+                            <svg class="search-icon-svg" viewBox="0 0 24 24"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/></svg>
+                            <input type="text" id="bookings-search" class="search-field" placeholder="Szukaj po nazwisku, emailu, telefonie lub dacie...">
+                        </div>
+                        <div class="filter-select-group">
+                            <label for="filter-status">Status:</label>
+                            <select id="filter-status" class="select-field">
+                                <option value="all">Wszystkie</option>
+                                <option value="confirmed">Potwierdzone</option>
+                                <option value="pending">Oczekujące (Pending)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Klient</th>
+                                    <th>Termin wycieczki</th>
+                                    <th>Zamówione Quady</th>
+                                    <th>Cena</th>
+                                    <th>Status</th>
+                                    <th>Data utworzenia</th>
+                                    <th style="text-align: right;">Akcja</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body">
+                                <tr>
+                                    <td colspan="7" class="no-data">Pobieranie listy rezerwacji...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Javascript Logic -->
+    <script>
+        // API Base URL config
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')
+            ? 'http://localhost:5005'
+            : ''; 
+
+        // State variables
+        let authToken = localStorage.getItem('admin_token') || null;
+        let activeTab = 'tab-calendar';
+        let allBookings = [];
+        let allBlocked = [];
+
+        // DOM elements
+        const loginScreen = document.getElementById('login-screen');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const blockForm = document.getElementById('block-form');
+        const blockDate = document.getElementById('block-date');
+        const blockTime = document.getElementById('block-time');
+        const blockedSlotsContainer = document.getElementById('blocked-slots-container');
+        const bookingsTableBody = document.getElementById('bookings-table-body');
+        const bookingsSearch = document.getElementById('bookings-search');
+        const filterStatus = document.getElementById('filter-status');
+        const bookingsCountEl = document.getElementById('bookings-count');
+
+        // Set minimal date in datepicker to today
+        const today = new Date().toISOString().split('T')[0];
+        blockDate.setAttribute('min', today);
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' ? '✅' : '❌';
+            toast.innerHTML = `
+                <span class="toast-icon">${icon}</span>
+                <span class="toast-message">${message}</span>
+            `;
+            container.appendChild(toast);
+
+            gsap.fromTo(toast, { opacity: 0, y: 30, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.5)' });
+            
+            setTimeout(() => {
+                gsap.to(toast, { opacity: 0, y: -20, scale: 0.9, duration: 0.3, ease: 'power2.in', onComplete: () => toast.remove() });
+            }, 4500);
+        }
+
+        // Initialize state
+        function initApp() {
+            if (authToken) {
+                verifySession();
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            loginScreen.style.display = 'flex';
+            dashboard.style.display = 'none';
+            gsap.fromTo('#login-card', { opacity: 0, scale: 0.95, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'power2.out' });
+        }
+
+        function showDashboard() {
+            loginScreen.style.display = 'none';
+            dashboard.style.display = 'block';
+            
+            // GSAP entrance for dashboard
+            gsap.fromTo('header', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5 });
+            gsap.fromTo('aside', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, delay: 0.1 });
+            gsap.fromTo('main', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.2 });
+
+            loadBlockedSlots();
+            loadBookings();
+        }
+
+        // Verify token by making a test request
+        function verifySession() {
+            fetch(API_BASE_URL + '/api/admin/blocked', {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            })
+            .then(res => {
+                if (res.ok) {
+                    showDashboard();
+                } else {
+                    localStorage.removeItem('admin_token');
+                    authToken = null;
+                    showLogin();
+                }
+            })
+            .catch(err => {
+                console.error("Auth verification failed", err);
+                showLogin();
+            });
+        }
+
+        // Login Handler
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            loginBtn.disabled = true;
+            loginBtn.innerText = 'Logowanie...';
+
+            fetch(API_BASE_URL + '/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: usernameInput.value,
+                    password: passwordInput.value
+                })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Błędny login lub hasło");
+                }
+                return res.json();
+            })
+            .then(data => {
+                authToken = data.token;
+                localStorage.setItem('admin_token', authToken);
+                showToast("Zalogowano pomyślnie!", "success");
+                showDashboard();
+            })
+            .catch(err => {
+                showToast(err.message, "error");
+                gsap.to('#login-card', { x: 10, duration: 0.1, repeat: 5, yoyo: true });
+            })
+            .finally(() => {
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'Zaloguj się';
+            });
+        });
+
+        // Logout Handler
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('admin_token');
+            authToken = null;
+            showToast("Wylogowano z systemu", "success");
+            showLogin();
+        });
+
+        // Tab Switching
+        document.querySelectorAll('.sidebar-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const targetTab = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+                
+                const targetEl = document.getElementById(targetTab);
+                targetEl.classList.add('active');
+                
+                gsap.fromTo(targetEl, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+            });
+        });
+
+        // ─── Tab 1: Block Dates Logic ───
+        function loadBlockedSlots() {
+            fetch(API_BASE_URL + '/api/admin/blocked', {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    logoutBtn.click();
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data) return;
+                allBlocked = data.blocked || [];
+                renderBlockedSlots();
+            })
+            .catch(err => {
+                console.error("Failed to load blocked slots", err);
+                blockedSlotsContainer.innerHTML = `<div class="no-data">Błąd podczas pobierania danych: ${err.message}</div>`;
+            });
+        }
+
+        function renderBlockedSlots() {
+            if (allBlocked.length === 0) {
+                blockedSlotsContainer.innerHTML = '<div class="no-data">Brak aktywnych blokad w kalendarzu.</div>';
+                return;
+            }
+
+            blockedSlotsContainer.innerHTML = '';
+            allBlocked.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'block-card';
+                
+                let slotLabel = item.time;
+                if (item.time === 'all') slotLabel = 'Cały dzień (13:00 & 18:00)';
+                else if (item.time === '13:00') slotLabel = 'Wycieczka popołudniowa (13:00)';
+                else if (item.time === '18:00') slotLabel = 'Wycieczka o zachodzie słońca (18:00)';
+
+                card.innerHTML = `
+                    <div class="block-info">
+                        <h4>📅 ${item.date}</h4>
+                        <p>🕒 ${slotLabel}</p>
+                    </div>
+                    <button class="btn-action-icon" onclick="deleteBlock('${item.id}')" title="Usuń blokadę">
+                        <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
+                    </button>
+                `;
+                blockedSlotsContainer.appendChild(card);
+            });
+
+            gsap.from('.block-card', { opacity: 0, scale: 0.9, duration: 0.3, stagger: 0.05, ease: 'power2.out', overwrite: 'auto' });
+        }
+
+        blockForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const dateValue = blockDate.value;
+            const timeValue = blockTime.value;
+            
+            const submitBtn = document.getElementById('block-submit-btn');
+            submitBtn.disabled = true;
+
+            fetch(API_BASE_URL + '/api/admin/block', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ date: dateValue, time: timeValue })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(d => { throw new Error(d.error || "Błąd podczas blokowania") });
+                }
+                return res.json();
+            })
+            .then(data => {
+                showToast("Pomyślnie zablokowano termin!", "success");
+                loadBlockedSlots();
+                blockForm.reset();
+                blockDate.setAttribute('min', today);
+            })
+            .catch(err => {
+                showToast(err.message, "error");
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+            });
+        });
+
+        window.deleteBlock = function(blockId) {
+            if (!confirm("Czy na pewno chcesz usunąć tę blokadę?")) return;
+
+            fetch(API_BASE_URL + '/api/admin/unblock', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ id: blockId })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Błąd podczas usuwania blokady");
+                return res.json();
+            })
+            .then(data => {
+                showToast("Odblokowano termin!", "success");
+                loadBlockedSlots();
+            })
+            .catch(err => {
+                showToast(err.message, "error");
+            });
+        };
+
+        // ─── Tab 2: Bookings Logic ───
+        function loadBookings() {
+            fetch(API_BASE_URL + '/api/admin/bookings', {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    logoutBtn.click();
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data) return;
+                allBookings = data.bookings || [];
+                renderBookings();
+            })
+            .catch(err => {
+                console.error("Failed to load bookings", err);
+                bookingsTableBody.innerHTML = `<tr><td colspan="7" class="no-data">Błąd ładowania danych: ${err.message}</td></tr>`;
+            });
+        }
+
+        function renderBookings() {
+            const query = bookingsSearch.value.toLowerCase().trim();
+            const statusFilter = filterStatus.value;
+
+            // Filter bookings
+            const filtered = allBookings.filter(b => {
+                // Status Filter
+                if (statusFilter !== 'all' && b.status !== statusFilter) return false;
+                
+                // Search query filter
+                if (query) {
+                    const name = (b.name || '').toLowerCase();
+                    const email = (b.email || '').toLowerCase();
+                    const phone = (b.phone || '').toLowerCase();
+                    const date = (b.date || '').toLowerCase();
+                    return name.includes(query) || email.includes(query) || phone.includes(query) || date.includes(query);
+                }
+                return true;
+            });
+
+            // Update count label
+            bookingsCountEl.innerText = `Znaleziono: ${filtered.length} rezerwacji`;
+
+            if (filtered.length === 0) {
+                bookingsTableBody.innerHTML = `<tr><td colspan="7" class="no-data">Brak rezerwacji pasujących do kryteriów.</td></tr>`;
+                return;
+            }
+
+            bookingsTableBody.innerHTML = '';
+            filtered.forEach(b => {
+                const tr = document.createElement('tr');
+                
+                // Status Badge
+                const statusLabel = b.status === 'confirmed' ? 'Potwierdzona' : 'Pending';
+                const statusBadge = `<span class="status-badge ${b.status}">${statusLabel}</span>`;
+                
+                // Format Date of Creation
+                let createdAtFormatted = b.created_at || '-';
+                if (createdAtFormatted.includes('T')) {
+                    const parts = createdAtFormatted.split('T');
+                    createdAtFormatted = `${parts[0]} ${parts[1].substring(0, 5)}`;
+                }
+
+                // Action button (Confirm manually for pending)
+                const actionCell = b.status === 'pending'
+                    ? `<button class="btn-confirm" onclick="confirmManual('${b.id}')">Zatwierdź</button>`
+                    : `<span style="color:var(--text-muted);font-size:0.8rem;">Brak akcji</span>`;
+
+                tr.innerHTML = `
+                    <td>
+                        <div class="booking-details-box">
+                            <span class="customer-name">${escapeHTML(b.name)}</span>
+                            <span class="customer-contacts">✉️ ${escapeHTML(b.email)}</span>
+                            <span class="customer-contacts">📞 ${escapeHTML(b.phone)}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight:700;">📅 ${b.date}</div>
+                        <div style="color:var(--text-muted);font-size:0.85rem;">🕒 ${b.time}</div>
+                    </td>
+                    <td>
+                        <div>Jednoosobowe: <strong>${b.single_quads}</strong></div>
+                        <div>Dwuosobowe: <strong>${b.double_quads}</strong></div>
+                    </td>
+                    <td style="font-weight:700;color:var(--primary);">€${b.total_price}</td>
+                    <td>${statusBadge}</td>
+                    <td style="color:var(--text-muted);font-size:0.85rem;">${createdAtFormatted}</td>
+                    <td style="text-align: right;">${actionCell}</td>
+                `;
+                bookingsTableBody.appendChild(tr);
+            });
+
+            // GSAP animation for table rows entrance
+            gsap.from('#bookings-table-body tr', { opacity: 0, y: 10, duration: 0.3, stagger: 0.02, ease: 'power2.out', overwrite: 'auto' });
+        }
+
+        // Confirm manual handler
+        window.confirmManual = function(bookingId) {
+            if (!confirm("Czy na pewno chcesz ręcznie zatwierdzić tę rezerwację? Spowoduje to wysłanie maila i kalendarza do klienta.")) return;
+
+            const confirmBtn = event.target;
+            confirmBtn.disabled = true;
+            confirmBtn.innerText = 'Zatwierdzanie...';
+
+            fetch(API_BASE_URL + '/api/admin/confirm-booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ id: bookingId })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Nie udało się zatwierdzić rezerwacji");
+                return res.json();
+            })
+            .then(data => {
+                showToast("Rezerwacja została potwierdzona pomyślnie!", "success");
+                loadBookings();
+            })
+            .catch(err => {
+                showToast(err.message, "error");
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = 'Zatwierdź';
+            });
+        };
+
+        // Filters listeners
+        bookingsSearch.addEventListener('input', renderBookings);
+        filterStatus.addEventListener('change', renderBookings);
+
+        // Helper function to escape HTML
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Boot the app
+        initApp();
+    </script>
+</body>
+</html>
