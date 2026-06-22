@@ -147,8 +147,8 @@ def new_booking():
     if single_quads == 0 and double_quads == 0:
         return jsonify({"error": "Must select at least 1 quad bike"}), 400
         
-    if single_quads + double_quads > 5:
-        return jsonify({"error": "Cannot book more than 5 quads in total"}), 400
+    if single_quads + double_quads > 4:
+        return jsonify({"error": "Cannot book more than 4 quads in total"}), 400
         
     try:
         # Check real-time availability before booking

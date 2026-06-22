@@ -106,13 +106,13 @@ def parse_quads_from_event(summary, description=""):
     # 1. Check if it's a manual block/closure
     block_keywords = ["block", "blok", "close", "zamkn", "priv", "prywatn", "cerrar", "ocupado", "off"]
     if any(kw in summary.lower() for kw in block_keywords) or any(kw in description.lower() for kw in block_keywords):
-        # Try to find a valid quad count (1 to 5) in the summary/description
-        nums = [int(n) for n in re.findall(r"\b(\d+)\b", summary + " " + description) if 1 <= int(n) <= 5]
+        # Try to find a valid quad count (1 to 4) in the summary/description
+        nums = [int(n) for n in re.findall(r"\b(\d+)\b", summary + " " + description) if 1 <= int(n) <= 4]
         if nums:
             return nums[0]
         else:
-            # Block the entire tour slot (default max capacity is 5)
-            return 5
+            # Block the entire tour slot (default max capacity is 4)
+            return 4
             
     # 2. Check for standard pattern (XS, YD) or similar in summary/description
     single_count = 0

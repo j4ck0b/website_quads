@@ -211,7 +211,7 @@ def get_pending_bookings(date_str):
         conn.close()
     return bookings_list
 
-def get_slot_availability(date_str, max_capacity=5):
+def get_slot_availability(date_str, max_capacity=4):
     """
     Calculates remaining quad capacity for standard time slots:
     '13:00' (Afternoon) and '18:00' (Sunset)
