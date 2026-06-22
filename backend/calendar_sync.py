@@ -156,7 +156,7 @@ def parse_quads_from_event(summary, description=""):
 def get_calendar_events_for_date(date_str):
     """
     Queries Google Calendar API for events on the given date (YYYY-MM-DD).
-    Returns a dictionary of occupied capacity per slot, e.g. {"13:00": 2, "18:00": 0}.
+    Returns a dictionary of occupied capacity per slot, e.g. {"13:00": 2, "18:30": 0}.
     If Google credentials are not set or calendar sync fails, returns None.
     """
     google_json_str = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
@@ -205,7 +205,7 @@ def get_calendar_events_for_date(date_str):
         
         occupied = {
             "13:00": 0,
-            "18:00": 0
+            "18:30": 0
         }
         
         for event in events:
@@ -222,11 +222,11 @@ def get_calendar_events_for_date(date_str):
             # Count quads blocked
             quads = parse_quads_from_event(event.get('summary'), event.get('description'))
             
-            # Map start hour to slots (13:00 / 18:00)
+            # Map start hour to slots (13:00 / 18:30)
             if 12 <= hour <= 15:
                 occupied["13:00"] += quads
             elif 17 <= hour <= 20:
-                occupied["18:00"] += quads
+                occupied["18:30"] += quads
                 
         return occupied
         

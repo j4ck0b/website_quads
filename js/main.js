@@ -595,7 +595,7 @@ function renderTimeSlots(slots) {
 
         var title = time === '13:00'
             ? (t['booking.form.time.afternoon'] || 'Afternoon Tour (13:00)')
-            : (t['booking.form.time.sunset']    || 'Sunset Tour (18:00)');
+            : (t['booking.form.time.sunset']    || 'Sunset Tour (18:30)');
 
         pill.innerHTML = '<span class="time-slot-name">' + title + '</span>'
                        + '<span class="time-slot-status">' + remainingText + '</span>';

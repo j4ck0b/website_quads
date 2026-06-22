@@ -737,7 +737,7 @@
                                     <select id="block-time" class="select-field" style="width: 100%; height: 45px;">
                                         <option value="all">Full day (All hours)</option>
                                         <option value="13:00">Afternoon tour (13:00)</option>
-                                        <option value="18:00">Sunset tour (18:00)</option>
+                                        <option value="18:30">Sunset tour (18:30)</option>
                                     </select>
                                 </div>
                                 <div class="input-group">
@@ -1021,9 +1021,9 @@
                 card.className = 'block-card';
                 
                 let slotLabel = item.time;
-                if (item.time === 'all') slotLabel = 'Full day (13:00 & 18:00)';
+                if (item.time === 'all') slotLabel = 'Full day (13:00 & 18:30)';
                 else if (item.time === '13:00') slotLabel = 'Afternoon tour (13:00)';
-                else if (item.time === '18:00') slotLabel = 'Sunset tour (18:00)';
+                else if (item.time === '18:30') slotLabel = 'Sunset tour (18:30)';
 
                 const quadsBlocked = parseInt(item.quads || 0);
                 const quadsLabel = quadsBlocked === 0 ? 'Full block (all quads)' : `Blocked quads: ${quadsBlocked}`;
