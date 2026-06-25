@@ -762,7 +762,13 @@
 
                         <!-- Block List -->
                         <div class="glass-panel block-list-panel">
-                            <h3>Currently Blocked Slots</h3>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                <h3 style="margin-bottom: 0;">Currently Blocked Slots</h3>
+                                <select id="sort-blocked" class="select-field" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; height: auto; width: auto;">
+                                    <option value="date-asc">Date (Ascending)</option>
+                                    <option value="date-desc">Date (Descending)</option>
+                                </select>
+                            </div>
                             <div class="block-cards-grid" id="blocked-slots-container">
                                 <div class="no-data">Fetching blocked slots...</div>
                                 <div class="no-data">Pobieranie listy blokad...</div>
@@ -791,6 +797,15 @@
                                 <option value="confirmed">Confirmed</option>
                                 <option value="pending">Pending</option>
                                 <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="filter-select-group">
+                            <label for="sort-bookings">Sort by:</label>
+                            <select id="sort-bookings" class="select-field">
+                                <option value="created-desc">Created Date (Newest first)</option>
+                                <option value="created-asc">Created Date (Oldest first)</option>
+                                <option value="tour-asc">Tour Date (Upcoming first)</option>
+                                <option value="tour-desc">Tour Date (Furthest first)</option>
                             </select>
                         </div>
                     </div>
@@ -1015,8 +1030,24 @@
                 return;
             }
 
+            const sortVal = document.getElementById('sort-blocked') ? document.getElementById('sort-blocked').value : 'date-asc';
+            
+            // Sort blocked slots
+            const sortedBlocked = [...allBlocked].sort((a, b) => {
+                const dateCompare = a.date.localeCompare(b.date);
+                if (dateCompare !== 0) {
+                    return sortVal === 'date-asc' ? dateCompare : -dateCompare;
+                }
+                
+                // Secondary sort: time ('all' -> '13:00' -> '18:30')
+                const timeWeights = { 'all': 0, '13:00': 1, '18:30': 2 };
+                const wA = timeWeights[a.time] !== undefined ? timeWeights[a.time] : 99;
+                const wB = timeWeights[b.time] !== undefined ? timeWeights[b.time] : 99;
+                return sortVal === 'date-asc' ? wA - wB : wB - wA;
+            });
+
             blockedSlotsContainer.innerHTML = '';
-            allBlocked.forEach(item => {
+            sortedBlocked.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'block-card';
                 
@@ -1145,9 +1176,10 @@
         function renderBookings() {
             const query = bookingsSearch.value.toLowerCase().trim();
             const statusFilter = filterStatus.value;
+            const sortVal = document.getElementById('sort-bookings') ? document.getElementById('sort-bookings').value : 'created-desc';
 
             // Filter bookings
-            const filtered = allBookings.filter(b => {
+            let filtered = allBookings.filter(b => {
                 // Status Filter
                 if (statusFilter !== 'all' && b.status !== statusFilter) return false;
                 
@@ -1160,6 +1192,24 @@
                     return name.includes(query) || email.includes(query) || phone.includes(query) || date.includes(query);
                 }
                 return true;
+            });
+
+            // Sort bookings
+            filtered.sort((a, b) => {
+                if (sortVal === 'created-desc') {
+                    return (b.created_at || '').localeCompare(a.created_at || '');
+                } else if (sortVal === 'created-asc') {
+                    return (a.created_at || '').localeCompare(b.created_at || '');
+                } else if (sortVal === 'tour-asc') {
+                    const dateCompare = (a.date || '').localeCompare(b.date || '');
+                    if (dateCompare !== 0) return dateCompare;
+                    return (a.time || '').localeCompare(b.time || '');
+                } else if (sortVal === 'tour-desc') {
+                    const dateCompare = (b.date || '').localeCompare(a.date || '');
+                    if (dateCompare !== 0) return dateCompare;
+                    return (b.time || '').localeCompare(a.time || '');
+                }
+                return 0;
             });
 
             // Update count label
@@ -1304,6 +1354,16 @@
         // Filters listeners
         bookingsSearch.addEventListener('input', renderBookings);
         filterStatus.addEventListener('change', renderBookings);
+        
+        const sortBookingsEl = document.getElementById('sort-bookings');
+        if (sortBookingsEl) {
+            sortBookingsEl.addEventListener('change', renderBookings);
+        }
+        
+        const sortBlockedEl = document.getElementById('sort-blocked');
+        if (sortBlockedEl) {
+            sortBlockedEl.addEventListener('change', renderBlockedSlots);
+        }
 
         // Helper function to escape HTML
         function escapeHTML(str) {
