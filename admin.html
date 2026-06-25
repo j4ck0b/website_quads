@@ -558,6 +558,50 @@
             color: rgba(255, 153, 51, 0.75);
         }
 
+        @media (max-width: 600px) {
+            .calendar-day-cell {
+                min-height: 65px;
+                padding: 0.3rem;
+            }
+            .day-number {
+                font-size: 0.85rem;
+            }
+            .day-blocks {
+                gap: 0.15rem;
+                margin-top: 0.2rem;
+            }
+            .cal-block-badge {
+                font-size: 0.6rem;
+                padding: 0.1rem 0.2rem;
+                text-align: center;
+                border-radius: 3px;
+                gap: 0;
+            }
+            .cal-block-badge .badge-time {
+                font-size: 0.6rem;
+            }
+            .cal-block-badge .badge-desc {
+                display: none;
+            }
+            .large-calendar-panel {
+                padding: 1rem;
+            }
+            .block-form-panel, .block-list-panel {
+                padding: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-btn {
+                padding: 0.5rem 0.4rem;
+                font-size: 0.8rem;
+                min-width: 60px;
+            }
+            .button-group {
+                gap: 0.3rem;
+            }
+        }
+
         /* Bookings List Styling */
         .filters-panel {
             padding: 1.2rem 1.5rem;
@@ -1334,13 +1378,14 @@
                 const blocksOnThisDay = allBlocked.filter(b => b.date === cellDateStr);
                 if (blocksOnThisDay.length > 0) {
                     badgesHtml = '<div class="day-blocks">';
+                    const isMobile = window.innerWidth <= 600;
                     blocksOnThisDay.forEach(block => {
                         let timeLabel = block.time;
-                        if (block.time === 'all') timeLabel = 'Full Day';
+                        if (block.time === 'all') timeLabel = isMobile ? 'All' : 'Full Day';
 
                         const isFullBlock = parseInt(block.quads || 0) === 0;
                         const badgeClass = isFullBlock ? 'cal-block-badge full' : 'cal-block-badge partial';
-                        const desc = isFullBlock ? 'FULL BLOCK' : `${block.quads} Quad(s)`;
+                        const desc = isFullBlock ? (isMobile ? 'Full' : 'FULL BLOCK') : (isMobile ? `${block.quads}q` : `${block.quads} Quad(s)`);
 
                         badgesHtml += `
                             <div class="${badgeClass}">
@@ -1776,6 +1821,15 @@
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
         }
+
+        // Resize listener to adapt calendar layout for mobile
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                renderCalendar();
+            }, 150);
+        });
 
         // Boot the app
         initApp();
