@@ -385,6 +385,179 @@
             grid-column: 1 / -1;
         }
 
+        /* Segmented Buttons in Form */
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .form-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.65rem 0.85rem;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+            outline: none;
+        }
+        .form-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border-color: rgba(255, 102, 0, 0.3);
+        }
+        .form-btn.active {
+            background: rgba(255, 102, 0, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.15);
+        }
+
+        /* Large Calendar Styling */
+        .large-calendar-panel {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .calendar-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+            text-transform: capitalize;
+        }
+        .btn-cal-nav {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .btn-cal-nav:hover {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+        .calendar-weekday {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .calendar-day-cell {
+            background: var(--bg-dark);
+            min-height: 110px;
+            padding: 0.6rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        .calendar-day-cell:hover:not(.other-month) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .calendar-day-cell.other-month {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+        .calendar-day-cell.today {
+            background: rgba(255, 102, 0, 0.02);
+        }
+        .calendar-day-cell.today .day-number {
+            color: var(--primary);
+            font-weight: 800;
+        }
+        .calendar-day-cell.selected {
+            background: rgba(255, 102, 0, 0.08);
+            box-shadow: inset 0 0 0 2px var(--primary);
+            z-index: 2;
+        }
+        .calendar-day-cell.past:not(.today) {
+            opacity: 0.5;
+        }
+        .day-number {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            align-self: flex-end;
+        }
+        .day-blocks {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+        .cal-block-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+        .cal-block-badge.full {
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+        }
+        .cal-block-badge.partial {
+            background: rgba(255, 153, 51, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 153, 51, 0.2);
+        }
+        .badge-time {
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .badge-desc {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        .cal-block-badge.full .badge-desc {
+            color: rgba(255, 51, 51, 0.75);
+        }
+        .cal-block-badge.partial .badge-desc {
+            color: rgba(255, 153, 51, 0.75);
+        }
+
         /* Bookings List Styling */
         .filters-panel {
             padding: 1.2rem 1.5rem;
@@ -724,54 +897,83 @@
                     </div>
 
                     <div class="calendar-layout">
-                        <!-- Block Form -->
-                        <div class="glass-panel block-form-panel">
-                            <h3>Add New Block</h3>
-                            <form id="block-form">
-                                <div class="input-group">
-                                    <label for="block-date">Select date</label>
-                                    <input type="date" id="block-date" class="input-field" required>
-                                </div>
-                                <div class="input-group">
-                                    <label for="block-time">Block scope</label>
-                                    <select id="block-time" class="select-field" style="width: 100%; height: 45px;">
-                                        <option value="all">Full day (All hours)</option>
-                                        <option value="13:00">Afternoon tour (13:00)</option>
-                                        <option value="18:30">Sunset tour (18:30)</option>
+                        <!-- Left Column (Block Form + Block List) -->
+                        <div style="display: flex; flex-direction: column; gap: 2rem;">
+                            <!-- Block Form -->
+                            <div class="glass-panel block-form-panel">
+                                <h3>Add New Block</h3>
+                                <form id="block-form">
+                                    <div class="input-group">
+                                        <label>Selected Date</label>
+                                        <div id="selected-date-display" style="font-size: 1rem; font-weight: 700; color: var(--primary); padding: 0.8rem 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                                            <span>Select from calendar</span>
+                                            <span>📅</span>
+                                        </div>
+                                        <input type="hidden" id="block-date" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Block scope</label>
+                                        <div class="button-group" id="btn-group-time">
+                                            <button type="button" class="form-btn active" data-value="all">Full Day</button>
+                                            <button type="button" class="form-btn" data-value="13:00">13:00</button>
+                                            <button type="button" class="form-btn" data-value="18:30">18:30</button>
+                                        </div>
+                                        <input type="hidden" id="block-time" value="all">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Block type</label>
+                                        <div class="button-group" id="btn-group-type">
+                                            <button type="button" class="form-btn active" data-value="full">Full Block</button>
+                                            <button type="button" class="form-btn" data-value="partial">Partial</button>
+                                        </div>
+                                        <input type="hidden" id="block-type" value="full">
+                                    </div>
+                                    <div class="input-group" id="block-quads-group" style="display: none;">
+                                        <label>Number of quads to block</label>
+                                        <div class="button-group" id="btn-group-quads">
+                                            <button type="button" class="form-btn active" data-value="1">1</button>
+                                            <button type="button" class="form-btn" data-value="2">2</button>
+                                            <button type="button" class="form-btn" data-value="3">3</button>
+                                            <button type="button" class="form-btn" data-value="4">4 (All)</button>
+                                        </div>
+                                        <input type="hidden" id="block-quads" value="1">
+                                    </div>
+                                    <button type="submit" class="btn-primary" id="block-submit-btn" style="margin-top: 1.5rem;">Block Slot</button>
+                                </form>
+                            </div>
+
+                            <!-- Block List -->
+                            <div class="glass-panel block-list-panel">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                    <h3 style="margin-bottom: 0;">Currently Blocked Slots</h3>
+                                    <select id="sort-blocked" class="select-field" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; height: auto; width: auto;">
+                                        <option value="date-asc">Date (Ascending)</option>
+                                        <option value="date-desc">Date (Descending)</option>
                                     </select>
                                 </div>
-                                <div class="input-group">
-                                    <label for="block-type">Block type</label>
-                                    <select id="block-type" class="select-field" style="width: 100%; height: 45px;">
-                                        <option value="full">Full (Block entire slot)</option>
-                                        <option value="partial">Partial (Block selected quads)</option>
-                                    </select>
+                                <div class="block-cards-grid" id="blocked-slots-container">
+                                    <div class="no-data">Fetching blocked slots...</div>
+                                    <div class="no-data">Pobieranie listy blokad...</div>
                                 </div>
-                                <div class="input-group" id="block-quads-group" style="display: none;">
-                                    <label for="block-quads">Number of quads to block</label>
-                                    <select id="block-quads" class="select-field" style="width: 100%; height: 45px;">
-                                        <option value="1">1 quad</option>
-                                        <option value="2">2 quads</option>
-                                        <option value="3">3 quady</option>
-                                        <option value="4">4 quads (all)</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn-primary" id="block-submit-btn">Block Slot</button>
-                            </form>
+                            </div>
                         </div>
 
-                        <!-- Block List -->
-                        <div class="glass-panel block-list-panel">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                                <h3 style="margin-bottom: 0;">Currently Blocked Slots</h3>
-                                <select id="sort-blocked" class="select-field" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; height: auto; width: auto;">
-                                    <option value="date-asc">Date (Ascending)</option>
-                                    <option value="date-desc">Date (Descending)</option>
-                                </select>
+                        <!-- Right Column (Large Calendar) -->
+                        <div class="glass-panel large-calendar-panel">
+                            <div class="calendar-header">
+                                <button type="button" class="btn-cal-nav" id="cal-prev-month">&lt;</button>
+                                <h2 id="calendar-month-year">Loading...</h2>
+                                <button type="button" class="btn-cal-nav" id="cal-next-month">&gt;</button>
                             </div>
-                            <div class="block-cards-grid" id="blocked-slots-container">
-                                <div class="no-data">Fetching blocked slots...</div>
-                                <div class="no-data">Pobieranie listy blokad...</div>
+                            <div class="calendar-grid" id="large-calendar-grid">
+                                <div class="calendar-weekday">Mon</div>
+                                <div class="calendar-weekday">Tue</div>
+                                <div class="calendar-weekday">Wed</div>
+                                <div class="calendar-weekday">Thu</div>
+                                <div class="calendar-weekday">Fri</div>
+                                <div class="calendar-weekday">Sat</div>
+                                <div class="calendar-weekday">Sun</div>
+                                <!-- Day cells will be dynamically appended here -->
                             </div>
                         </div>
                     </div>
@@ -848,6 +1050,10 @@
         let activeTab = 'tab-calendar';
         let allBookings = [];
         let allBlocked = [];
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let selectedDateStr = '';
+        const today = new Date().toISOString().split('T')[0];
 
         // DOM elements
         const loginScreen = document.getElementById('login-screen');
@@ -868,10 +1074,6 @@
         const bookingsSearch = document.getElementById('bookings-search');
         const filterStatus = document.getElementById('filter-status');
         const bookingsCountEl = document.getElementById('bookings-count');
-
-        // Set minimal date in datepicker to today
-        const today = new Date().toISOString().split('T')[0];
-        blockDate.setAttribute('min', today);
 
         // Toast notifications
         function showToast(message, type = 'success') {
@@ -1025,6 +1227,9 @@
         }
 
         function renderBlockedSlots() {
+            // Render large calendar first
+            renderCalendar();
+
             if (allBlocked.length === 0) {
                 blockedSlotsContainer.innerHTML = '<div class="no-data">No active blocks in calendar.</div>';
                 return;
@@ -1075,17 +1280,213 @@
             gsap.from('.block-card', { opacity: 0, scale: 0.9, duration: 0.3, stagger: 0.05, ease: 'power2.out', overwrite: 'auto' });
         }
 
-        // Toggle block quads input visibility based on type selection
-        if (blockType) {
-            blockType.addEventListener('change', function() {
-                if (this.value === 'partial') {
-                    blockQuadsGroup.style.display = 'block';
-                    gsap.fromTo(blockQuadsGroup, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
-                } else {
-                    blockQuadsGroup.style.display = 'none';
+        // ─── Custom Large Interactive Calendar ───
+        function renderCalendar() {
+            const grid = document.getElementById('large-calendar-grid');
+            const monthYearEl = document.getElementById('calendar-month-year');
+            if (!grid || !monthYearEl) return;
+
+            // Clear previous day cells, keeping only the 7 headers (Mon-Sun)
+            const weekdaysCount = 7;
+            while (grid.children.length > weekdaysCount) {
+                grid.removeChild(grid.lastChild);
+            }
+
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June", 
+                "July", "August", "September", "October", "November", "December"
+            ];
+            monthYearEl.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+
+            // Determine date index variables
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1; // Mon is 0, Sun is 6
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+            // Render previous month cells (disabled/faded)
+            for (let i = startOffset - 1; i >= 0; i--) {
+                const dayNum = daysInPrevMonth - i;
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell other-month';
+                cell.innerHTML = `<span class="day-number">${dayNum}</span>`;
+                grid.appendChild(cell);
+            }
+
+            // Today's local date helper
+            const todayLocal = new Date();
+            const todayStr = todayLocal.getFullYear() + '-' + 
+                String(todayLocal.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(todayLocal.getDate()).padStart(2, '0');
+
+            // Render current month day cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cellDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell';
+
+                if (cellDateStr === todayStr) cell.classList.add('today');
+                if (cellDateStr < todayStr) cell.classList.add('past');
+                if (cellDateStr === selectedDateStr) cell.classList.add('selected');
+
+                // Render blocks badges inside this day cell
+                let badgesHtml = '';
+                const blocksOnThisDay = allBlocked.filter(b => b.date === cellDateStr);
+                if (blocksOnThisDay.length > 0) {
+                    badgesHtml = '<div class="day-blocks">';
+                    blocksOnThisDay.forEach(block => {
+                        let timeLabel = block.time;
+                        if (block.time === 'all') timeLabel = 'Full Day';
+
+                        const isFullBlock = parseInt(block.quads || 0) === 0;
+                        const badgeClass = isFullBlock ? 'cal-block-badge full' : 'cal-block-badge partial';
+                        const desc = isFullBlock ? 'FULL BLOCK' : `${block.quads} Quad(s)`;
+
+                        badgesHtml += `
+                            <div class="${badgeClass}">
+                                <span class="badge-time">🔒 ${timeLabel}</span>
+                                <span class="badge-desc">${desc}</span>
+                            </div>
+                        `;
+                    });
+                    badgesHtml += '</div>';
                 }
+
+                cell.innerHTML = `
+                    <span class="day-number">${day}</span>
+                    ${badgesHtml}
+                `;
+
+                // Interactive Day Click
+                cell.addEventListener('click', () => {
+                    if (cellDateStr < todayStr) {
+                        showToast("Cannot select or block past dates", "error");
+                        return;
+                    }
+                    selectedDateStr = cellDateStr;
+                    
+                    const blockDateInput = document.getElementById('block-date');
+                    if (blockDateInput) blockDateInput.value = selectedDateStr;
+
+                    const displayEl = document.getElementById('selected-date-display');
+                    if (displayEl) {
+                        const [y, m, d] = selectedDateStr.split('-');
+                        displayEl.innerHTML = `<span>${d}.${m}.${y}</span><span style="color:var(--primary); font-weight: bold;">✓</span>`;
+                    }
+                    
+                    renderCalendar();
+                });
+
+                grid.appendChild(cell);
+            }
+
+            // Render next month filler cells
+            const totalCells = startOffset + daysInMonth;
+            const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+            for (let i = 1; i <= remaining; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell other-month';
+                cell.innerHTML = `<span class="day-number">${i}</span>`;
+                grid.appendChild(cell);
+            }
+        }
+
+        // Navigation
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        // Helper setup for custom segmented button selection
+        function setupSegmentedButtons(groupContainerId, hiddenInputId, onChangeCallback) {
+            const container = document.getElementById(groupContainerId);
+            const hiddenInput = document.getElementById(hiddenInputId);
+            if (!container || !hiddenInput) return;
+
+            const buttons = container.querySelectorAll('.form-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const val = this.getAttribute('data-value');
+                    hiddenInput.value = val;
+                    
+                    if (onChangeCallback) {
+                        onChangeCallback(val);
+                    }
+                });
             });
         }
+
+        // Form state resets
+        function resetBlockForm() {
+            selectedDateStr = '';
+            
+            const displayEl = document.getElementById('selected-date-display');
+            if (displayEl) displayEl.innerHTML = `<span>Select from calendar</span><span>📅</span>`;
+            
+            const dateInput = document.getElementById('block-date');
+            if (dateInput) dateInput.value = '';
+
+            const timeInput = document.getElementById('block-time');
+            if (timeInput) timeInput.value = 'all';
+            document.querySelectorAll('#btn-group-time .form-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-value') === 'all');
+            });
+
+            const typeInput = document.getElementById('block-type');
+            if (typeInput) typeInput.value = 'full';
+            document.querySelectorAll('#btn-group-type .form-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-value') === 'full');
+            });
+
+            const quadsInput = document.getElementById('block-quads');
+            if (quadsInput) quadsInput.value = '1';
+            document.querySelectorAll('#btn-group-quads .form-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-value') === '1');
+            });
+
+            const quadsGroupContainer = document.getElementById('block-quads-group');
+            if (quadsGroupContainer) quadsGroupContainer.style.display = 'none';
+
+            renderCalendar();
+        }
+
+        // Setup controllers
+        setTimeout(() => {
+            const prevBtn = document.getElementById('cal-prev-month');
+            const nextBtn = document.getElementById('cal-next-month');
+            if (prevBtn) prevBtn.addEventListener('click', prevMonth);
+            if (nextBtn) nextBtn.addEventListener('click', nextMonth);
+
+            setupSegmentedButtons('btn-group-time', 'block-time');
+            setupSegmentedButtons('btn-group-type', 'block-type', function(value) {
+                const blockQuadsGroup = document.getElementById('block-quads-group');
+                if (blockQuadsGroup) {
+                    if (value === 'partial') {
+                        blockQuadsGroup.style.display = 'block';
+                        gsap.fromTo(blockQuadsGroup, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
+                    } else {
+                        blockQuadsGroup.style.display = 'none';
+                    }
+                }
+            });
+            setupSegmentedButtons('btn-group-quads', 'block-quads');
+        }, 100);
 
         blockForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1094,6 +1495,11 @@
             const typeValue = blockType.value;
             const quadsValue = typeValue === 'partial' ? parseInt(blockQuads.value) : 0;
             
+            if (!dateValue) {
+                showToast("Please select a date from the calendar first", "error");
+                return;
+            }
+
             const submitBtn = document.getElementById('block-submit-btn');
             submitBtn.disabled = true;
 
@@ -1114,9 +1520,7 @@
             .then(data => {
                 showToast("Slot blocked successfully!", "success");
                 loadBlockedSlots();
-                blockForm.reset();
-                blockQuadsGroup.style.display = 'none';
-                blockDate.setAttribute('min', today);
+                resetBlockForm();
             })
             .catch(err => {
                 showToast(err.message, "error");
