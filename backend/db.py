@@ -62,6 +62,14 @@ def init_db():
                     cur.execute("ALTER TABLE blocked_slots ADD COLUMN IF NOT EXISTS quads INTEGER DEFAULT 0;")
                 except Exception as pg_mig_err:
                     print(f"PostgreSQL migration warning (blocked_slots.quads): {pg_mig_err}")
+                
+                # Create newsletter_subscribers table in PostgreSQL
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+                        email VARCHAR(255) PRIMARY KEY,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
             conn.commit()
             print("Supabase/PostgreSQL database initialized successfully.")
         else:
@@ -101,6 +109,14 @@ def init_db():
             except Exception as sq_mig_err:
                 # column might already exist, ignore this error
                 pass
+            
+            # Create newsletter_subscribers table in SQLite
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+                    email TEXT PRIMARY KEY,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
             conn.commit()
             print("SQLite local database initialized successfully.")
     except Exception as e:
@@ -479,3 +495,32 @@ def cancel_booking(booking_id):
     finally:
         conn.close()
     return booking
+
+def subscribe_newsletter(email):
+    """Subscribes an email to the newsletter, ignoring duplicates."""
+    conn = get_db_connection()
+    try:
+        now_str = datetime.now().isoformat()
+        if DB_TYPE == "supabase" and SUPABASE_DB_URL:
+            with conn.cursor() as cur:
+                # PostgreSQL support for ON CONFLICT DO NOTHING
+                cur.execute("""
+                    INSERT INTO newsletter_subscribers (email, created_at)
+                    VALUES (%s, %s)
+                    ON CONFLICT (email) DO NOTHING
+                """, (email, datetime.now()))
+            conn.commit()
+        else:
+            # SQLite support for INSERT OR IGNORE
+            conn.execute("""
+                INSERT OR IGNORE INTO newsletter_subscribers (email, created_at)
+                VALUES (?, ?)
+            """, (email, now_str))
+            conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error subscribing to newsletter: {e}")
+        return False
+    finally:
+        conn.close()
+

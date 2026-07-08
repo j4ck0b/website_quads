@@ -16,10 +16,12 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 from db import (
     init_db, get_slot_availability, create_booking, get_booking_by_stripe_session, 
     confirm_booking, block_slot, unblock_slot, get_all_blocked_slots, 
-    get_all_bookings, manually_confirm_booking, cancel_booking
+    get_all_bookings, manually_confirm_booking, cancel_booking, subscribe_newsletter
 )
 from email_sender import send_booking_emails, send_contact_email
 from calendar_sync import sync_to_google_calendar, delete_from_google_calendar
+import html
+import re
 
 app = Flask(__name__)
 
@@ -33,11 +35,25 @@ else:
         allowed_origins = ["*"]
     CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
+# Helper functions for form safety
+def check_honeypot(data):
+    """Returns True if honeypot field is filled (bot activity), False otherwise."""
+    if data and data.get("website_url"):
+        return True
+    return False
+
+def sanitize_input(text, length_limit=100):
+    """Sanitizes text to escape HTML tags and limits length."""
+    if not text:
+        return ""
+    return html.escape(str(text).strip())[:length_limit]
+
 # Endpoint-specific rate limiting configurations
 PATH_LIMITS = {
     "/api/contact": (3, 60),      # 3 requests per 60 seconds
     "/api/bookings": (5, 60),     # 5 requests per 60 seconds
-    "/api/availability": (30, 60) # 30 requests per 60 seconds
+    "/api/availability": (30, 60), # 30 requests per 60 seconds
+    "/api/newsletter": (3, 60)    # 3 requests per 60 seconds
 }
 IP_PATH_REQUESTS = {}
 
@@ -107,6 +123,10 @@ def new_booking():
     if not data:
         return jsonify({"error": "Invalid request payload"}), 400
         
+    # Honeypot spam/bot check
+    if check_honeypot(data):
+        return jsonify({"status": "success", "message": "Redirecting to payment..."}), 200
+
     # Required fields
     name = data.get("name")
     email = data.get("email")
@@ -122,15 +142,13 @@ def new_booking():
     if not all([name, email, phone, date_str, time_str]):
         return jsonify({"error": "Missing required fields"}), 400
         
-    # Limit lengths to prevent memory/DoS abuse
-    name = str(name).strip()[:100]
-    email = str(email).strip()[:100]
-    phone = str(phone).strip()[:30]
-    date_str = str(date_str).strip()[:15]
-    time_str = str(time_str).strip()[:10]
+    name = sanitize_input(name, 100)
+    email = sanitize_input(email, 100)
+    phone = sanitize_input(phone, 30)
+    date_str = sanitize_input(date_str, 15)
+    time_str = sanitize_input(time_str, 10)
     
     # Validate email format
-    import re
     EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     if not re.match(EMAIL_REGEX, email):
         return jsonify({"error": "Invalid email address format"}), 400
@@ -296,6 +314,10 @@ def contact_form():
     if not data:
         return jsonify({"error": "Invalid request payload"}), 400
         
+    # Honeypot spam/bot check
+    if check_honeypot(data):
+        return jsonify({"status": "success", "message": "Message sent successfully"}), 200
+
     name = data.get("name")
     email = data.get("email")
     message = data.get("message")
@@ -307,12 +329,10 @@ def contact_form():
     if not all([name, email, message]):
         return jsonify({"error": "Missing required fields"}), 400
         
-    # Validate and sanitize inputs to protect against large payloads
-    name = str(name).strip()[:100]
-    email = str(email).strip()[:100]
-    message = str(message).strip()[:3000]
+    name = sanitize_input(name, 100)
+    email = sanitize_input(email, 100)
+    message = sanitize_input(message, 3000)
     
-    import re
     EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     if not re.match(EMAIL_REGEX, email):
         return jsonify({"error": "Invalid email address format"}), 400
@@ -322,6 +342,36 @@ def contact_form():
         return jsonify({"status": "success", "message": "Message sent successfully"}), 200
     else:
         return jsonify({"error": "Failed to send email. Check backend logs."}), 500
+
+@app.route("/api/newsletter", methods=["POST"])
+def newsletter_subscribe():
+    """
+    Handles newsletter subscriptions, validates fields, check honeypot, and inserts into DB.
+    """
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid request payload"}), 400
+        
+    # Honeypot spam/bot check
+    if check_honeypot(data):
+        return jsonify({"status": "success", "message": "Subscribed successfully"}), 200
+
+    email = data.get("email")
+    
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+        
+    email = sanitize_input(email, 100)
+    
+    EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    if not re.match(EMAIL_REGEX, email):
+        return jsonify({"error": "Invalid email address format"}), 400
+        
+    success = subscribe_newsletter(email)
+    if success:
+        return jsonify({"status": "success", "message": "Subscribed successfully"}), 200
+    else:
+        return jsonify({"error": "Subscription failed. Please try again later."}), 500
 
 @app.route("/api/webhook", methods=["POST"])
 def stripe_webhook():

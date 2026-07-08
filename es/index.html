@@ -551,6 +551,7 @@
 
                 <div class="booking-widget-wrapper" style="max-width: 800px;">
                     <form id="whatsapp-booking-form" class="premium-booking-form">
+                        <input type="text" name="website_url" class="hidden-honey" tabindex="-1" autocomplete="off">
                         <!-- Date & Time Row (Custom Calendar Grid) -->
                         <div class="form-row date-time-row">
                             <div class="form-group">
@@ -912,6 +913,7 @@
                     <div class="contact-form-container">
                         <h3 style="font-size: 1.4rem; color: #fff; margin-bottom: 1.5rem; font-weight: 700;" data-i18n="contact.title">¿Tienes preguntas?</h3>
                         <form id="booking-form" style="display: flex; flex-direction: column; gap: 1.2rem;">
+                            <input type="text" name="website_url" class="hidden-honey" tabindex="-1" autocomplete="off">
                             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                                 <label style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;" data-i18n="contact.form.name">Nombre completo</label>
                                 <input type="text" placeholder="Name" required data-i18n-placeholder="Name" style="padding: 1rem; background: var(--bg-card); border: 1px solid var(--glass-border); color: #fff; border-radius: 6px; font-family: inherit; font-size: 0.95rem; transition: var(--transition);">
@@ -955,6 +957,17 @@
                     <li><a href="privacy.html" data-i18n="footer.privacy">Política de Privacidad</a></li>
                     <li><a href="terms.html" data-i18n="footer.terms">Términos del Servicio</a></li>
                 </ul>
+            </div>
+            <div class="footer-newsletter" style="text-align: left;">
+                <h3 data-i18n="footer.newsletter.title">Boletín</h3>
+                <p style="color: var(--text-muted); line-height: 1.5; font-size: 0.9rem;" data-i18n="footer.newsletter.desc">Suscríbete para recibir consejos de seguridad, rutas y ofertas exclusivas.</p>
+                <form id="newsletter-form" class="newsletter-form">
+                    <input type="text" name="website_url" class="hidden-honey" tabindex="-1" autocomplete="off">
+                    <div class="newsletter-input-group">
+                        <input type="email" required placeholder="Tu correo electrónico" data-i18n-placeholder="footer.newsletter.placeholder">
+                        <button type="submit" class="btn btn-primary" data-i18n="footer.newsletter.submit">Suscribirse</button>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="footer-bottom">

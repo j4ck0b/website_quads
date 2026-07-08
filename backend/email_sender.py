@@ -341,7 +341,7 @@ def send_booking_emails(booking):
                   </div>
                   <div class="footer">
                     © 2026 Extreme Prime Tours SL. Wszelkie prawa zastrzeżone.<br>
-                    Telefon / WhatsApp: +34 600 000 000 | <a href="mailto:{REPLY_TO}">{REPLY_TO}</a>
+                    Telefon / WhatsApp: +34 711 07 53 69 | <a href="mailto:{REPLY_TO}">{REPLY_TO}</a>
                   </div>
                 </div>
               </div>
@@ -425,7 +425,7 @@ def send_booking_emails(booking):
                   </div>
                   <div class="footer">
                     © 2026 Extreme Prime Tours SL. Todos los derechos reservados.<br>
-                    Teléfono / WhatsApp: +34 600 000 000 | <a href="mailto:{REPLY_TO}">{REPLY_TO}</a>
+                    Teléfono / WhatsApp: +34 711 07 53 69 | <a href="mailto:{REPLY_TO}">{REPLY_TO}</a>
                   </div>
                 </div>
               </div>
@@ -509,7 +509,7 @@ def send_booking_emails(booking):
                   </div>
                   <div class="footer">
                     © 2026 Extreme Prime Tours SL. All rights reserved.<br>
-                    Phone / WhatsApp: +34 600 000 000 | <a href="mailto:{REPLY_TO}">{REPLY_TO}</a>
+                    Phone / WhatsApp: +34 711 07 53 69 | <a href="mailto:{REPLY_TO}">{REPLY_TO}</a>
                   </div>
                 </div>
               </div>

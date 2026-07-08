@@ -252,12 +252,14 @@ function initContactForm() {
     form.addEventListener('submit', e => {
         e.preventDefault();
         
-        const nameInput = form.querySelector('input[type="text"]');
+        const honeyInput = form.querySelector('input[name="website_url"]');
+        const nameInput = form.querySelector('input[type="text"]:not([name="website_url"])');
         const emailInput = form.querySelector('input[type="email"]');
         const messageInput = form.querySelector('textarea');
         const btn = form.querySelector('button');
         if (!btn) return;
         
+        const honey = honeyInput ? honeyInput.value : '';
         const name = nameInput ? nameInput.value : '';
         const email = emailInput ? emailInput.value : '';
         const message = messageInput ? messageInput.value : '';
@@ -269,7 +271,7 @@ function initContactForm() {
         fetch(API_BASE_URL + '/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name, email: email, message: message, lang: currentLang })
+            body: JSON.stringify({ name: name, email: email, message: message, website_url: honey, lang: currentLang })
         })
         .then(response => {
             if (!response.ok) {
@@ -723,6 +725,9 @@ function initBookingForm() {
             return;
         }
 
+        var honeyEl = form.querySelector('input[name="website_url"]');
+        var honey = honeyEl ? honeyEl.value : '';
+
         var submitBtn = form.querySelector('button[type="submit"]');
         var origHtml  = submitBtn ? submitBtn.innerHTML : '';
         if (submitBtn) {
@@ -752,7 +757,8 @@ function initBookingForm() {
                 time:         time.value,
                 single_quads: singleQuadsCount,
                 double_quads: doubleQuadsCount,
-                lang:         currentLang
+                lang:         currentLang,
+                website_url:  honey
             })
         })
         .then(function(r) { return r.json(); })
@@ -837,6 +843,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initCardStack();
     initCalendar();
     initBookingForm();
+    initNewsletterForm();
     initAnimations();
     initGalleryToggle();
 });
@@ -885,5 +892,52 @@ function initGalleryToggle() {
             }
             toggleBtn.innerText = t['gallery.load_more'] || 'Load More Photos';
         }
+    });
+}
+
+// ─── Newsletter Form ──────────────────────────────────────────
+function initNewsletterForm() {
+    const form = document.getElementById('newsletter-form');
+    if (!form) return;
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        const emailInput = form.querySelector('input[type="email"]');
+        const honeyInput = form.querySelector('input[name="website_url"]');
+        const btn = form.querySelector('button');
+        if (!btn) return;
+        
+        const email = emailInput ? emailInput.value : '';
+        const honey = honeyInput ? honeyInput.value : '';
+        
+        const t = (translations && translations[currentLang]) || {};
+        btn.innerText = t['footer.newsletter.sending'] || 'Subscribing…';
+        btn.disabled = true;
+        
+        fetch(API_BASE_URL + '/api/newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, website_url: honey, lang: currentLang })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errData => {
+                    throw new Error(errData.error || 'Failed to subscribe');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            showPremiumToast(t['footer.newsletter.success'] || 'Subscribed successfully!', 'success');
+            form.reset();
+        })
+        .catch(err => {
+            console.error('Newsletter form error:', err);
+            showPremiumToast(err.message || 'Error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+            btn.innerText = t['footer.newsletter.submit'] || 'Subscribe';
+            btn.disabled = false;
+        });
     });
 }
