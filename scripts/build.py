@@ -224,7 +224,7 @@ def translate_html(html_content, lang, translations, filename="index.html"):
         faq_script = f'<script id="faq-schema" type="application/ld+json">\n{faq_schema_str}\n</script>'
         html_content = re.sub(r'<script\s+id="faq-schema"\s+type="application/ld\+json"\s*>.*?</script>', faq_script, html_content, flags=re.DOTALL)
 
-    # Pre-render LocalBusiness / TouristAttraction schema for Polish
+    # Pre-render LocalBusiness / TouristAttraction schema for Polish / Spanish
     if filename == "index.html" and lang == "pl":
         pl_business_schema = {
             "@context": "https://schema.org",
@@ -251,6 +251,7 @@ def translate_html(html_content, lang, translations, filename="index.html"):
             "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": "4.9",
+                "reviewCount": "480",
                 "bestRating": "5",
                 "worstRating": "1"
             },
@@ -285,6 +286,73 @@ def translate_html(html_content, lang, translations, filename="index.html"):
         }
         pl_schema_str = json.dumps(pl_business_schema, ensure_ascii=False, indent=2)
         business_script = f'<script id="local-business-schema" type="application/ld+json">\n{pl_schema_str}\n</script>'
+        html_content = re.sub(
+            r'<script\s+id="local-business-schema"\s+type="application/ld\+json"\s*>.*?</script>',
+            business_script,
+            html_content,
+            flags=re.DOTALL
+        )
+    elif filename == "index.html" and lang == "es":
+        es_business_schema = {
+            "@context": "https://schema.org",
+            "@type": "TouristAttraction",
+            "name": "Prime Quads Tenerife",
+            "description": "Excursiones en quad al Parque Nacional del Teide en Tenerife. Quads de 550cc XL, grupos reducidos de máximo 4 quads, rutas a más de 2000 m. Salidas por la tarde y al atardecer desde Las Américas.",
+            "url": "https://primequads.com/es/",
+            "telephone": "+34711075369",
+            "priceRange": "€120–€140",
+            "currenciesAccepted": "EUR",
+            "openingHours": "Mo-Su 09:00-20:00",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Las Américas",
+                "addressLocality": "Adeje",
+                "addressRegion": "Tenerife",
+                "addressCountry": "ES"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "28.0565",
+                "longitude": "-16.7232"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "480",
+                "bestRating": "5",
+                "worstRating": "1"
+            },
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Excursiones en Quad",
+                "itemListElement": [
+                    {
+                        "@type": "Offer",
+                        "name": "Quad individual – excursión al Teide",
+                        "price": "120",
+                        "priceCurrency": "EUR",
+                        "description": "Excursión de 3,5 horas en quad individual 550cc XL desde Las Américas al Parque Nacional del Teide.",
+                        "availability": "https://schema.org/InStock"
+                    },
+                    {
+                        "@type": "Offer",
+                        "name": "Quad doble – excursión al Teide",
+                        "price": "140",
+                        "priceCurrency": "EUR",
+                        "description": "Excursión de 3,5 horas en quad doble 550cc XL desde Las Américas al Parque Nacional del Teide.",
+                        "availability": "https://schema.org/InStock"
+                    }
+                ]
+            },
+            "tourBookingPage": "https://primequads.com/es/#booking",
+            "inLanguage": ["es", "en", "pl", "de", "it", "pt"],
+            "sameAs": [
+                "https://www.tripadvisor.com/",
+                "https://www.google.com/maps/place/Extreme+Prime+Tours+SL"
+            ]
+        }
+        es_schema_str = json.dumps(es_business_schema, ensure_ascii=False, indent=2)
+        business_script = f'<script id="local-business-schema" type="application/ld+json">\n{es_schema_str}\n</script>'
         html_content = re.sub(
             r'<script\s+id="local-business-schema"\s+type="application/ld\+json"\s*>.*?</script>',
             business_script,
@@ -404,26 +472,34 @@ def update_seo_metadata(html_content, lang, filename="index.html"):
         html_content = html_content.replace('</head>', f'    <link rel="canonical" href="{base_url}">\n</head>')
     
     # Generate matching alternate hreflang tags for this page
-    en_url = f"https://primequads.com/{page_path}"
-    pl_url = f"https://primequads.com/pl/{page_path}"
-    es_url = f"https://primequads.com/es/{page_path}"
-    
-    hreflangs_html = f"""    <!-- Multilingual Alternate SEO Links -->
+    if filename in ["success.html", "cancel.html"]:
+        # Remove any alternate links for noindex pages
+        if '<!-- Multilingual Alternate SEO Links -->' in html_content:
+            pattern = r'<!-- Multilingual Alternate SEO Links -->.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>'
+            html_content = re.sub(pattern, '', html_content, flags=re.DOTALL)
+        else:
+            html_content = re.sub(r'<link\s+rel="alternate"\s+hreflang="[^"]+"\s+href="[^"]+"\s*/?>\s*', '', html_content)
+    else:
+        en_url = f"https://primequads.com/{page_path}"
+        pl_url = f"https://primequads.com/pl/{page_path}"
+        es_url = f"https://primequads.com/es/{page_path}"
+        
+        hreflangs_html = f"""    <!-- Multilingual Alternate SEO Links -->
     <link rel="alternate" hreflang="en" href="{en_url}">
     <link rel="alternate" hreflang="pl" href="{pl_url}">
     <link rel="alternate" hreflang="es" href="{es_url}">
     <link rel="alternate" hreflang="x-default" href="{en_url}">"""
-    
-    # Check if there is already an alternate links block or alternate tags
-    if '<!-- Multilingual Alternate SEO Links -->' in html_content:
-        pattern = r'<!-- Multilingual Alternate SEO Links -->.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>'
-        html_content = re.sub(pattern, hreflangs_html, html_content, flags=re.DOTALL)
-    elif '<link rel="alternate"' in html_content:
-        # remove old ones first, then insert new one
-        html_content = re.sub(r'<link\s+rel="alternate"\s+hreflang="[^"]+"\s+href="[^"]+"\s*/?>\s*', '', html_content)
-        html_content = html_content.replace('</head>', f'{hreflangs_html}\n</head>')
-    else:
-        html_content = html_content.replace('</head>', f'{hreflangs_html}\n</head>')
+        
+        # Check if there is already an alternate links block or alternate tags
+        if '<!-- Multilingual Alternate SEO Links -->' in html_content:
+            pattern = r'<!-- Multilingual Alternate SEO Links -->.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>.*?<link rel="alternate"[^>]+>'
+            html_content = re.sub(pattern, hreflangs_html, html_content, flags=re.DOTALL)
+        elif '<link rel="alternate"' in html_content:
+            # remove old ones first, then insert new one
+            html_content = re.sub(r'<link\s+rel="alternate"\s+hreflang="[^"]+"\s+href="[^"]+"\s*/?>\s*', '', html_content)
+            html_content = html_content.replace('</head>', f'{hreflangs_html}\n</head>')
+        else:
+            html_content = html_content.replace('</head>', f'{hreflangs_html}\n</head>')
     
     # OG URL
     if 'property="og:url"' in html_content:
