@@ -165,8 +165,8 @@ def new_booking():
     if single_quads == 0 and double_quads == 0:
         return jsonify({"error": "Must select at least 1 quad bike"}), 400
         
-    if single_quads + double_quads > 4:
-        return jsonify({"error": "Cannot book more than 4 quads in total"}), 400
+    if single_quads + double_quads > 3:
+        return jsonify({"error": "Cannot book more than 3 quads in total"}), 400
         
     try:
         # Check real-time availability before booking
@@ -190,9 +190,9 @@ def new_booking():
             if slot_date < current_date:
                 is_past_cutoff = True
             elif slot_date == current_date:
-                if time_str == "13:00":
-                    cutoff_13 = now_in_tz.replace(hour=9, minute=0, second=0, microsecond=0)
-                    if now_in_tz >= cutoff_13:
+                if time_str == "11:00":
+                    cutoff_11 = now_in_tz.replace(hour=7, minute=0, second=0, microsecond=0)
+                    if now_in_tz >= cutoff_11:
                         is_past_cutoff = True
                 elif time_str == "18:30":
                     cutoff_18 = now_in_tz.replace(hour=16, minute=30, second=0, microsecond=0)
@@ -201,11 +201,11 @@ def new_booking():
                         
             if is_past_cutoff:
                 if lang == "pl":
-                    err_msg = "Rezerwacja na tę godzinę jest już zamknięta. Wycieczka o 13:00 wymaga rezerwacji z minimum 4-godzinnym wyprzedzeniem, a o 18:30 z 2-godzinnym wyprzedzeniem."
+                    err_msg = "Rezerwacja na tę godzinę jest już zamknięta. Wycieczka o 11:00 wymaga rezerwacji z minimum 4-godzinnym wyprzedzeniem, a o 18:30 z 2-godzinnym wyprzedzeniem."
                 elif lang == "es":
-                    err_msg = "La reserva para este horario ya está cerrada. La excursión de las 13:00 requiere reserva con al menos 4 horas de antelación, y la de las 18:30 con 2 horas de antelación."
+                    err_msg = "La reserva para este horario ya está cerrada. La excursión de las 11:00 requiere reserva con al menos 4 horas de antelación, y la de las 18:30 con 2 horas de antelación."
                 else:
-                    err_msg = "Booking for this tour is now closed. The 13:00 tour requires booking at least 4 hours in advance, and the 18:30 tour requires 2 hours in advance."
+                    err_msg = "Booking for this tour is now closed. The 11:00 tour requires booking at least 4 hours in advance, and the 18:30 tour requires 2 hours in advance."
                 return jsonify({"error": err_msg}), 400
         except Exception as e:
             print(f"Error validating cut-off times in bookings endpoint: {e}")
@@ -537,7 +537,7 @@ def get_blocked():
 def block_date_time():
     data = request.json or {}
     date_str = data.get("date")
-    time_str = data.get("time") # '13:00', '18:30', or 'all'
+    time_str = data.get("time") # '11:00', '18:30', or 'all'
     try:
         quads = int(data.get("quads", 0))
     except (ValueError, TypeError):

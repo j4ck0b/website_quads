@@ -959,7 +959,7 @@
                                         <label>Block scope</label>
                                         <div class="button-group" id="btn-group-time">
                                             <button type="button" class="form-btn active" data-value="all">Full Day</button>
-                                            <button type="button" class="form-btn" data-value="13:00">13:00</button>
+                                            <button type="button" class="form-btn" data-value="11:00">11:00</button>
                                             <button type="button" class="form-btn" data-value="18:30">18:30</button>
                                         </div>
                                         <input type="hidden" id="block-time" value="all">
@@ -1288,8 +1288,8 @@
                     return sortVal === 'date-asc' ? dateCompare : -dateCompare;
                 }
                 
-                // Secondary sort: time ('all' -> '13:00' -> '18:30')
-                const timeWeights = { 'all': 0, '13:00': 1, '18:30': 2 };
+                // Secondary sort: time ('all' -> '11:00' -> '18:30')
+                const timeWeights = { 'all': 0, '11:00': 1, '18:30': 2 };
                 const wA = timeWeights[a.time] !== undefined ? timeWeights[a.time] : 99;
                 const wB = timeWeights[b.time] !== undefined ? timeWeights[b.time] : 99;
                 return sortVal === 'date-asc' ? wA - wB : wB - wA;
@@ -1301,8 +1301,8 @@
                 card.className = 'block-card';
                 
                 let slotLabel = item.time;
-                if (item.time === 'all') slotLabel = 'Full day (13:00 & 18:30)';
-                else if (item.time === '13:00') slotLabel = 'Afternoon tour (13:00)';
+                if (item.time === 'all') slotLabel = 'Full day (11:00 & 18:30)';
+                else if (item.time === '11:00') slotLabel = 'Morning tour (11:00)';
                 else if (item.time === '18:30') slotLabel = 'Sunset tour (18:30)';
 
                 const quadsBlocked = parseInt(item.quads || 0);

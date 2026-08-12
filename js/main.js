@@ -595,9 +595,9 @@ function renderTimeSlots(slots) {
             ? (t['booking.form.time.slot_full'] || 'FULL')
             : (remaining + ' ' + (t['booking.form.time.slot_remaining'] || 'quads left'));
 
-        var title = time === '13:00'
-            ? (t['booking.form.time.afternoon'] || 'Afternoon Tour (13:00)')
-            : (t['booking.form.time.sunset']    || 'Sunset Tour (18:30)');
+        var title = time === '11:00'
+            ? (t['booking.form.time.morning'] || 'Morning Tour (11:00)')
+            : (t['booking.form.time.sunset']  || 'Sunset Tour (18:30)');
 
         pill.innerHTML = '<span class="time-slot-name">' + title + '</span>'
                        + '<span class="time-slot-status">' + remainingText + '</span>';

@@ -240,10 +240,10 @@ def get_pending_bookings(date_str):
         conn.close()
     return bookings_list
 
-def get_slot_availability(date_str, max_capacity=4):
+def get_slot_availability(date_str, max_capacity=3):
     """
     Calculates remaining quad capacity for standard time slots:
-    '13:00' (Afternoon) and '18:30' (Sunset)
+    '11:00' (Morning) and '18:30' (Sunset)
     Queries Google Calendar if enabled, and combines it with recent pending bookings.
     Falls back to querying the database if Google Calendar is not configured.
     """
@@ -251,7 +251,7 @@ def get_slot_availability(date_str, max_capacity=4):
     cal_occupied = get_calendar_events_for_date(date_str)
     
     slots = {
-        "13:00": max_capacity,
+        "11:00": max_capacity,
         "18:30": max_capacity
     }
     
@@ -288,14 +288,14 @@ def get_slot_availability(date_str, max_capacity=4):
             # If b_quads is 0 or None, it means a full block (0 capacity)
             if b_quads == 0 or b_quads is None:
                 if b_time == "all":
-                    slots["13:00"] = 0
+                    slots["11:00"] = 0
                     slots["18:30"] = 0
                 elif b_time in slots:
                     slots[b_time] = 0
             else:
                 # Partial block: subtract b_quads from capacity
                 if b_time == "all":
-                    slots["13:00"] = max(0, slots["13:00"] - b_quads)
+                    slots["11:00"] = max(0, slots["11:00"] - b_quads)
                     slots["18:30"] = max(0, slots["18:30"] - b_quads)
                 elif b_time in slots:
                     slots[b_time] = max(0, slots[b_time] - b_quads)
@@ -303,7 +303,7 @@ def get_slot_availability(date_str, max_capacity=4):
         print(f"Error applying blocked slots: {e}")
         
     # Apply cut-off time rules (Tenerife time)
-    # - 13:00 slot: min 4h preparation time -> cut-off at 09:00
+    # - 11:00 slot: min 4h preparation time -> cut-off at 07:00
     # - 18:30 slot: min 2h preparation time -> cut-off at 16:30
     try:
         import pytz
@@ -313,13 +313,13 @@ def get_slot_availability(date_str, max_capacity=4):
         current_date = now_in_tz.date()
         
         if slot_date < current_date:
-            slots["13:00"] = 0
+            slots["11:00"] = 0
             slots["18:30"] = 0
         elif slot_date == current_date:
-            # 13:00 tour: cut-off is 09:00
-            cutoff_13 = now_in_tz.replace(hour=9, minute=0, second=0, microsecond=0)
-            if now_in_tz >= cutoff_13:
-                slots["13:00"] = 0
+            # 11:00 tour: cut-off is 07:00
+            cutoff_11 = now_in_tz.replace(hour=7, minute=0, second=0, microsecond=0)
+            if now_in_tz >= cutoff_11:
+                slots["11:00"] = 0
             # 18:30 tour: cut-off is 16:30
             cutoff_18 = now_in_tz.replace(hour=16, minute=30, second=0, microsecond=0)
             if now_in_tz >= cutoff_18:
@@ -330,7 +330,7 @@ def get_slot_availability(date_str, max_capacity=4):
     return slots
  
 def block_slot(date_str, time_str, quads=0):
-    """Blocks a slot (time_str can be '13:00', '18:30', or 'all') for a given date with specified quads."""
+    """Blocks a slot (time_str can be '11:00', '18:30', or 'all') for a given date with specified quads."""
     import uuid
     conn = get_db_connection()
     try:

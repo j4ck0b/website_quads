@@ -106,13 +106,13 @@ def parse_quads_from_event(summary, description=""):
     # 1. Check if it's a manual block/closure
     block_keywords = ["block", "blok", "close", "zamkn", "priv", "prywatn", "cerrar", "ocupado", "off"]
     if any(kw in summary.lower() for kw in block_keywords) or any(kw in description.lower() for kw in block_keywords):
-        # Try to find a valid quad count (1 to 4) in the summary/description
-        nums = [int(n) for n in re.findall(r"\b(\d+)\b", summary + " " + description) if 1 <= int(n) <= 4]
+        # Try to find a valid quad count (1 to 3) in the summary/description
+        nums = [int(n) for n in re.findall(r"\b(\d+)\b", summary + " " + description) if 1 <= int(n) <= 3]
         if nums:
             return nums[0]
         else:
-            # Block the entire tour slot (default max capacity is 4)
-            return 4
+            # Block the entire tour slot (default max capacity is 3)
+            return 3
             
     # 2. Check for standard pattern (XS, YD) or similar in summary/description
     single_count = 0
@@ -156,7 +156,7 @@ def parse_quads_from_event(summary, description=""):
 def get_calendar_events_for_date(date_str):
     """
     Queries Google Calendar API for events on the given date (YYYY-MM-DD).
-    Returns a dictionary of occupied capacity per slot, e.g. {"13:00": 2, "18:30": 0}.
+    Returns a dictionary of occupied capacity per slot, e.g. {"11:00": 2, "18:30": 0}.
     If Google credentials are not set or calendar sync fails, returns None.
     """
     google_json_str = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
@@ -204,7 +204,7 @@ def get_calendar_events_for_date(date_str):
         events = events_result.get('items', [])
         
         occupied = {
-            "13:00": 0,
+            "11:00": 0,
             "18:30": 0
         }
         
@@ -222,9 +222,9 @@ def get_calendar_events_for_date(date_str):
             # Count quads blocked
             quads = parse_quads_from_event(event.get('summary'), event.get('description'))
             
-            # Map start hour to slots (13:00 / 18:30)
-            if 12 <= hour <= 15:
-                occupied["13:00"] += quads
+            # Map start hour to slots (11:00 / 18:30)
+            if 9 <= hour <= 13:
+                occupied["11:00"] += quads
             elif 17 <= hour <= 20:
                 occupied["18:30"] += quads
                 

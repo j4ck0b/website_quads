@@ -53,9 +53,9 @@ System pobiera zajętość quadów bezpośrednio z Twojego kalendarza Google, dz
 6. **Kluczowy krok**: Otwórz swój Google Calendar w przeglądarce, wejdź w ustawienia kalendarza, który chcesz synchronizować, i w sekcji *Share with specific people* dodaj adres e-mail swojego konta usługowego (np. `service-account@project.iam.gserviceaccount.com`) z uprawnieniami **Make changes to events** (Wprowadzanie zmian w wydarzeniach).
 
 ### Jak kalendarz steruje wolnymi miejscami:
-* Gdy klient opłaci rezerwację, system sam doda wydarzenie: `Teide Quad: Jan Kowalski (1S, 1D)` na odpowiednią godzinę (13:00 lub 18:30).
+* Gdy klient opłaci rezerwację, system sam doda wydarzenie: `Teide Quad: Jan Kowalski (1S, 1D)` na odpowiednią godzinę (11:00 lub 18:30).
 * Możesz ręcznie przesuwać to wydarzenie (drag & drop) lub je usunąć – strona automatycznie zwolni ten termin.
-* Możesz ręcznie utworzyć wydarzenie blokujące (np. wpisując słowo `block`, `blokada`, `close` lub `private`) – system rozpozna to i odejmie odpowiednią liczbę miejsc. Jeśli nie wpiszesz liczby miejsc w tytule blokady (np. sam wpis "Prywatna grupa"), system zablokuje całą wycieczkę (4 quady).
+* Możesz ręcznie utworzyć wydarzenie blokujące (np. wpisując słowo `block`, `blokada`, `close` lub `private`) – system rozpozna to i odejmie odpowiednią liczbę miejsc. Jeśli nie wpiszesz liczby miejsc w tytule blokady (np. sam wpis "Prywatna grupa"), system zablokuje całą wycieczkę (3 quady).
 
 ---
 
