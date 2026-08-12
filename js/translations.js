@@ -103,6 +103,8 @@ const translations = {
         "location.address.label": "Address",
         "location.hours.label": "Working Hours",
         "location.hours.val": "Monday - Sunday: 09:00 - 20:00",
+        "location.phone.label": "Phone / WhatsApp",
+        "location.phone.val": "+34 711 075 369",
         "location.maps.btn": "Open in Google Maps",
         
         "contact.title": "Got Questions?",
@@ -349,6 +351,8 @@ const translations = {
         "location.address.label": "Adres",
         "location.hours.label": "Godziny pracy",
         "location.hours.val": "Poniedziałek - Niedziela: 09:00 - 20:00",
+        "location.phone.label": "Telefon / WhatsApp",
+        "location.phone.val": "+34 711 075 369",
         "location.maps.btn": "Otwórz w Mapach Google",
         
         "contact.title": "Masz pytania?",
@@ -592,6 +596,8 @@ const translations = {
         "location.address.label": "Dirección",
         "location.hours.label": "Horario de trabajo",
         "location.hours.val": "Lunes - Domingo: 09:00 - 20:00",
+        "location.phone.label": "Teléfono / WhatsApp",
+        "location.phone.val": "+34 711 075 369",
         "location.maps.btn": "Abrir en Google Maps",
         
         "contact.title": "¿Tienes preguntas?",
